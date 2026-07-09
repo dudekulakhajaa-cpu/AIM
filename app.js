@@ -1129,7 +1129,7 @@ function renderCurriculum() {
                         <div class="module-group">
                             <h4 class="module-title">${mod.name}</h4>
                             <div class="module-items-grid">
-                                ${mod.items.map(item => {
+                                ${(mod.items || []).map(item => {
                                     const hasCodex = CODEX_DATA[item.id] !== undefined;
                                     return `
                                     <div class="checklist-item-wrapper">
@@ -1727,22 +1727,22 @@ const updateMathExplanations = (dot, cross, magA, magB) => {
     
     if (dot > 0.05) {
         title = "Acute Angle (Facing Same General Direction)";
-        desc = `The angle is acute (< 90°). Their dot product is positive (\${dot.toFixed(2)}).`;
+        desc = `The angle is acute (< 90°). Their dot product is positive (${dot.toFixed(2)}).`;
         app = `In gameplay code, this means the enemy is in front of the player's facing vector. (If dot > 0.707, it falls inside your 90° field of view).`;
     } else if (dot < -0.05) {
         title = "Obtuse Angle (Facing Opposite Directions)";
-        desc = `The angle is obtuse (> 90°). Their dot product is negative (\${dot.toFixed(2)}).`;
+        desc = `The angle is obtuse (> 90°). Their dot product is negative (${dot.toFixed(2)}).`;
         app = `In gameplay code, this signifies the enemy is behind the player (e.g. invalidates backstab check or stealth attack trigger).`;
     }
     
     const crossNormalized = Math.abs(cross) / (magA * magB || 1);
     if (crossNormalized < 0.05) {
         title = dot > 0 ? "Collinear / Parallel (Same direction)" : "Collinear / Anti-Parallel (Opposite direction)";
-        desc = `Vectors are collinear. Their cross product is close to 0 (\${cross.toFixed(2)}).`;
+        desc = `Vectors are collinear. Their cross product is close to 0 (${cross.toFixed(2)}).`;
         app = `Parallel vectors check alignment: perfect for projectile trajectories aligning to target tracks.`;
     }
     
-    if (elements.mathRelationTitle) elements.mathRelationTitle.innerText = `Vectors Relation: \${title}`;
+    if (elements.mathRelationTitle) elements.mathRelationTitle.innerText = `Vectors Relation: ${title}`;
     if (elements.mathExplanationText) elements.mathExplanationText.innerText = desc;
     if (elements.mathApplicationText) elements.mathApplicationText.innerText = app;
 };
@@ -1802,11 +1802,11 @@ const runChallengeTests = () => {
     setTimeout(() => {
         try {
             const resultMsg = challenge.test(code);
-            elements.consoleOutput.innerText += `\nSUCCESS:\n\${resultMsg}`;
+            elements.consoleOutput.innerText += `\nSUCCESS:\n${resultMsg}`;
             elements.consoleOutput.style.color = "var(--color-success)";
             playAudioBeep();
         } catch (err) {
-            elements.consoleOutput.innerText += `\nASSERTION FAILED / INTERPRETATION ERROR:\n\${err.message}`;
+            elements.consoleOutput.innerText += `\nASSERTION FAILED / INTERPRETATION ERROR:\n${err.message}`;
             elements.consoleOutput.style.color = "var(--neon-magenta)";
         }
     }, 300);
@@ -1841,8 +1841,8 @@ const loadInterviewQuestion = () => {
     const answerInput = document.getElementById("interview-answer-input");
     const evalBox = document.getElementById("interview-evaluation-box");
     
-    if (progress) progress.innerText = `AAA Mock Board Interview - Question \${interviewIndex + 1} of \${MOCK_INTERVIEWS.length}`;
-    if (questionText) questionText.innerText = `Interviewer: \${qData.q}`;
+    if (progress) progress.innerText = `AAA Mock Board Interview - Question ${interviewIndex + 1} of ${MOCK_INTERVIEWS.length}`;
+    if (questionText) questionText.innerText = `Interviewer: ${qData.q}`;
     if (answerInput) {
         answerInput.value = "";
         answerInput.disabled = false;
@@ -1869,8 +1869,9 @@ const submitInterviewAnswer = () => {
     if (submitBtn) submitBtn.style.display = "none";
     
     const qData = MOCK_INTERVIEWS[interviewIndex];
-    if (rubricText) rubricText.innerText = qData.rubric;
-    if (refCode) refCode.innerText = qData.refCode;
+    // Replace escaped \n sequences with real newlines for readable display
+    if (rubricText) rubricText.innerText = (qData.rubric || "").replace(/\\n/g, "\n");
+    if (refCode) refCode.innerText = (qData.refCode || "").replace(/\\n/g, "\n");
     
     if (evalBox) evalBox.classList.remove("hidden");
 };
@@ -1950,7 +1951,7 @@ const CODE_CHALLENGES = {
     },
     unique_ptr: {
         title: "Emulate C++ unique_ptr Lifecycle",
-        desc: "Write a class \`UniquePointer\` representing C++ unique_ptr behavior. It takes a \`resource\` in the constructor. Implement a \`move(other)\` method that transfers ownership of the resource from the \`other\` UniquePointer instance to this instance, setting \`other.resource\` to \`null\`.",
+        desc: "Write a class 'UniquePointer' representing C++ unique_ptr behavior. It takes a 'resource' in the constructor. Implement a 'move(other)' method that transfers ownership of the resource from the 'other' UniquePointer instance to this instance, setting 'other.resource' to null.",
         template: `class UniquePointer {
     constructor(resource) {
         this.resource = resource;
@@ -1962,7 +1963,13 @@ const CODE_CHALLENGES = {
     }
 }`,
         test: function(funcStr) {
-            const UniquePointer = new Function("return " + funcStr)();
+            // Wrap in parens so 'return (class ...)' is valid
+            let UniquePointer;
+            try {
+                UniquePointer = new Function("return (" + funcStr + ")")();
+            } catch(e) {
+                throw new Error("Syntax Error — check your class definition: " + e.message);
+            }
             const p1 = new UniquePointer("MonsterMesh");
             const p2 = new UniquePointer(null);
             p2.move(p1);
@@ -1977,7 +1984,7 @@ const CODE_CHALLENGES = {
     },
     binary_search: {
         title: "Fast Inventory Search (Binary Search)",
-        desc: "Implement a fast \`binarySearch(arr, targetId)\` function that searches for targetId in a sorted integer array \`arr\` and returns its index. Return \`-1\` if not found. Time complexity must be O(log N).",
+        desc: "Implement a fast 'binarySearch(arr, targetId)' function that searches for targetId in a sorted integer array 'arr' and returns its index. Return -1 if not found. Time complexity must be O(log N).",
         template: `function binarySearch(arr, targetId) {
     let left = 0;
     let right = arr.length - 1;
@@ -2005,52 +2012,52 @@ const CODE_CHALLENGES = {
 const CODEX_DATA = {
     "sem0_m1_c1": {
         concept: "CPU registers are inside the core, taking < 1 cycle. Caches (L1/L2/L3) store adjacent memory (spatial locality) to prevent CPU stalls (RAM fetches take 200+ cycles). Contiguous memory layout (arrays, std::vector) ensures cache line prefetching.",
-        code: \`// Good: contiguous vector iteration
+        code: `// Good: contiguous vector iteration
 std::vector<int> data(1000000);
 int sum = 0;
 for(int x : data) { sum += x; } // Cache hits!
 
 // Bad: Scattered pointers iteration
-struct Node { int val; Node* next; }; // Cache misses!\`,
+struct Node { int val; Node* next; }; // Cache misses!`,
         trap: "Interviewers often ask: 'Why is vector faster than list?' Do not say 'because index accesses are O(1)'. The real answer for high-performance games is cache friendliness due to contiguous memory spatial locality."
     },
     "sem0_m1_c2": {
         concept: "Processes have separate virtual memory spaces. Threads share the same address space but have their own stack. Race conditions occur when threads read and write memory without locks, leading to memory corruption.",
-        code: \`// Prevent race condition using std::atomic
+        code: `// Prevent race condition using std::atomic
 #include <atomic>
 std::atomic<int> g_enemyCount{0};
 
 void SpawnEnemy() {
     g_enemyCount.fetch_add(1, std::memory_order_relaxed); // Thread-safe atomic increment
-}\`,
+}`,
         trap: "Interviewers will ask how to resolve multi-threaded race conditions without heavy lock locks. Be ready to explain lock-free queues, atomic variables, and CAS (Compare-And-Swap) loops."
     },
     "sem0_m2_u8": {
         concept: "Pointers store raw 64-bit virtual memory addresses. Dereferencing a pointer (*ptr) retrieves the value at that address. In AAA game engines, pointers are used for low-level performance, custom memory allocators, and hardware interaction.",
-        code: \`int health = 100;
+        code: `int health = 100;
 int* pHealth = &health; // Pointer holds address of health
 *pHealth = 80;          // Dereferencing updates original value
 
 // Check for nullptr before dereferencing!
 if (pHealth != nullptr) {
     std::cout << *pHealth;
-}\`,
+}`,
         trap: "Never dereference a nullptr or wildcard uninitialized pointer! It triggers an OS Access Violation crash. Always initialize pointers to nullptr."
     },
     "sem0_m2_u17": {
         concept: "Smart pointers manage heap object lifetimes. std::unique_ptr has single exclusive ownership and deletes resources when out of scope. std::shared_ptr uses reference counts. std::weak_ptr holds non-owning refs to prevent circular cycles.",
-        code: \`#include <memory>
+        code: `#include <memory>
 // Exclusive ownership
 std::unique_ptr<Enemy> enemy = std::make_unique<Enemy>();
 
 // Reference counted ownership
 std::shared_ptr<Texture> tex = std::make_shared<Texture>();
-std::weak_ptr<Texture> weakTex = tex; // Breaks loops\`,
+std::weak_ptr<Texture> weakTex = tex; // Breaks loops`,
         trap: "Never use std::shared_ptr everywhere! It adds runtime overhead due to thread-safe atomic reference count increments. Prefer std::unique_ptr by default, or pass raw pointers/references for temporary access."
     },
     "sem0_m2_u18": {
         concept: "Move semantics allow transferring resources (like dynamic buffers) from temporary objects (rvalues) without deep copying. std::move casts an object to an rvalue reference (T&&), enabling move constructors to steal pointers.",
-        code: \`// Move constructor example
+        code: `// Move constructor example
 class Buffer {
     int* m_data;
 public:
@@ -2059,7 +2066,7 @@ public:
         m_data = other.m_data;    // Steal pointer
         other.m_data = nullptr;   // Clean source
     }
-};\`,
+};`,
         trap: "Adding std::move to a return value (e.g. return std::move(myLocalVar);) can be a trap. It disables NRVO (Named Return Value Optimization / Copy Elision), making the code slower! Let the compiler handle standard local returns."
     }
 };

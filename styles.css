@@ -703,6 +703,7 @@ textarea:focus {
 .checklist-item {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 12px;
     padding: 10px 14px;
     background: rgba(255, 255, 255, 0.02);
@@ -1620,11 +1621,7 @@ textarea:focus {
     width: 100%;
 }
 
-.checklist-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+/* Duplicate .checklist-item rule removed — merged into main rule */
 
 .checklist-item-left {
     display: flex;
