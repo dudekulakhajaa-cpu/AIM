@@ -13,22 +13,37 @@ let state = {
 // Local storage key
 const STORAGE_KEY = "AIM_GAMEDEV_MASTER_PROGRESS";
 
-// Sound alert fallback
+// Synthesise a beautiful melodic completion chime using multiple Web Audio oscillators
 const playAudioBeep = () => {
+    const toggle = elements.soundFxToggle || document.getElementById("sound-fx-toggle");
+    if (toggle && !toggle.checked) return;
+    
     try {
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = "sine";
-        osc.frequency.setValueAtTime(800, ctx.currentTime); // A5 note
-        gain.gain.setValueAtTime(0.5, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 1.0);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start();
-        osc.stop(ctx.currentTime + 1.0);
+        
+        const playTone = (freq, type, duration, startTime) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, ctx.currentTime + startTime);
+            gain.gain.setValueAtTime(0, ctx.currentTime + startTime);
+            gain.gain.linearRampToValueAtTime(0.15, ctx.currentTime + startTime + 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + startTime + duration);
+            
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            
+            osc.start(ctx.currentTime + startTime);
+            osc.stop(ctx.currentTime + startTime + duration);
+        };
+        
+        // Synthesise an arpeggiated C-major chord
+        playTone(523.25, "sine", 0.4, 0);       // C5
+        playTone(659.25, "triangle", 0.4, 0.12);  // E5
+        playTone(783.99, "sine", 0.5, 0.24);      // G5
+        playTone(1046.50, "sine", 0.6, 0.36);     // C6
     } catch (e) {
-        console.warn("Audio Context beep failed: ", e);
+        console.warn("Web Audio API Chime failed: ", e);
     }
 };
 
@@ -90,7 +105,9 @@ const elements = {
     readingListContainer: document.getElementById("reading-list-container"),
     btnExportData: document.getElementById("btn-export-data"),
     btnImportTrigger: document.getElementById("btn-import-trigger"),
-    importFileInput: document.getElementById("import-file-input")
+    importFileInput: document.getElementById("import-file-input"),
+    soundFxToggle: document.getElementById("sound-fx-toggle"),
+    activityHeatmap: document.getElementById("activity-heatmap")
 };
 
 // Timer variables
@@ -306,6 +323,28 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 7. Setup date input default to today
     const today = new Date().toISOString().split('T')[0];
     elements.logDate.value = today;
+    
+    // 8. Render Study Activity Matrix Heatmap
+    renderHeatmap();
+    
+    // 9. Load Sound Preference state
+    const soundSetting = localStorage.getItem("AIM_GAMEDEV_SOUND_ENABLED");
+    if (soundSetting !== null && elements.soundFxToggle) {
+        elements.soundFxToggle.checked = (soundSetting === "true");
+    }
+    if (elements.soundFxToggle) {
+        elements.soundFxToggle.addEventListener("change", (e) => {
+            localStorage.setItem("AIM_GAMEDEV_SOUND_ENABLED", e.target.checked);
+        });
+    }
+    
+    // 10. Load and resume Focus Timer if active
+    loadTimerState();
+    
+    // 11. Restore last active tab
+    const activeTab = localStorage.getItem("AIM_GAMEDEV_ACTIVE_TAB") || "dashboard";
+    const tabButton = document.querySelector(`.nav-btn[data-tab="${activeTab}"]`);
+    if (tabButton) tabButton.click();
 });
 
 // Default seed data fallback for file:// protocol loading
@@ -601,6 +640,7 @@ async function initData() {
 function saveState() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     updateTopProgressBar();
+    renderHeatmap();
 }
 
 // Navigation Controllers
@@ -620,6 +660,9 @@ function setupNavigation() {
                     panel.classList.add("active");
                 }
             });
+            
+            // Save tab preference to localStorage
+            localStorage.setItem("AIM_GAMEDEV_ACTIVE_TAB", targetTab);
             
             // Set header title
             const tabTitleMap = {
@@ -809,6 +852,107 @@ function setupDashboardHandlers() {
     });
 }
 
+// Timer State Saving & Resuming
+const saveTimerState = () => {
+    const timerState = {
+        timerSecondsRemaining,
+        isTimerRunning,
+        currentTimerMode,
+        timerLastUpdated: Date.now()
+    };
+    localStorage.setItem("AIM_GAMEDEV_TIMER_STATE", JSON.stringify(timerState));
+};
+
+const loadTimerState = () => {
+    const saved = localStorage.getItem("AIM_GAMEDEV_TIMER_STATE");
+    if (!saved) return;
+    
+    try {
+        const timerState = JSON.parse(saved);
+        currentTimerMode = timerState.currentTimerMode || "weekday";
+        
+        if (currentTimerMode === "weekday") {
+            elements.btnToggleTimerMode.innerText = "Switch to Weekend (60m)";
+            elements.timerModePill.innerText = "Weekday Focus";
+        } else {
+            elements.btnToggleTimerMode.innerText = "Switch to Weekday (45m)";
+            elements.timerModePill.innerText = "Weekend Sprint";
+        }
+        
+        timerSecondsRemaining = parseInt(timerState.timerSecondsRemaining);
+        
+        if (timerState.isTimerRunning) {
+            const elapsed = Math.floor((Date.now() - timerState.timerLastUpdated) / 1000);
+            timerSecondsRemaining = Math.max(0, timerSecondsRemaining - elapsed);
+            
+            if (timerSecondsRemaining > 0) {
+                startTimer();
+            } else {
+                timerSecondsRemaining = 0;
+                updateTimerDisplay();
+                playAudioBeep();
+                alert("⏰ Study Session Complete! Great work. Lock in your session hours in the Logger Form.");
+                resetTimerDisplay();
+                saveTimerState();
+            }
+        } else {
+            updateTimerDisplay();
+        }
+    } catch (e) {
+        console.error("Failed to restore timer state: ", e);
+    }
+};
+
+// Render GitHub-Style Study Activity Heatmap
+const renderHeatmap = () => {
+    const container = elements.activityHeatmap;
+    if (!container) return;
+    
+    container.innerHTML = "";
+    
+    const today = new Date();
+    const dayOfWeek = today.getDay(); // 0 (Sunday) to 6 (Saturday)
+    const totalCells = 84 + dayOfWeek; // 12 full weeks aligned to start on Sunday
+    
+    const cellsHtml = [];
+    const logsMap = {};
+    
+    if (state.studyLogs) {
+        state.studyLogs.forEach(log => {
+            logsMap[log.date] = (logsMap[log.date] || 0) + parseFloat(log.hours);
+        });
+    }
+    
+    for (let i = totalCells - 1; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(today.getDate() - i);
+        d.setHours(0,0,0,0);
+        
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        const dateKey = `${year}-${month}-${day}`;
+        
+        const hours = logsMap[dateKey] || 0;
+        
+        let level = 0;
+        if (hours > 0 && hours < 2) level = 1;
+        else if (hours >= 2 && hours < 5) level = 2;
+        else if (hours >= 5) level = 3;
+        
+        const dateOptions = { month: 'short', day: 'numeric', year: 'numeric' };
+        const formattedDate = d.toLocaleDateString(undefined, dateOptions);
+        
+        cellsHtml.push(`
+            <div class="heatmap-cell level-${level}" 
+                 data-tooltip="${formattedDate}: ${hours.toFixed(1)}h logged"
+                 onclick="document.getElementById('log-date').value='${dateKey}'"></div>
+        `);
+    }
+    
+    container.innerHTML = cellsHtml.join("");
+};
+
 function updateStreak(dateStr) {
     if (!state.lastStudyDate) {
         state.streak = 1;
@@ -847,10 +991,14 @@ function startTimer() {
     elements.btnStartTimer.innerText = "Pause Session";
     elements.btnStartTimer.classList.remove("btn-primary");
     elements.btnStartTimer.classList.add("btn-secondary");
+    saveTimerState();
     
     timerInterval = setInterval(() => {
         timerSecondsRemaining--;
         updateTimerDisplay();
+        
+        // Save timer state every second to prevent losing track on exit/refresh
+        saveTimerState();
         
         if (timerSecondsRemaining <= 0) {
             clearInterval(timerInterval);
@@ -862,6 +1010,7 @@ function startTimer() {
             playAudioBeep();
             alert("⏰ Study Session Complete! Great work. Lock in your session hours in the Logger Form.");
             resetTimerDisplay();
+            saveTimerState();
         }
     }, 1000);
 }
@@ -872,11 +1021,13 @@ function pauseTimer() {
     elements.btnStartTimer.innerText = "Resume Session";
     elements.btnStartTimer.classList.remove("btn-secondary");
     elements.btnStartTimer.classList.add("btn-primary");
+    saveTimerState();
 }
 
 function resetTimer() {
     pauseTimer();
     resetTimerDisplay();
+    saveTimerState();
 }
 
 function resetTimerDisplay() {
@@ -904,6 +1055,18 @@ function renderCurriculum() {
         return;
     }
     
+    // Read saved open accordions state
+    let openSems = [];
+    try {
+        const saved = localStorage.getItem("AIM_GAMEDEV_OPEN_ACCORDIONS");
+        if (saved) openSems = JSON.parse(saved);
+    } catch (e) {}
+    
+    // Fallback: Open Semester 0 by default if nothing saved
+    if (openSems.length === 0 && state.semesters[0]) {
+        openSems.push(state.semesters[0].id);
+    }
+    
     elements.semesterAccordionList.innerHTML = state.semesters.map((sem, idx) => {
         // Calculate items completed for this semester
         let totalItems = 0;
@@ -919,9 +1082,10 @@ function renderCurriculum() {
         });
         
         const pct = totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
+        const isOpen = openSems.includes(sem.id) ? "open" : "";
         
         return `
-            <div class="semester-group" id="sem-group-${sem.id}">
+            <div class="semester-group ${isOpen}" id="sem-group-${sem.id}">
                 <div class="semester-header" onclick="toggleSemesterAccordion('${sem.id}')">
                     <div class="semester-title-box">
                         <span class="semester-toggle-icon">▼</span>
@@ -952,13 +1116,6 @@ function renderCurriculum() {
         `;
     }).join("");
     
-    // Open the first accordion by default
-    const firstSem = state.semesters[0];
-    if (firstSem) {
-        const firstElem = document.getElementById(`sem-group-${firstSem.id}`);
-        if (firstElem) firstElem.classList.add("open");
-    }
-    
     updateTopProgressBar();
 }
 
@@ -966,6 +1123,11 @@ window.toggleSemesterAccordion = function(semId) {
     const semElement = document.getElementById(`sem-group-${semId}`);
     if (semElement) {
         semElement.classList.toggle("open");
+        
+        // Save current accordion states
+        const openElements = document.querySelectorAll(".semester-group.open");
+        const openIds = Array.from(openElements).map(el => el.id.replace("sem-group-", ""));
+        localStorage.setItem("AIM_GAMEDEV_OPEN_ACCORDIONS", JSON.stringify(openIds));
     }
 };
 

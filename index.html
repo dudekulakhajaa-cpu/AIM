@@ -155,6 +155,25 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <!-- Heatmap Card -->
+                    <div class="glass-card heatmap-card">
+                        <div class="card-header">
+                            <h3>🔥 Study Activity Matrix</h3>
+                            <span class="sub">Consistency is key to a 2-3 Crore package. Matrix logs the last 12 weeks of training.</span>
+                        </div>
+                        <div class="heatmap-wrapper">
+                            <div class="heatmap-grid" id="activity-heatmap"></div>
+                            <div class="heatmap-legend">
+                                <span>Less</span>
+                                <div class="legend-cell level-0"></div>
+                                <div class="legend-cell level-1"></div>
+                                <div class="legend-cell level-2"></div>
+                                <div class="legend-cell level-3"></div>
+                                <span>More</span>
+                            </div>
+                        </div>
+                    </div>
                 </section>
 
                 <!-- Tab 2: Curriculum Tree -->
@@ -292,6 +311,19 @@
                             <div class="warning-box">
                                 <strong>⚠️ Local Storage Note</strong>
                                 <p>This dashboard operates completely locally inside your browser cache. Clearing your cookies or cache may reset your progress. Make a habit of exporting your `progress.json` regularly!</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Preferences Card -->
+                        <div class="glass-card preferences-card">
+                            <h3>⚙️ System Preferences</h3>
+                            <p class="sub">Customize your tracker workspace settings.</p>
+                            <div class="preference-row">
+                                <label class="switch-container">
+                                    <input type="checkbox" id="sound-fx-toggle" checked>
+                                    <span class="switch-slider"></span>
+                                </label>
+                                <span class="preference-label">Enable sound alerts (Completion Chimes)</span>
                             </div>
                         </div>
 
