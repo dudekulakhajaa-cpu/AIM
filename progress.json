@@ -1,0 +1,253 @@
+{
+  "streak": 0,
+  "lastStudyDate": "",
+  "totalHours": 0,
+  "studyLogs": [],
+  "semesters": [
+    {
+      "id": "sem0",
+      "name": "Semester 0 â€” Programming Foundation",
+      "modules": [
+        {
+          "name": "Module 1 â€” Computer Fundamentals",
+          "items": [
+            {"id": "sem0_m1_c1", "name": "Chapter 1: How Computers Work", "completed": false},
+            {"id": "sem0_m1_c2", "name": "Chapter 2: Operating Systems & Threading", "completed": false},
+            {"id": "sem0_m1_c3", "name": "Chapter 3: Developer Setup", "completed": false}
+          ]
+        },
+        {
+          "name": "Module 2 â€” Modern C++",
+          "items": [
+            {"id": "sem0_m2_u1", "name": "Unit 1: Variables", "completed": false},
+            {"id": "sem0_m2_u2", "name": "Unit 2: Data Types", "completed": false},
+            {"id": "sem0_m2_u3", "name": "Unit 3: Operators", "completed": false},
+            {"id": "sem0_m2_u4", "name": "Unit 4: Conditions", "completed": false},
+            {"id": "sem0_m2_u5", "name": "Unit 5: Loops", "completed": false},
+            {"id": "sem0_m2_u6", "name": "Unit 6: Functions", "completed": false},
+            {"id": "sem0_m2_u7", "name": "Unit 7: Arrays", "completed": false},
+            {"id": "sem0_m2_u8", "name": "Unit 8: Pointers", "completed": false},
+            {"id": "sem0_m2_u9", "name": "Unit 9: References", "completed": false},
+            {"id": "sem0_m2_u10", "name": "Unit 10: Classes", "completed": false},
+            {"id": "sem0_m2_u11", "name": "Unit 11: Objects", "completed": false},
+            {"id": "sem0_m2_u12", "name": "Unit 12: Constructors", "completed": false},
+            {"id": "sem0_m2_u13", "name": "Unit 13: Inheritance", "completed": false},
+            {"id": "sem0_m2_u14", "name": "Unit 14: Polymorphism", "completed": false},
+            {"id": "sem0_m2_u15", "name": "Unit 15: Templates", "completed": false},
+            {"id": "sem0_m2_u16", "name": "Unit 16: STL (Standard Template Library)", "completed": false},
+            {"id": "sem0_m2_u17", "name": "Unit 17: Smart Pointers", "completed": false},
+            {"id": "sem0_m2_u18", "name": "Unit 18: Move Semantics", "completed": false}
+          ],
+          "projects": [
+            {"id": "sem0_p1", "name": "Calculator", "completed": false, "status": "Not Started"},
+            {"id": "sem0_p2", "name": "Snake Game", "completed": false, "status": "Not Started"},
+            {"id": "sem0_p3", "name": "Banking System", "completed": false, "status": "Not Started"},
+            {"id": "sem0_p4", "name": "Inventory System", "completed": false, "status": "Not Started"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sem1",
+      "name": "Semester 1 â€” Computer Science",
+      "modules": [
+        {
+          "name": "Core DSA & Systems Concepts",
+          "items": [
+            {"id": "sem1_m1", "name": "Data Structures Basics", "completed": false},
+            {"id": "sem1_m2", "name": "Algorithms & Complexity (Big O)", "completed": false},
+            {"id": "sem1_m3", "name": "Recursion & Backtracking", "completed": false},
+            {"id": "sem1_m4", "name": "Linked Lists (Single, Double, Circular)", "completed": false},
+            {"id": "sem1_m5", "name": "Trees (BST, AVL, Red-Black)", "completed": false},
+            {"id": "sem1_m6", "name": "Graphs (DFS, BFS, Dijkstra, A*)", "completed": false},
+            {"id": "sem1_m7", "name": "Hash Tables & Collisions", "completed": false},
+            {"id": "sem1_m8", "name": "Dynamic Programming (DP)", "completed": false},
+            {"id": "sem1_m9", "name": "Multithreading & Concurrency Basics", "completed": false}
+          ],
+          "projects": [
+            {"id": "sem1_p1", "name": "Chess Engine in C++", "completed": false, "status": "Not Started"},
+            {"id": "sem1_p2", "name": "Pathfinding Visualizer", "completed": false, "status": "Not Started"},
+            {"id": "sem1_p3", "name": "Custom Memory Allocator", "completed": false, "status": "Not Started"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sem2",
+      "name": "Semester 2 â€” Mathematics",
+      "modules": [
+        {
+          "name": "Game Math & Physics Fundamentals",
+          "items": [
+            {"id": "sem2_m1", "name": "Algebra & Equation Solving", "completed": false},
+            {"id": "sem2_m2", "name": "Trigonometry & Unit Circle", "completed": false},
+            {"id": "sem2_m3", "name": "Geometry & Shapes", "completed": false},
+            {"id": "sem2_m4", "name": "Linear Algebra Foundations", "completed": false},
+            {"id": "sem2_m5", "name": "Vectors (Dot, Cross product, Normalization)", "completed": false},
+            {"id": "sem2_m6", "name": "Matrices (Transformations, Rotation, Scaling)", "completed": false},
+            {"id": "sem2_m7", "name": "Quaternions & Gimbal Lock", "completed": false},
+            {"id": "sem2_m8", "name": "Physics Basics (Kinematics, Collision, Forces)", "completed": false}
+          ],
+          "projects": [
+            {"id": "sem2_p1", "name": "Physics Sandbox (Rigid body, gravity)", "completed": false, "status": "Not Started"},
+            {"id": "sem2_p2", "name": "2D Custom Game Engine", "completed": false, "status": "Not Started"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sem3",
+      "name": "Semester 3 â€” Software Engineering",
+      "modules": [
+        {
+          "name": "Design & Software Architecture",
+          "items": [
+            {"id": "sem3_m1", "name": "Clean Code Principles", "completed": false},
+            {"id": "sem3_m2", "name": "SOLID Principles", "completed": false},
+            {"id": "sem3_m3", "name": "Creational, Structural & Behavioral Patterns", "completed": false},
+            {"id": "sem3_m4", "name": "Game Programming Patterns (Game Loop, Update, State)", "completed": false},
+            {"id": "sem3_m5", "name": "Entity Component System (ECS)", "completed": false},
+            {"id": "sem3_m6", "name": "Unit Testing & Test-Driven Development (TDD)", "completed": false},
+            {"id": "sem3_m7", "name": "Debugging Strategies (Breakpoints, Memory dumps)", "completed": false},
+            {"id": "sem3_m8", "name": "Profiling & Optimization Tools", "completed": false}
+          ],
+          "projects": [
+            {"id": "sem3_p1", "name": "Engine Architecture Demo (ECS Implementation)", "completed": false, "status": "Not Started"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sem4",
+      "name": "Semester 4 â€” Unreal Engine",
+      "modules": [
+        {
+          "name": "Unreal Editor & Blueprints Blueprint Scripting",
+          "items": [
+            {"id": "sem4_m1", "name": "Unreal Editor Interface & Navigating", "completed": false},
+            {"id": "sem4_m2", "name": "Gameplay Framework (GameMode, Pawn, Character, Controller)", "completed": false},
+            {"id": "sem4_m3", "name": "Blueprints Visual Scripting Basics", "completed": false},
+            {"id": "sem4_m4", "name": "Materials & Shader Graph Basics", "completed": false},
+            {"id": "sem4_m5", "name": "Animation Blueprints & State Machines", "completed": false},
+            {"id": "sem4_m6", "name": "Unreal Physics Engine (Collisions, Traces, Ragdolls)", "completed": false},
+            {"id": "sem4_m7", "name": "UI Creation with UMG (Widgets, Bindings)", "completed": false},
+            {"id": "sem4_m8", "name": "Audio Engine (Sound Cues, MetaSounds)", "completed": false}
+          ],
+          "projects": [
+            {"id": "sem4_p1", "name": "Third Person Action Game (Full Blueprint)", "completed": false, "status": "Not Started"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sem5",
+      "name": "Semester 5 â€” Unreal C++",
+      "modules": [
+        {
+          "name": "Unreal Engine Native C++ Integration",
+          "items": [
+            {"id": "sem5_m1", "name": "UObject Lifecycle & Garbage Collection", "completed": false},
+            {"id": "sem5_m2", "name": "AActor & Component Architecture", "completed": false},
+            {"id": "sem5_m3", "name": "Delegates (Single, Multi-cast, Dynamic)", "completed": false},
+            {"id": "sem5_m4", "name": "Unreal Reflection System (UPROPERTY, UFUNCTION)", "completed": false},
+            {"id": "sem5_m5", "name": "AI Systems (Behavior Trees, Blackboard, Navigation)", "completed": false},
+            {"id": "sem5_m6", "name": "Inventory Systems in C++", "completed": false},
+            {"id": "sem5_m7", "name": "Save Game & Serialization System", "completed": false}
+          ],
+          "projects": [
+            {"id": "sem5_p1", "name": "RPG Prototype in C++", "completed": false, "status": "Not Started"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sem6",
+      "name": "Semester 6 â€” Advanced Game Programming",
+      "modules": [
+        {
+          "name": "Advanced Multiplayer & Optimizations",
+          "items": [
+            {"id": "sem6_m1", "name": "Multiplayer Architecture (Server-Client Model)", "completed": false},
+            {"id": "sem6_m2", "name": "Networking Concepts (TCP vs UDP, Latency, Jitter)", "completed": false},
+            {"id": "sem6_m3", "name": "Replication (Actor, Variables, RPCs, Ownership)", "completed": false},
+            {"id": "sem6_m4", "name": "Rendering Optimization & GPU profiling", "completed": false},
+            {"id": "sem6_m5", "name": "Unreal Custom Memory Management & Pool Allocators", "completed": false},
+            {"id": "sem6_m6", "name": "Advanced AI Systems (EQS, Utility AI)", "completed": false}
+          ],
+          "projects": [
+            {"id": "sem6_p1", "name": "Multiplayer Shooter Game (Steam/EOS Integrations)", "completed": false, "status": "Not Started"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sem7",
+      "name": "Semester 7 â€” Graphics & Engine",
+      "modules": [
+        {
+          "name": "Graphics Programming & Hardware Rendering",
+          "items": [
+            {"id": "sem7_m1", "name": "Rendering Pipeline (Rasterization, Ray Tracing)", "completed": false},
+            {"id": "sem7_m2", "name": "OpenGL Concepts & Setup", "completed": false},
+            {"id": "sem7_m3", "name": "DirectX Concepts & Command Buffers", "completed": false},
+            {"id": "sem7_m4", "name": "Shader Basics (HLSL/GLSL, Vertex & Fragment Shaders)", "completed": false},
+            {"id": "sem7_m5", "name": "Lighting Models (Phong, PBR)", "completed": false},
+            {"id": "sem7_m6", "name": "Post Processing Shaders & Screen Space Effects", "completed": false},
+            {"id": "sem7_m7", "name": "GPU Debugging (RenderDoc, Pix)", "completed": false}
+          ],
+          "projects": [
+            {"id": "sem7_p1", "name": "Mini Custom Rendering Demo (OpenGL/DirectX)", "completed": false, "status": "Not Started"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sem8",
+      "name": "Semester 8 â€” Production & Career",
+      "modules": [
+        {
+          "name": "Professional Production Pipelines & Career Crack",
+          "items": [
+            {"id": "sem8_m1", "name": "Steam/Console Publishing Procedures", "completed": false},
+            {"id": "sem8_m2", "name": "Source Control (Perforce/Git LFS for AAA)", "completed": false},
+            {"id": "sem8_m3", "name": "Team Workflows & Production methodologies", "completed": false},
+            {"id": "sem8_m4", "name": "Build Systems & CI/CD Pipelines for Unreal", "completed": false},
+            {"id": "sem8_m5", "name": "Interview Preparation & Practice (LeetCode, C++, UE5)", "completed": false},
+            {"id": "sem8_m6", "name": "Resume & Portfolio polishing", "completed": false}
+          ],
+          "projects": [
+            {"id": "sem8_p1", "name": "Capstone: AAA-Quality Gameplay Demo", "completed": false, "status": "Planned"}
+          ]
+        }
+      ]
+    }
+  ],
+  "portfolio": [
+    {"id": "port1", "name": "Calculator (C++)", "semester": "Semester 0", "status": "Planned", "link": ""},
+    {"id": "port2", "name": "Snake Game (C++ console)", "semester": "Semester 0", "status": "Planned", "link": ""},
+    {"id": "port3", "name": "Banking System (OOP C++)", "semester": "Semester 0", "status": "Planned", "link": ""},
+    {"id": "port4", "name": "Inventory System (Data Structures C++)", "semester": "Semester 0", "status": "Planned", "link": ""},
+    {"id": "port5", "name": "Chess Engine (Bitboards C++)", "semester": "Semester 1", "status": "Planned", "link": ""},
+    {"id": "port6", "name": "Pathfinding Visualizer (A*/Dijkstra)", "semester": "Semester 1", "status": "Planned", "link": ""},
+    {"id": "port7", "name": "Physics Sandbox (2D Custom)", "semester": "Semester 2", "status": "Planned", "link": ""},
+    {"id": "port8", "name": "Third Person Action Game (BP UE5)", "semester": "Semester 4", "status": "Planned", "link": ""},
+    {"id": "port9", "name": "RPG Prototype (C++ & BP UE5)", "semester": "Semester 5", "status": "Planned", "link": ""},
+    {"id": "port10", "name": "Multiplayer Shooter Game (EOS UE5 C++)", "semester": "Semester 6", "status": "Planned", "link": ""}
+  ],
+  "interviewTracker": {
+    "cpp": [{"id": "int_cpp_1", "q": "Difference between reference and pointer", "status": "To Learn"}, {"id": "int_cpp_2", "q": "Virtual functions and VTABLE lookup mechanism", "status": "To Learn"}, {"id": "int_cpp_3", "q": "Move Semantics, Rvalues & std::move", "status": "To Learn"}, {"id": "int_cpp_4", "q": "Smart Pointers implementation details (ref count)", "status": "To Learn"}],
+    "unreal": [{"id": "int_ue_1", "q": "UObject Lifecycle & Garbage Collection", "status": "To Learn"}, {"id": "int_ue_2", "q": "RPCs (Server, Client, Multicast) & Reliability", "status": "To Learn"}, {"id": "int_ue_3", "q": "Actor replication lifecycle & Net driver", "status": "To Learn"}],
+    "dsa": [{"id": "int_dsa_1", "q": "Implement A* pathfinding on grid", "status": "To Learn"}, {"id": "int_dsa_2", "q": "Design a custom Object Pool for bullets", "status": "To Learn"}],
+    "patterns": [{"id": "int_pat_1", "q": "Observer Pattern implementation in C++", "status": "To Learn"}, {"id": "int_pat_2", "q": "State Pattern for Player State Machine", "status": "To Learn"}],
+    "math": [{"id": "int_math_1", "q": "Dot product vs Cross product in gameplay", "status": "To Learn"}, {"id": "int_math_2", "q": "Explain Quaternions and SLERP", "status": "To Learn"}]
+  },
+  "readingList": [
+    {"id": "book1", "title": "Effective Modern C++", "author": "Scott Meyers", "status": "To Read"},
+    {"id": "book2", "title": "Game Programming Patterns", "author": "Robert Nystrom", "status": "To Read"},
+    {"id": "book3", "title": "Game Engine Architecture", "author": "Jason Gregory", "status": "To Read"},
+    {"id": "book4", "title": "Real-Time Rendering", "author": "Tomas Akenine-MÃ¶ller", "status": "To Read"},
+    {"id": "book5", "title": "Clean Code", "author": "Robert C. Martin", "status": "To Read"},
+    {"id": "book6", "title": "Clean Architecture", "author": "Robert C. Martin", "status": "To Read"},
+    {"id": "book7", "title": "C++ Concurrency in Action", "author": "Anthony Williams", "status": "To Read"}
+  ]
+}
