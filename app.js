@@ -107,7 +107,27 @@ const elements = {
     btnImportTrigger: document.getElementById("btn-import-trigger"),
     importFileInput: document.getElementById("import-file-input"),
     soundFxToggle: document.getElementById("sound-fx-toggle"),
-    activityHeatmap: document.getElementById("activity-heatmap")
+    activityHeatmap: document.getElementById("activity-heatmap"),
+    
+    // Vector Lab
+    vectorCanvas: document.getElementById("vector-canvas"),
+    outputVecA: document.getElementById("output-vec-a"),
+    outputVecB: document.getElementById("output-vec-b"),
+    outputDot: document.getElementById("output-dot"),
+    outputCross: document.getElementById("output-cross"),
+    mathRelationTitle: document.getElementById("math-relation-title"),
+    mathExplanationText: document.getElementById("math-explanation-text"),
+    mathApplicationText: document.getElementById("math-application-text"),
+    btnResetVectors: document.getElementById("btn-reset-vectors"),
+    
+    // Code Arena
+    challengeSelector: document.getElementById("challenge-selector"),
+    challengeTitle: document.getElementById("challenge-title"),
+    challengeDescription: document.getElementById("challenge-description"),
+    codeEditor: document.getElementById("code-editor"),
+    btnResetCode: document.getElementById("btn-reset-code"),
+    btnRunCode: document.getElementById("btn-run-code"),
+    consoleOutput: document.getElementById("console-output")
 };
 
 // Timer variables
@@ -341,7 +361,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 10. Load and resume Focus Timer if active
     loadTimerState();
     
-    // 11. Restore last active tab
+    // 11. Initialize Interactive Lab & Sandbox components
+    initVectorLab();
+    initCodeArena();
+    
+    // 12. Restore last active tab
     const activeTab = localStorage.getItem("AIM_GAMEDEV_ACTIVE_TAB") || "dashboard";
     const tabButton = document.querySelector(`.nav-btn[data-tab="${activeTab}"]`);
     if (tabButton) tabButton.click();
@@ -670,9 +694,15 @@ function setupNavigation() {
                 curriculum: "Roadmap Curriculum",
                 portfolio: "Portfolio & Job Strategy",
                 quiz: "Quiz Arena",
+                lab: "Interactive Laboratory & Sandbox",
                 settings: "Configurations & Readings"
             };
             elements.pageTitle.innerText = tabTitleMap[targetTab] || "Gamedev Tracker";
+            
+            // Redraw vector visualizer grid if entering the lab tab
+            if (targetTab === "lab") {
+                setTimeout(drawVectorGrid, 50);
+            }
         });
     });
 }
@@ -1099,15 +1129,40 @@ function renderCurriculum() {
                         <div class="module-group">
                             <h4 class="module-title">${mod.name}</h4>
                             <div class="module-items-grid">
-                                ${mod.items.map(item => `
-                                    <div class="checklist-item ${item.completed ? 'completed' : ''}" 
-                                         onclick="toggleRoadmapItem('${sem.id}', '${item.id}')">
-                                        <div class="custom-checkbox">
-                                            <div class="checkmark"></div>
+                                ${mod.items.map(item => {
+                                    const hasCodex = CODEX_DATA[item.id] !== undefined;
+                                    return `
+                                    <div class="checklist-item-wrapper">
+                                        <div class="checklist-item ${item.completed ? 'completed' : ''}">
+                                            <div class="checklist-item-left" onclick="toggleRoadmapItem('${sem.id}', '${item.id}')">
+                                                <div class="custom-checkbox">
+                                                    <div class="checkmark"></div>
+                                                </div>
+                                                <span class="item-name">${item.name}</span>
+                                            </div>
+                                            ${hasCodex ? `<button class="btn btn-outline btn-xs btn-codex" onclick="event.stopPropagation(); toggleCodexDetail('${item.id}')">📖 Codex</button>` : ''}
                                         </div>
-                                        <span class="item-name">${item.name}</span>
+                                        
+                                        ${hasCodex ? `
+                                            <div class="codex-details-box hidden" id="codex-box-${item.id}">
+                                                <div class="codex-section">
+                                                    <div class="codex-section-title">🧠 AAA Core Concept</div>
+                                                    <div style="font-size:13px; line-height:1.5; color:var(--color-text-secondary);">${CODEX_DATA[item.id].concept}</div>
+                                                </div>
+                                                <div class="codex-section">
+                                                    <div class="codex-section-title">💻 Correct C++ Syntax</div>
+                                                    <pre class="codex-code-block"><code>${escapeHTML(CODEX_DATA[item.id].code)}</code></pre>
+                                                </div>
+                                                <div class="codex-section">
+                                                    <div class="codex-trap-box">
+                                                        <strong>⚠️ Interviewer Trap Warning:</strong> ${CODEX_DATA[item.id].trap}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ` : ''}
                                     </div>
-                                `).join("")}
+                                    `;
+                                }).join("")}
                             </div>
                         </div>
                     `).join("")}
@@ -1415,3 +1470,615 @@ function escapeHTML(str) {
         }[tag] || tag)
     );
 }
+
+// ----------------------------------------------------
+// CURRICULUM CODEX DETAILS TOGGLE
+// ----------------------------------------------------
+window.toggleCodexDetail = function(itemId) {
+    const box = document.getElementById(`codex-box-${itemId}`);
+    if (box) {
+        box.classList.toggle("hidden");
+    }
+};
+
+// ----------------------------------------------------
+// VECTOR LABORATORY (MATH VISUALIZER)
+// ----------------------------------------------------
+let vectorState = {
+    a: { x: 4, y: 3 },  // Vector A Cartesian endpoint
+    b: { x: -3, y: 5 }, // Vector B Cartesian endpoint
+    activeHandle: null  // \"a\" or \"b\" during drag
+};
+const GRID_SCALE = 20;
+
+const initVectorLab = () => {
+    const canvas = elements.vectorCanvas;
+    if (!canvas) return;
+    
+    // Reset vectors handler
+    if (elements.btnResetVectors) {
+        elements.btnResetVectors.addEventListener("click", () => {
+            vectorState.a = { x: 4, y: 3 };
+            vectorState.b = { x: -3, y: 5 };
+            drawVectorGrid();
+        });
+    }
+    
+    // Mouse and Touch listeners
+    const getCanvasMousePos = (evt) => {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        
+        let clientX = evt.clientX;
+        let clientY = evt.clientY;
+        if (evt.touches && evt.touches.length > 0) {
+            clientX = evt.touches[0].clientX;
+            clientY = evt.touches[0].clientY;
+        }
+        
+        return {
+            x: (clientX - rect.left) * scaleX,
+            y: (clientY - rect.top) * scaleY
+        };
+    };
+    
+    const handleStart = (evt) => {
+        const pos = getCanvasMousePos(evt);
+        const originX = canvas.width / 2;
+        const originY = canvas.height / 2;
+        
+        const aCanvas = { x: originX + vectorState.a.x * GRID_SCALE, y: originY - vectorState.a.y * GRID_SCALE };
+        const bCanvas = { x: originX + vectorState.b.x * GRID_SCALE, y: originY - vectorState.b.y * GRID_SCALE };
+        
+        const distA = Math.hypot(pos.x - aCanvas.x, pos.y - aCanvas.y);
+        const distB = Math.hypot(pos.x - bCanvas.x, pos.y - bCanvas.y);
+        
+        if (distA < 15) {
+            vectorState.activeHandle = "a";
+            evt.preventDefault();
+        } else if (distB < 15) {
+            vectorState.activeHandle = "b";
+            evt.preventDefault();
+        }
+    };
+    
+    const handleMove = (evt) => {
+        if (!vectorState.activeHandle) return;
+        
+        const pos = getCanvasMousePos(evt);
+        const originX = canvas.width / 2;
+        const originY = canvas.height / 2;
+        
+        let rawCartX = (pos.x - originX) / GRID_SCALE;
+        let rawCartY = (originY - pos.y) / GRID_SCALE;
+        
+        let cartX = Math.max(-9.5, Math.min(9.5, Math.round(rawCartX * 2) / 2));
+        let cartY = Math.max(-9.5, Math.min(9.5, Math.round(rawCartY * 2) / 2));
+        
+        if (vectorState.activeHandle === "a") {
+            vectorState.a = { x: cartX, y: cartY };
+        } else {
+            vectorState.b = { x: cartX, y: cartY };
+        }
+        
+        drawVectorGrid();
+        evt.preventDefault();
+    };
+    
+    const handleEnd = () => {
+        vectorState.activeHandle = null;
+    };
+    
+    canvas.addEventListener("mousedown", handleStart);
+    canvas.addEventListener("mousemove", handleMove);
+    window.addEventListener("mouseup", handleEnd);
+    
+    canvas.addEventListener("touchstart", handleStart, { passive: false });
+    canvas.addEventListener("touchmove", handleMove, { passive: false });
+    canvas.addEventListener("touchend", handleEnd);
+    
+    drawVectorGrid();
+};
+
+const drawVectorGrid = () => {
+    const canvas = elements.vectorCanvas;
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    const originX = canvas.width / 2;
+    const originY = canvas.height / 2;
+    
+    // Draw background grid lines
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.04)";
+    ctx.lineWidth = 1;
+    for (let x = GRID_SCALE; x < canvas.width; x += GRID_SCALE) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
+        ctx.stroke();
+    }
+    for (let y = GRID_SCALE; y < canvas.height; y += GRID_SCALE) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+        ctx.stroke();
+    }
+    
+    // Draw Cartesian Axes
+    ctx.strokeStyle = "rgba(102, 252, 241, 0.25)";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(10, originY);
+    ctx.lineTo(canvas.width - 10, originY);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(originX, 10);
+    ctx.lineTo(originX, canvas.height - 10);
+    ctx.stroke();
+    
+    // Axis arrows
+    ctx.fillStyle = "rgba(102, 252, 241, 0.25)";
+    ctx.beginPath();
+    ctx.moveTo(canvas.width - 10, originY - 4);
+    ctx.lineTo(canvas.width, originY);
+    ctx.lineTo(canvas.width - 10, originY + 4);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(originX - 4, 10);
+    ctx.lineTo(originX, 0);
+    ctx.lineTo(originX + 4, 10);
+    ctx.fill();
+    
+    // Vector pixel endpoints
+    const aX = originX + vectorState.a.x * GRID_SCALE;
+    const aY = originY - vectorState.a.y * GRID_SCALE;
+    const bX = originX + vectorState.b.x * GRID_SCALE;
+    const bY = originY - vectorState.b.y * GRID_SCALE;
+    
+    // Math calculations
+    const dotVal = vectorState.a.x * vectorState.b.x + vectorState.a.y * vectorState.b.y;
+    const crossVal = vectorState.a.x * vectorState.b.y - vectorState.a.y * vectorState.b.x;
+    
+    const magA = Math.hypot(vectorState.a.x, vectorState.a.y);
+    const magB = Math.hypot(vectorState.b.x, vectorState.b.y);
+    
+    if (elements.outputVecA) elements.outputVecA.innerText = `(${vectorState.a.x.toFixed(1)}, ${vectorState.a.y.toFixed(1)})`;
+    if (elements.outputVecB) elements.outputVecB.innerText = `(${vectorState.b.x.toFixed(1)}, ${vectorState.b.y.toFixed(1)})`;
+    if (elements.outputDot) elements.outputDot.innerText = dotVal.toFixed(2);
+    if (elements.outputCross) elements.outputCross.innerText = crossVal.toFixed(2);
+    
+    // Draw projection helper lines
+    if (magB > 0.001) {
+        const scaleProj = dotVal / (magB * magB);
+        const projX = originX + (vectorState.b.x * scaleProj) * GRID_SCALE;
+        const projY = originY - (vectorState.b.y * scaleProj) * GRID_SCALE;
+        
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.35)";
+        ctx.lineWidth = 1;
+        ctx.setLineDash([3, 3]);
+        ctx.beginPath();
+        ctx.moveTo(originX, originY);
+        ctx.lineTo(projX, projY);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(aX, aY);
+        ctx.lineTo(projX, projY);
+        ctx.stroke();
+        ctx.setLineDash([]);
+    }
+    
+    // Draw Vector A (Cyan Vector)
+    ctx.strokeStyle = "var(--neon-cyan)";
+    ctx.lineWidth = 3;
+    ctx.shadowBlur = 4;
+    ctx.shadowColor = "var(--neon-cyan)";
+    ctx.beginPath();
+    ctx.moveTo(originX, originY);
+    ctx.lineTo(aX, aY);
+    ctx.stroke();
+    
+    // Draw Vector B (Magenta Vector)
+    ctx.strokeStyle = "var(--neon-magenta)";
+    ctx.lineWidth = 3;
+    ctx.shadowColor = "var(--neon-magenta)";
+    ctx.beginPath();
+    ctx.moveTo(originX, originY);
+    ctx.lineTo(bX, bY);
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+    
+    const drawArrowhead = (fromX, fromY, toX, toY, color) => {
+        const angle = Math.atan2(toY - fromY, toX - fromX);
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.moveTo(toX, toY);
+        ctx.lineTo(toX - 10 * Math.cos(angle - Math.PI / 6), toY - 10 * Math.sin(angle - Math.PI / 6));
+        ctx.lineTo(toX - 10 * Math.cos(angle + Math.PI / 6), toY - 10 * Math.sin(angle + Math.PI / 6));
+        ctx.fill();
+    };
+    drawArrowhead(originX, originY, aX, aY, "var(--neon-cyan)");
+    drawArrowhead(originX, originY, bX, bY, "var(--neon-magenta)");
+    
+    // Draw interactive handles
+    ctx.fillStyle = "#ffffff";
+    ctx.strokeStyle = "var(--neon-cyan)";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(aX, aY, 6, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.stroke();
+    
+    ctx.strokeStyle = "var(--neon-magenta)";
+    ctx.beginPath();
+    ctx.arc(bX, bY, 6, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.stroke();
+    
+    updateMathExplanations(dotVal, crossVal, magA, magB);
+};
+
+const updateMathExplanations = (dot, cross, magA, magB) => {
+    let title = "Orthogonal (Perpendicular)";
+    let desc = "The angle between Vector A and Vector B is exactly 90 degrees. Their dot product is 0.";
+    let app = "Dot product is 0. Surface normals are perpendicular. Perfect for checking collision bounds!";
+    
+    if (dot > 0.05) {
+        title = "Acute Angle (Facing Same General Direction)";
+        desc = `The angle is acute (< 90°). Their dot product is positive (\${dot.toFixed(2)}).`;
+        app = `In gameplay code, this means the enemy is in front of the player's facing vector. (If dot > 0.707, it falls inside your 90° field of view).`;
+    } else if (dot < -0.05) {
+        title = "Obtuse Angle (Facing Opposite Directions)";
+        desc = `The angle is obtuse (> 90°). Their dot product is negative (\${dot.toFixed(2)}).`;
+        app = `In gameplay code, this signifies the enemy is behind the player (e.g. invalidates backstab check or stealth attack trigger).`;
+    }
+    
+    const crossNormalized = Math.abs(cross) / (magA * magB || 1);
+    if (crossNormalized < 0.05) {
+        title = dot > 0 ? "Collinear / Parallel (Same direction)" : "Collinear / Anti-Parallel (Opposite direction)";
+        desc = `Vectors are collinear. Their cross product is close to 0 (\${cross.toFixed(2)}).`;
+        app = `Parallel vectors check alignment: perfect for projectile trajectories aligning to target tracks.`;
+    }
+    
+    if (elements.mathRelationTitle) elements.mathRelationTitle.innerText = `Vectors Relation: \${title}`;
+    if (elements.mathExplanationText) elements.mathExplanationText.innerText = desc;
+    if (elements.mathApplicationText) elements.mathApplicationText.innerText = app;
+};
+
+// ----------------------------------------------------
+// THE CODE ARENA (SANDBOX SYSTEM)
+// ----------------------------------------------------
+const initCodeArena = () => {
+    if (!elements.challengeSelector) return;
+    
+    elements.challengeSelector.addEventListener("change", (e) => {
+        loadChallenge(e.target.value);
+    });
+    
+    if (elements.btnRunCode) {
+        elements.btnRunCode.addEventListener("click", () => {
+            runChallengeTests();
+        });
+    }
+    
+    if (elements.btnResetCode) {
+        elements.btnResetCode.addEventListener("click", () => {
+            const currentChal = elements.challengeSelector.value;
+            if (CODE_CHALLENGES[currentChal]) {
+                elements.codeEditor.value = CODE_CHALLENGES[currentChal].template;
+                elements.consoleOutput.innerText = "Editor reset to challenge template.";
+                elements.consoleOutput.style.color = "#8da2c4";
+            }
+        });
+    }
+    
+    loadChallenge("vec_normalize");
+};
+
+const loadChallenge = (challengeKey) => {
+    const data = CODE_CHALLENGES[challengeKey];
+    if (!data) return;
+    
+    if (elements.challengeTitle) elements.challengeTitle.innerText = data.title;
+    if (elements.challengeDescription) elements.challengeDescription.innerText = data.desc;
+    if (elements.codeEditor) elements.codeEditor.value = data.template;
+    if (elements.consoleOutput) {
+        elements.consoleOutput.innerText = "Write your solution above and click 'Run Test Suite'.";
+        elements.consoleOutput.style.color = "#8da2c4";
+    }
+};
+
+const runChallengeTests = () => {
+    const currentChalKey = elements.challengeSelector.value;
+    const challenge = CODE_CHALLENGES[currentChalKey];
+    if (!challenge) return;
+    
+    const code = elements.codeEditor.value;
+    elements.consoleOutput.innerText = "Compiling algorithm... Running test cases...\n";
+    elements.consoleOutput.style.color = "#8da2c4";
+    
+    setTimeout(() => {
+        try {
+            const resultMsg = challenge.test(code);
+            elements.consoleOutput.innerText += `\nSUCCESS:\n\${resultMsg}`;
+            elements.consoleOutput.style.color = "var(--color-success)";
+            playAudioBeep();
+        } catch (err) {
+            elements.consoleOutput.innerText += `\nASSERTION FAILED / INTERPRETATION ERROR:\n\${err.message}`;
+            elements.consoleOutput.style.color = "var(--neon-magenta)";
+        }
+    }, 300);
+};
+
+// ----------------------------------------------------
+// AAA MOCK BOARD INTERVIEW SIMULATOR
+// ----------------------------------------------------
+let interviewIndex = 0;
+let interviewAnswers = [];
+let interviewPassCount = 0;
+
+window.startMockInterview = () => {
+    elements.quizIntro.classList.add("hidden");
+    elements.quizQuestionBox.classList.add("hidden");
+    elements.quizResultBox.classList.add("hidden");
+    
+    const interviewBox = document.getElementById("interview-question-box");
+    if (interviewBox) {
+        interviewBox.classList.remove("hidden");
+        interviewIndex = 0;
+        interviewAnswers = [];
+        interviewPassCount = 0;
+        loadInterviewQuestion();
+    }
+};
+
+const loadInterviewQuestion = () => {
+    const qData = MOCK_INTERVIEWS[interviewIndex];
+    const progress = document.getElementById("interview-progress-text");
+    const questionText = document.getElementById("interview-question-text");
+    const answerInput = document.getElementById("interview-answer-input");
+    const evalBox = document.getElementById("interview-evaluation-box");
+    
+    if (progress) progress.innerText = `AAA Mock Board Interview - Question \${interviewIndex + 1} of \${MOCK_INTERVIEWS.length}`;
+    if (questionText) questionText.innerText = `Interviewer: \${qData.q}`;
+    if (answerInput) {
+        answerInput.value = "";
+        answerInput.disabled = false;
+    }
+    if (evalBox) evalBox.classList.add("hidden");
+    
+    const submitBtn = document.getElementById("btn-submit-interview-ans");
+    if (submitBtn) {
+        submitBtn.style.display = "block";
+        submitBtn.innerText = "Submit Answer & Self-Assess";
+        submitBtn.onclick = submitInterviewAnswer;
+    }
+};
+
+const submitInterviewAnswer = () => {
+    const answerInput = document.getElementById("interview-answer-input");
+    if (answerInput) answerInput.disabled = true;
+    
+    const evalBox = document.getElementById("interview-evaluation-box");
+    const rubricText = document.getElementById("interview-rubric-text");
+    const refCode = document.getElementById("interview-ref-code");
+    const submitBtn = document.getElementById("btn-submit-interview-ans");
+    
+    if (submitBtn) submitBtn.style.display = "none";
+    
+    const qData = MOCK_INTERVIEWS[interviewIndex];
+    if (rubricText) rubricText.innerText = qData.rubric;
+    if (refCode) refCode.innerText = qData.refCode;
+    
+    if (evalBox) evalBox.classList.remove("hidden");
+};
+
+window.gradeInterviewQuestion = (didPass) => {
+    if (didPass) interviewPassCount++;
+    
+    if (interviewIndex < MOCK_INTERVIEWS.length - 1) {
+        interviewIndex++;
+        loadInterviewQuestion();
+    } else {
+        const interviewBox = document.getElementById("interview-question-box");
+        if (interviewBox) interviewBox.classList.add("hidden");
+        
+        elements.quizResultBox.classList.remove("hidden");
+        elements.quizScoreVal.innerText = interviewPassCount;
+        elements.quizTotalVal.innerText = MOCK_INTERVIEWS.length;
+        
+        if (interviewPassCount === MOCK_INTERVIEWS.length) {
+            elements.quizVerdict.innerText = "👑 Masterful! You met all core rubric metrics. You are demonstrating AAA Principal standard.";
+        } else if (interviewPassCount >= 2) {
+            elements.quizVerdict.innerText = "👍 Decent showing. You hit some core architectural explanations, but expand your math/engine study logs.";
+        } else {
+            elements.quizVerdict.innerText = "⚠️ Weak board presence. Focus on memory layouts, cache misses, and Quaternions to pass the loop.";
+        }
+        playAudioBeep();
+    }
+};
+
+// ----------------------------------------------------
+// STATIC DATABASES (CHALLENGES, CODEX, INTERVIEWS)
+// ----------------------------------------------------
+const CODE_CHALLENGES = {
+    vec_normalize: {
+        title: "Vector Normalization (Linear Algebra)",
+        desc: "Write a function \`normalize(v)\` that returns a new vector normalized to a magnitude of exactly 1.0. The input is an object \`{x, y}\` representing a 2D vector. If the input magnitude is 0, return \`{x: 0, y: 0}\`.",
+        template: `function normalize(v) {
+    // 1. Calculate vector magnitude (length) using Pythagorean theorem
+    // 2. If magnitude is 0, return {x: 0, y: 0}
+    // 3. Return a new object dividing x and y by the magnitude
+    
+}`,
+        test: function(funcStr) {
+            const normalize = new Function("return " + funcStr)();
+            const v1 = normalize({x: 3, y: 4});
+            if (!v1 || Math.abs(v1.x - 0.6) > 0.001 || Math.abs(v1.y - 0.8) > 0.001) {
+                throw new Error("Failed test: normalize({x: 3, y: 4}) should return {x: 0.6, y: 0.8}, got " + JSON.stringify(v1));
+            }
+            const v2 = normalize({x: 0, y: 0});
+            if (!v2 || v2.x !== 0 || v2.y !== 0) {
+                throw new Error("Failed test: normalize({x: 0, y: 0}) should return {x: 0, y: 0}, got " + JSON.stringify(v2));
+            }
+            return "All tests passed successfully! Vector Normalized perfectly.";
+        }
+    },
+    dot_product: {
+        title: "Enemy Angle Check (Dot Product)",
+        desc: "Write a function \`isEnemyInFOV(forwardX, forwardY, dirX, dirY)\` that determines if an enemy is within the player's 90-degree Field-of-View sector (i.e. angle <= 45 degrees, which corresponds to a dot product > 0.707). Both the player's forward vector and the direction vector to the enemy are already normalized. Return \`true\` or \`false\`.",
+        template: `function isEnemyInFOV(forwardX, forwardY, dirX, dirY) {
+    // 1. Compute dot product of two normalized vectors: (x1*x2 + y1*y2)
+    // 2. Return true if the result is greater than 0.707, else false
+    
+}`,
+        test: function(funcStr) {
+            const isEnemyInFOV = new Function("return " + funcStr)();
+            if (isEnemyInFOV(0, 1, 0, 1) !== true) {
+                throw new Error("Failed test: Enemy straight ahead (0,1) and forward (0,1) should be in FOV.");
+            }
+            if (isEnemyInFOV(1, 0, 0, 1) !== false) {
+                throw new Error("Failed test: Enemy perpendicular offset (90 deg) should not be in FOV.");
+            }
+            if (isEnemyInFOV(0.707, 0.707, 0.6, 0.8) !== true) {
+                throw new Error("Failed test: Enemy inside 45-degree angle should return true.");
+            }
+            return "All tests passed successfully! Enemy vision calculation correct.";
+        }
+    },
+    unique_ptr: {
+        title: "Emulate C++ unique_ptr Lifecycle",
+        desc: "Write a class \`UniquePointer\` representing C++ unique_ptr behavior. It takes a \`resource\` in the constructor. Implement a \`move(other)\` method that transfers ownership of the resource from the \`other\` UniquePointer instance to this instance, setting \`other.resource\` to \`null\`.",
+        template: `class UniquePointer {
+    constructor(resource) {
+        this.resource = resource;
+    }
+    move(other) {
+        // Transfer resource ownership from 'other' to 'this'
+        // Set 'other.resource' to null
+        
+    }
+}`,
+        test: function(funcStr) {
+            const UniquePointer = new Function("return " + funcStr)();
+            const p1 = new UniquePointer("MonsterMesh");
+            const p2 = new UniquePointer(null);
+            p2.move(p1);
+            if (p2.resource !== "MonsterMesh") {
+                throw new Error("Failed test: Destination pointer did not receive ownership.");
+            }
+            if (p1.resource !== null) {
+                throw new Error("Failed test: Source pointer was not set to null (memory leak).");
+            }
+            return "All tests passed successfully! unique_ptr C++ move lifecycle correctly emulated.";
+        }
+    },
+    binary_search: {
+        title: "Fast Inventory Search (Binary Search)",
+        desc: "Implement a fast \`binarySearch(arr, targetId)\` function that searches for targetId in a sorted integer array \`arr\` and returns its index. Return \`-1\` if not found. Time complexity must be O(log N).",
+        template: `function binarySearch(arr, targetId) {
+    let left = 0;
+    let right = arr.length - 1;
+    // Implement binary search loop...
+    
+    return -1;
+}`,
+        test: function(funcStr) {
+            const binarySearch = new Function("return " + funcStr)();
+            const inv = [102, 205, 301, 404, 508, 612];
+            if (binarySearch(inv, 404) !== 3) {
+                throw new Error("Failed test: binarySearch(inv, 404) should return 3.");
+            }
+            if (binarySearch(inv, 102) !== 0) {
+                throw new Error("Failed test: binarySearch(inv, 102) should return 0.");
+            }
+            if (binarySearch(inv, 999) !== -1) {
+                throw new Error("Failed test: binarySearch(inv, 999) should return -1.");
+            }
+            return "All tests passed successfully! Binary search executing in O(log N) complexity.";
+        }
+    }
+};
+
+const CODEX_DATA = {
+    "sem0_m1_c1": {
+        concept: "CPU registers are inside the core, taking < 1 cycle. Caches (L1/L2/L3) store adjacent memory (spatial locality) to prevent CPU stalls (RAM fetches take 200+ cycles). Contiguous memory layout (arrays, std::vector) ensures cache line prefetching.",
+        code: \`// Good: contiguous vector iteration
+std::vector<int> data(1000000);
+int sum = 0;
+for(int x : data) { sum += x; } // Cache hits!
+
+// Bad: Scattered pointers iteration
+struct Node { int val; Node* next; }; // Cache misses!\`,
+        trap: "Interviewers often ask: 'Why is vector faster than list?' Do not say 'because index accesses are O(1)'. The real answer for high-performance games is cache friendliness due to contiguous memory spatial locality."
+    },
+    "sem0_m1_c2": {
+        concept: "Processes have separate virtual memory spaces. Threads share the same address space but have their own stack. Race conditions occur when threads read and write memory without locks, leading to memory corruption.",
+        code: \`// Prevent race condition using std::atomic
+#include <atomic>
+std::atomic<int> g_enemyCount{0};
+
+void SpawnEnemy() {
+    g_enemyCount.fetch_add(1, std::memory_order_relaxed); // Thread-safe atomic increment
+}\`,
+        trap: "Interviewers will ask how to resolve multi-threaded race conditions without heavy lock locks. Be ready to explain lock-free queues, atomic variables, and CAS (Compare-And-Swap) loops."
+    },
+    "sem0_m2_u8": {
+        concept: "Pointers store raw 64-bit virtual memory addresses. Dereferencing a pointer (*ptr) retrieves the value at that address. In AAA game engines, pointers are used for low-level performance, custom memory allocators, and hardware interaction.",
+        code: \`int health = 100;
+int* pHealth = &health; // Pointer holds address of health
+*pHealth = 80;          // Dereferencing updates original value
+
+// Check for nullptr before dereferencing!
+if (pHealth != nullptr) {
+    std::cout << *pHealth;
+}\`,
+        trap: "Never dereference a nullptr or wildcard uninitialized pointer! It triggers an OS Access Violation crash. Always initialize pointers to nullptr."
+    },
+    "sem0_m2_u17": {
+        concept: "Smart pointers manage heap object lifetimes. std::unique_ptr has single exclusive ownership and deletes resources when out of scope. std::shared_ptr uses reference counts. std::weak_ptr holds non-owning refs to prevent circular cycles.",
+        code: \`#include <memory>
+// Exclusive ownership
+std::unique_ptr<Enemy> enemy = std::make_unique<Enemy>();
+
+// Reference counted ownership
+std::shared_ptr<Texture> tex = std::make_shared<Texture>();
+std::weak_ptr<Texture> weakTex = tex; // Breaks loops\`,
+        trap: "Never use std::shared_ptr everywhere! It adds runtime overhead due to thread-safe atomic reference count increments. Prefer std::unique_ptr by default, or pass raw pointers/references for temporary access."
+    },
+    "sem0_m2_u18": {
+        concept: "Move semantics allow transferring resources (like dynamic buffers) from temporary objects (rvalues) without deep copying. std::move casts an object to an rvalue reference (T&&), enabling move constructors to steal pointers.",
+        code: \`// Move constructor example
+class Buffer {
+    int* m_data;
+public:
+    // Move constructor
+    Buffer(Buffer&& other) noexcept {
+        m_data = other.m_data;    // Steal pointer
+        other.m_data = nullptr;   // Clean source
+    }
+};\`,
+        trap: "Adding std::move to a return value (e.g. return std::move(myLocalVar);) can be a trap. It disables NRVO (Named Return Value Optimization / Copy Elision), making the code slower! Let the compiler handle standard local returns."
+    }
+};
+
+const MOCK_INTERVIEWS = [
+    {
+        q: "What is Gimbal Lock, and how do Quaternions avoid it?",
+        rubric: "1. Defined Gimbal Lock: The loss of a degree of freedom when two of the three rotation axes align.\\n2. Explained why Quaternions avoid it: Quaternions represent rotations as a point on a 4D unit hyper-sphere rather than individual pitch/yaw/roll rotations, avoiding alignment locks.\\n3. Mentioned SLERP: Quaternions support smooth spherical linear interpolation.",
+        refCode: "// Euler rotations accumulate alignment locks\\nFRotator EulerRot = MyActor->GetActorRotation();\\n\\n// Quaternions use 4D complex coordinates\\nFQuat ActorQuat = MyActor->GetActorQuat();\\nFQuat SlerpedQuat = FQuat::Slerp(StartQuat, EndQuat, Alpha);"
+    },
+    {
+        q: "Design an Object Pool class concept in C++ to prevent memory fragmentation when constantly spawning and deleting bullets.",
+        rubric: "1. Pre-allocation: Allocate a continuous buffer (std::vector or array) of bullets during engine initialization.\\n2. Reusability: Active bullets are updated in the game loop; inactive bullets are returned to the pool (marked inactive) without freeing memory.\\n3. Cache contiguity: Contiguous pre-allocated bullets prevent memory fragmentation and cache misses.",
+        refCode: "class BulletPool {\\n    std::vector<Bullet> m_pool;\\npublic:\\n    BulletPool(size_t count) : m_pool(count) {}\\n    Bullet* Acquire() {\\n        for(auto& b : m_pool) {\\n            if(!b.active) { b.active = true; return &b; }\\n        }\\n        return nullptr; // Pool exhausted\\n    }\\n};"
+    },
+    {
+        q: "Explain VTABLE lookup in C++. What is its performance impact on gameplay code?",
+        rubric: "1. Vptr: Each object of a class containing virtual functions has a virtual table pointer (vptr) hidden at the start of its memory.\\n2. Double Dereference: The CPU must look up the object, fetch the vptr, access the VTABLE array, and read the function pointer.\\n3. Cache Miss: Since the VTABLE resides elsewhere in memory, dereferencing it often triggers CPU cache stalls and prevents compiler inlining.",
+        refCode: "class Base { virtual void Update(); }; // Has VTABLE\\nclass Derived : public Base { void Update() override; };\\n\\nBase* ptr = new Derived();\\nptr->Update(); // Dynamic dispatch VTABLE lookup!"
+    }
+];
+

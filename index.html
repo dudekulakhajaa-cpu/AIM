@@ -36,6 +36,10 @@
                     <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 16h-2v-2h2v2zm1.07-7.75l-.9.92C12.45 11.9 12 12.5 12 14h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg>
                     <span>Quiz Arena</span>
                 </button>
+                <button class="nav-btn" data-tab="lab">
+                    <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zm0 2.22L18.44 9 12 12.5 5.56 9 12 5.22zM12 14.5L5 11v2.5l7 3.5 7-3.5V11l-7 3.5z"/></svg>
+                    <span>Interactive Lab</span>
+                </button>
                 <button class="nav-btn" data-tab="settings">
                     <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
                     <span>Config & Books</span>
@@ -243,6 +247,7 @@
                                 <button class="btn btn-primary" onclick="startQuiz('cpp')">Start Modern C++ Quiz</button>
                                 <button class="btn btn-secondary" onclick="startQuiz('systems')">Start Computer Systems Quiz</button>
                                 <button class="btn btn-outline" onclick="startQuiz('math')">Start Game Math & Vectors Quiz</button>
+                                <button class="btn btn-primary" style="border-color: var(--neon-magenta); color: var(--neon-magenta)" onclick="startMockInterview()">🎙️ AAA Mock Board Interview</button>
                             </div>
                         </div>
 
@@ -264,6 +269,42 @@
                             </div>
                         </div>
 
+                        <!-- Mock Interview Board -->
+                        <div class="glass-card quiz-card hidden" id="interview-question-box">
+                            <div class="quiz-header">
+                                <span id="interview-progress-text">AAA Mock Board Interview - Question 1 of 3</span>
+                            </div>
+                            <div class="quiz-question" id="interview-question-text">
+                                Interviewer: Explain Gimbal Lock...
+                            </div>
+                            <div class="form-group" style="margin-top: 15px;">
+                                <label for="interview-answer-input">Your Answer / Code (Type or paste code)</label>
+                                <textarea id="interview-answer-input" rows="8" placeholder="Type your full explanation or C++ code block here..."></textarea>
+                            </div>
+                            <div class="editor-actions" style="margin-top: 10px;">
+                                <button class="btn btn-primary" id="btn-submit-interview-ans">Submit Answer & Self-Assess</button>
+                            </div>
+                            
+                            <!-- Rubric self-evaluation -->
+                            <div class="interview-evaluation-detail hidden" id="interview-evaluation-box">
+                                <h4 style="color: var(--color-success)">📋 Professional Evaluation Rubric</h4>
+                                <p style="font-size: 13px; margin: 8px 0; white-space: pre-line;" id="interview-rubric-text">Evaluation criteria...</p>
+                                
+                                <div class="codex-section" style="margin-top: 10px;">
+                                    <div class="codex-section-title">💻 Correct Reference Implementation</div>
+                                    <pre class="codex-code-block"><code id="interview-ref-code">Reference code...</code></pre>
+                                </div>
+                                
+                                <div class="evaluation-actions" style="display:flex; justify-content:space-between; margin-top: 15px; align-items:center;">
+                                    <span style="font-size: 12px; color: var(--color-text-muted)">Did you hit the key metrics? Grade yourself:</span>
+                                    <div style="display:flex; gap:10px;">
+                                        <button class="btn btn-outline" onclick="gradeInterviewQuestion(false)">Fail / Study More</button>
+                                        <button class="btn btn-primary" style="background: var(--color-success); border-color: var(--color-success)" onclick="gradeInterviewQuestion(true)">Pass / Mastered</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="glass-card quiz-result-card hidden" id="quiz-result-box">
                             <h2>Quiz Complete!</h2>
                             <div class="score-display">
@@ -271,6 +312,95 @@
                             </div>
                             <p id="quiz-verdict">Good attempt! Keep reviewing your units to master game engine code.</p>
                             <button class="btn btn-primary" onclick="resetQuizArena()">Return to Arena</button>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Tab 5: Interactive Lab -->
+                <section class="tab-panel" id="tab-lab">
+                    <div class="lab-grid">
+                        <!-- Column 1: Vector Laboratory (Math Visualizer) -->
+                        <div class="glass-card visualizer-card">
+                            <div class="card-header">
+                                <h3>📐 The Vector Laboratory</h3>
+                                <span class="sub">Drag vector endpoints to visualize dot/cross products in real-time.</span>
+                            </div>
+                            
+                            <div class="canvas-container">
+                                <canvas id="vector-canvas" width="400" height="400"></canvas>
+                                <div class="canvas-controls">
+                                    <button class="btn btn-outline btn-sm" id="btn-reset-vectors">Reset Handles</button>
+                                </div>
+                            </div>
+                            
+                            <div class="vector-outputs">
+                                <div class="vector-metric">
+                                    <span class="lbl">Vector A (Cyan)</span>
+                                    <span class="val" id="output-vec-a">(0, 0)</span>
+                                </div>
+                                <div class="vector-metric">
+                                    <span class="lbl">Vector B (Magenta)</span>
+                                    <span class="val" id="output-vec-b">(0, 0)</span>
+                                </div>
+                                <div class="vector-metric highlight-cyan">
+                                    <span class="lbl">Dot Product (A · B)</span>
+                                    <span class="val" id="output-dot">0.00</span>
+                                </div>
+                                <div class="vector-metric highlight-magenta">
+                                    <span class="lbl">Cross Product (A x B)</span>
+                                    <span class="val" id="output-cross">0.00</span>
+                                </div>
+                            </div>
+                            
+                            <div class="math-explanation-box">
+                                <h4 id="math-relation-title">Vectors status: Orthogonal</h4>
+                                <p id="math-explanation-text">Drag the cyan (Vector A) and magenta (Vector B) endpoints on the grid to update calculations.</p>
+                                <div class="gamedev-application">
+                                    <strong>💡 Game Dev Application:</strong>
+                                    <span id="math-application-text">Dot product is 0. Surface normals are perpendicular. Perfect for checking collision bounds!</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Column 2: Code Arena (Challenges) -->
+                        <div class="glass-card editor-card">
+                            <div class="card-header">
+                                <h3>💻 Code Arena</h3>
+                                <span class="sub">Implement gamedev algorithms. Run local test suites to compile.</span>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="challenge-selector">Select Coding Challenge</label>
+                                <select id="challenge-selector">
+                                    <option value="vec_normalize">1. Vector Normalization (Linear Algebra)</option>
+                                    <option value="dot_product">2. Dot Product Enemy Checker (Directional Math)</option>
+                                    <option value="unique_ptr">3. Emulate Custom smart_ptr (Memory Management)</option>
+                                    <option value="binary_search">4. Binary Search Inventory (Algorithms)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="challenge-description-box">
+                                <h4 id="challenge-title">Challenge Title</h4>
+                                <p id="challenge-description">Challenge task details...</p>
+                            </div>
+                            
+                            <div class="editor-container">
+                                <div class="editor-header">
+                                    <span>C++ Simulator Editor</span>
+                                    <span class="editor-lang">C++ / JS syntax</span>
+                                </div>
+                                <textarea id="code-editor" spellcheck="false" rows="12"></textarea>
+                            </div>
+                            
+                            <div class="editor-actions">
+                                <button class="btn btn-secondary" id="btn-reset-code">Reset Code</button>
+                                <button class="btn btn-primary" id="btn-run-code">Run Test Suite</button>
+                            </div>
+                            
+                            <div class="console-output-box">
+                                <h4>📟 Execution Console Output</h4>
+                                <pre id="console-output">Select a challenge and click Run to execute tests...</pre>
+                            </div>
                         </div>
                     </div>
                 </section>

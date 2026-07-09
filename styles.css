@@ -1322,3 +1322,332 @@ textarea:focus {
     box-shadow: 0 0 5px var(--neon-cyan);
 }
 
+/* Interactive Lab Panel Layout */
+.lab-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 30px;
+    align-items: start;
+}
+
+@media (max-width: 1024px) {
+    .lab-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Vector Laboratory Styles */
+.canvas-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #090c14;
+    border: 1px solid rgba(102, 252, 241, 0.1);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    position: relative;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8);
+}
+
+#vector-canvas {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    cursor: crosshair;
+}
+
+.canvas-controls {
+    margin-top: 10px;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.vector-outputs {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.vector-metric {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.vector-metric.highlight-cyan {
+    border-color: rgba(102, 252, 241, 0.2);
+    box-shadow: inset 0 0 5px rgba(102, 252, 241, 0.05);
+}
+
+.vector-metric.highlight-magenta {
+    border-color: rgba(255, 0, 127, 0.2);
+    box-shadow: inset 0 0 5px rgba(255, 0, 127, 0.05);
+}
+
+.vector-metric .lbl {
+    font-size: 11px;
+    color: var(--color-text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.vector-metric .val {
+    font-size: 18px;
+    font-weight: 800;
+    font-family: var(--font-mono);
+}
+
+.vector-metric.highlight-cyan .val {
+    color: var(--neon-cyan);
+    text-shadow: 0 0 5px rgba(102, 252, 241, 0.3);
+}
+
+.vector-metric.highlight-magenta .val {
+    color: var(--neon-magenta);
+    text-shadow: 0 0 5px rgba(255, 0, 127, 0.3);
+}
+
+.math-explanation-box {
+    background: rgba(138, 43, 226, 0.04);
+    border: 1px solid rgba(138, 43, 226, 0.15);
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.math-explanation-box h4 {
+    color: var(--neon-cyan);
+    font-size: 15px;
+    margin-bottom: 6px;
+    font-weight: 800;
+}
+
+.math-explanation-box p {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--color-text-secondary);
+    margin-bottom: 12px;
+}
+
+.gamedev-application {
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding-top: 10px;
+    font-size: 12px;
+    color: var(--color-text-primary);
+}
+
+.gamedev-application strong {
+    color: var(--color-success);
+    display: inline-block;
+    margin-right: 4px;
+}
+
+/* Code Arena Styles */
+.challenge-description-box {
+    background: rgba(255, 255, 255, 0.02);
+    border-left: 3px solid var(--neon-cyan);
+    padding: 14px;
+    margin-bottom: 20px;
+    border-radius: 0 8px 8px 0;
+}
+
+.challenge-description-box h4 {
+    font-size: 15px;
+    color: var(--color-text-primary);
+    margin-bottom: 4px;
+}
+
+.challenge-description-box p {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+}
+
+.editor-container {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow-glow);
+}
+
+.editor-header {
+    background: #111522;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 8px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+}
+
+.editor-lang {
+    color: var(--neon-cyan);
+    font-family: var(--font-mono);
+}
+
+#code-editor {
+    width: 100%;
+    background: #080a10;
+    color: #cbd5e1;
+    border: none;
+    padding: 16px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.6;
+    resize: vertical;
+    outline: none;
+}
+
+.editor-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.console-output-box {
+    background: #06080d;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.console-output-box h4 {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+#console-output {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-all;
+    color: #8da2c4;
+}
+
+/* Dynamic slide-out custom details card for Curriculum units */
+.codex-details-box {
+    margin-top: 15px;
+    background: rgba(18, 24, 38, 0.85);
+    border: 1px solid rgba(102, 252, 241, 0.15);
+    border-radius: 8px;
+    padding: 16px;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.codex-section {
+    margin-bottom: 12px;
+}
+
+.codex-section:last-child {
+    margin-bottom: 0;
+}
+
+.codex-section-title {
+    font-size: 12px;
+    color: var(--neon-cyan);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+.codex-code-block {
+    background: #07090f;
+    border: 1px solid rgba(255,255,255,0.03);
+    border-radius: 6px;
+    padding: 12px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: #a5b4fc;
+    overflow-x: auto;
+    white-space: pre;
+    line-height: 1.5;
+}
+
+.codex-trap-box {
+    background: rgba(255, 0, 127, 0.03);
+    border: 1px solid rgba(255, 0, 127, 0.15);
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 12px;
+    color: var(--color-text-primary);
+}
+
+.codex-trap-box strong {
+    color: var(--neon-magenta);
+}
+
+/* Interview prep evaluations */
+.interview-item .evaluation-btn {
+    margin-top: 8px;
+    display: inline-block;
+}
+
+.interview-evaluation-detail {
+    margin-top: 12px;
+    background: rgba(0, 230, 118, 0.03);
+    border: 1px solid rgba(0, 230, 118, 0.15);
+    border-radius: 6px;
+    padding: 12px;
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+}
+
+.interview-evaluation-detail strong {
+    color: var(--color-success);
+}
+
+/* Layout helpers for Codex integrations */
+.checklist-item-wrapper {
+    margin-bottom: 8px;
+    width: 100%;
+}
+
+.checklist-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.checklist-item-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-grow: 1;
+    cursor: pointer;
+}
+
+.btn-codex {
+    padding: 3px 6px;
+    font-size: 10px;
+    height: auto;
+    text-transform: uppercase;
+    font-weight: 800;
+    border-color: rgba(102, 252, 241, 0.3);
+    color: var(--neon-cyan);
+}
+
+.btn-codex:hover {
+    background: rgba(102, 252, 241, 0.1);
+    color: #fff;
+}
+
+
+
