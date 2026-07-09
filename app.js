@@ -365,6 +365,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     initVectorLab();
     initCodeArena();
     
+    // 13. Initialize Study Drawer
+    setupStudyDrawerHandlers();
+    
     // 12. Restore last active tab
     const activeTab = localStorage.getItem("AIM_GAMEDEV_ACTIVE_TAB") || "dashboard";
     const tabButton = document.querySelector(`.nav-btn[data-tab="${activeTab}"]`);
@@ -1134,32 +1137,14 @@ function renderCurriculum() {
                                     return `
                                     <div class="checklist-item-wrapper">
                                         <div class="checklist-item ${item.completed ? 'completed' : ''}">
-                                            <div class="checklist-item-left" onclick="toggleRoadmapItem('${sem.id}', '${item.id}')">
-                                                <div class="custom-checkbox">
+                                            <div class="checklist-item-left">
+                                                <div class="custom-checkbox" onclick="event.stopPropagation(); toggleRoadmapItem('${sem.id}', '${item.id}')">
                                                     <div class="checkmark"></div>
                                                 </div>
-                                                <span class="item-name">${item.name}</span>
+                                                <span class="item-name" onclick="event.stopPropagation(); openStudyDrawer('${item.id}')">${item.name}</span>
                                             </div>
-                                            ${hasCodex ? `<button class="btn btn-outline btn-xs btn-codex" onclick="event.stopPropagation(); toggleCodexDetail('${item.id}')">📖 Codex</button>` : ''}
+                                            ${hasCodex ? `<button class="btn btn-outline btn-xs btn-codex" onclick="event.stopPropagation(); openStudyDrawer('${item.id}')">📖 Study</button>` : ''}
                                         </div>
-                                        
-                                        ${hasCodex ? `
-                                            <div class="codex-details-box hidden" id="codex-box-${item.id}">
-                                                <div class="codex-section">
-                                                    <div class="codex-section-title">🧠 AAA Core Concept</div>
-                                                    <div style="font-size:13px; line-height:1.5; color:var(--color-text-secondary);">${CODEX_DATA[item.id].concept}</div>
-                                                </div>
-                                                <div class="codex-section">
-                                                    <div class="codex-section-title">💻 Correct C++ Syntax</div>
-                                                    <pre class="codex-code-block"><code>${escapeHTML(CODEX_DATA[item.id].code)}</code></pre>
-                                                </div>
-                                                <div class="codex-section">
-                                                    <div class="codex-trap-box">
-                                                        <strong>⚠️ Interviewer Trap Warning:</strong> ${CODEX_DATA[item.id].trap}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ` : ''}
                                     </div>
                                     `;
                                 }).join("")}
@@ -1472,14 +1457,386 @@ function escapeHTML(str) {
 }
 
 // ----------------------------------------------------
-// CURRICULUM CODEX DETAILS TOGGLE
+// CURRICULUM STUDY DRAWER PLATFORM
 // ----------------------------------------------------
-window.toggleCodexDetail = function(itemId) {
-    const box = document.getElementById(`codex-box-${itemId}`);
-    if (box) {
-        box.classList.toggle("hidden");
+let activeDrawerItemId = null;
+let drawerQuizScore = 0;
+let drawerQuizIndex = 0;
+let drawerQuizQuestions = [];
+let drawerSelectedOptionIdx = null;
+
+window.openStudyDrawer = async function(itemId) {
+    activeDrawerItemId = itemId;
+    const data = CODEX_DATA[itemId];
+    if (!data) return;
+    
+    // 1. Resolve Semester and Module Meta
+    let semName = "Roadmap Curriculum";
+    let modName = "General Study";
+    state.semesters.forEach(sem => {
+        sem.modules.forEach(mod => {
+            mod.items.forEach(it => {
+                if (it.id === itemId) {
+                    semName = sem.name.split(" — ")[0];
+                    modName = mod.name.split(" — ")[0];
+                }
+            });
+        });
+    });
+    
+    // 2. Set Basic Texts
+    document.getElementById("drawer-sem-name").innerText = semName;
+    document.getElementById("drawer-mod-name").innerText = modName;
+    document.getElementById("drawer-title").innerText = data.title;
+    document.getElementById("drawer-concept-text").innerText = data.concept;
+    document.getElementById("drawer-code-text").innerText = data.code;
+    document.getElementById("drawer-trap-text").innerText = data.trap;
+    
+    // 3. Resolve and Fetch Workspace File
+    const filePath = getWorkspaceFilePath(itemId);
+    document.getElementById("drawer-file-path").innerText = `File: ${filePath || 'N/A'}`;
+    const fileContentEl = document.getElementById("drawer-file-content");
+    const warningBox = document.getElementById("drawer-file-warning");
+    const warningText = document.getElementById("drawer-file-warning-text");
+    
+    fileContentEl.innerText = "Loading file from local workspace directory...";
+    warningBox.classList.add("hidden");
+    
+    if (filePath) {
+        try {
+            const response = await fetch(filePath);
+            if (response.ok) {
+                const text = await response.text();
+                fileContentEl.innerText = text;
+            } else {
+                throw new Error("File not found or access denied.");
+            }
+        } catch (err) {
+            fileContentEl.innerText = `// File not loaded: ${filePath}\n// Double click or open in your desktop editor to view/edit directly.`;
+            warningText.innerHTML = `No workspace file detected at: <br><strong style="font-family:var(--font-mono);font-size:11px;">${filePath}</strong><br>To integrate, create this file inside your local project folder!`;
+            warningBox.classList.remove("hidden");
+        }
+    } else {
+        fileContentEl.innerText = "// No file mapped for this unit.";
+    }
+    
+    // 4. Setup Micro Quiz State
+    drawerQuizQuestions = data.quiz || [];
+    drawerQuizScore = 0;
+    drawerQuizIndex = 0;
+    
+    const quizContainer = document.getElementById("drawer-quiz-container");
+    const quizFeedback = document.getElementById("drawer-quiz-feedback");
+    const quizResult = document.getElementById("drawer-quiz-result");
+    
+    quizContainer.classList.remove("hidden");
+    quizFeedback.classList.add("hidden");
+    quizResult.classList.add("hidden");
+    
+    if (drawerQuizQuestions.length > 0) {
+        loadDrawerQuizQuestion();
+    } else {
+        quizContainer.innerHTML = `<p class="empty-state">No self-test available for this unit. Use the mark button below to track progress.</p>`;
+    }
+    
+    // 5. Update Footer Mastery Button
+    updateDrawerFooterButton();
+    
+    // 6. Switch Tab to Learn & Slide open Drawer
+    switchDrawerTab("learn");
+    document.getElementById("study-drawer").classList.add("open");
+    document.getElementById("drawer-overlay").classList.add("active");
+};
+
+window.closeStudyDrawer = function() {
+    document.getElementById("study-drawer").classList.remove("open");
+    document.getElementById("drawer-overlay").classList.remove("active");
+    activeDrawerItemId = null;
+};
+
+window.setupStudyDrawerHandlers = function() {
+    // Tab switching
+    const tabButtons = document.querySelectorAll(".drawer-tab-btn");
+    tabButtons.forEach(btn => {
+        btn.addEventListener("click", () => {
+            const targetTab = btn.getAttribute("data-drawer-tab");
+            switchDrawerTab(targetTab);
+        });
+    });
+    
+    // Footer button
+    const footerBtn = document.getElementById("drawer-mastery-toggle-btn");
+    if (footerBtn) {
+        footerBtn.addEventListener("click", () => {
+            if (activeDrawerItemId) {
+                markItemMastery(activeDrawerItemId);
+            }
+        });
+    }
+    
+    // Next quiz button
+    const nextBtn = document.getElementById("drawer-quiz-next-btn");
+    if (nextBtn) {
+        nextBtn.addEventListener("click", nextDrawerQuizQuestion);
+    }
+    
+    // Quiz final mark button
+    const quizMarkBtn = document.getElementById("drawer-quiz-master-btn");
+    if (quizMarkBtn) {
+        quizMarkBtn.addEventListener("click", () => {
+            if (activeDrawerItemId) {
+                markItemMastery(activeDrawerItemId, true);
+                closeStudyDrawer();
+            }
+        });
     }
 };
+
+function switchDrawerTab(tabName) {
+    const tabButtons = document.querySelectorAll(".drawer-tab-btn");
+    tabButtons.forEach(btn => {
+        if (btn.getAttribute("data-drawer-tab") === tabName) {
+            btn.classList.add("active");
+        } else {
+            btn.classList.remove("active");
+        }
+    });
+    
+    const panels = document.querySelectorAll(".drawer-tab-panel");
+    panels.forEach(panel => {
+        if (panel.id === `drawer-panel-${tabName}`) {
+            panel.classList.add("active");
+        } else {
+            panel.classList.remove("active");
+        }
+    });
+}
+
+function loadDrawerQuizQuestion() {
+    const qData = drawerQuizQuestions[drawerQuizIndex];
+    const container = document.getElementById("drawer-quiz-container");
+    const feedback = document.getElementById("drawer-quiz-feedback");
+    
+    feedback.classList.add("hidden");
+    drawerSelectedOptionIdx = null;
+    
+    container.innerHTML = `
+        <div class="drawer-quiz-question">${qData.q}</div>
+        <div class="drawer-quiz-options">
+            ${qData.options.map((opt, idx) => `
+                <button class="drawer-quiz-option" onclick="submitDrawerQuizAnswer(${idx})">${escapeHTML(opt)}</button>
+            `).join("")}
+        </div>
+    `;
+}
+
+window.submitDrawerQuizAnswer = function(optIdx) {
+    if (drawerSelectedOptionIdx !== null) return;
+    drawerSelectedOptionIdx = optIdx;
+    
+    const qData = drawerQuizQuestions[drawerQuizIndex];
+    const optionsList = document.querySelectorAll(".drawer-quiz-option");
+    const feedback = document.getElementById("drawer-quiz-feedback");
+    const statusText = document.getElementById("drawer-quiz-status");
+    const explanationText = document.getElementById("drawer-quiz-explanation");
+    const nextBtn = document.getElementById("drawer-quiz-next-btn");
+    
+    optionsList.forEach(btn => btn.disabled = true);
+    
+    const isCorrect = (optIdx === qData.correct);
+    if (isCorrect) {
+        drawerQuizScore++;
+        optionsList[optIdx].classList.add("correct");
+        statusText.innerText = "✅ Correct!";
+        statusText.className = "explanation-title correct";
+    } else {
+        optionsList[optIdx].classList.add("incorrect");
+        optionsList[qData.correct].classList.add("correct");
+        statusText.innerText = "❌ Incorrect";
+        statusText.className = "explanation-title incorrect";
+    }
+    
+    explanationText.innerText = qData.exp;
+    feedback.classList.remove("hidden");
+    
+    if (drawerQuizIndex === drawerQuizQuestions.length - 1) {
+        nextBtn.innerText = "Complete Self-Test";
+    } else {
+        nextBtn.innerText = "Next Question";
+    }
+};
+
+function nextDrawerQuizQuestion() {
+    if (drawerQuizIndex < drawerQuizQuestions.length - 1) {
+        drawerQuizIndex++;
+        loadDrawerQuizQuestion();
+    } else {
+        completeDrawerQuiz();
+    }
+}
+
+function completeDrawerQuiz() {
+    document.getElementById("drawer-quiz-container").classList.add("hidden");
+    document.getElementById("drawer-quiz-feedback").classList.add("hidden");
+    
+    const result = document.getElementById("drawer-quiz-result");
+    const scoreVal = document.getElementById("drawer-quiz-score");
+    const totalVal = document.getElementById("drawer-quiz-total");
+    const verdict = document.getElementById("drawer-quiz-verdict");
+    const masterBtn = document.getElementById("drawer-quiz-master-btn");
+    
+    scoreVal.innerText = drawerQuizScore;
+    totalVal.innerText = drawerQuizQuestions.length;
+    result.classList.remove("hidden");
+    
+    if (drawerQuizScore === drawerQuizQuestions.length) {
+        verdict.innerText = "👑 Perfect score! You have fully mastered these concepts.";
+        masterBtn.classList.remove("hidden");
+        playAudioBeep(); // Success chime
+    } else {
+        verdict.innerText = "⚠️ You missed some questions. Review the study guide and retry the self-test.";
+        masterBtn.classList.add("hidden");
+    }
+}
+
+window.markItemMastery = function(itemId, forceState) {
+    let itemRef = null;
+    let semRefId = "";
+    state.semesters.forEach(sem => {
+        sem.modules.forEach(mod => {
+            mod.items.forEach(item => {
+                if (item.id === itemId) {
+                    itemRef = item;
+                    semRefId = sem.id;
+                }
+            });
+        });
+    });
+    
+    if (itemRef) {
+        const targetState = (forceState !== undefined) ? forceState : !itemRef.completed;
+        if (targetState !== itemRef.completed) {
+            itemRef.completed = targetState;
+            if (itemRef.completed) {
+                playAudioBeep();
+            }
+            saveState();
+            renderCurriculum();
+        }
+    }
+    
+    updateDrawerFooterButton();
+};
+
+function updateDrawerFooterButton() {
+    let itemRef = null;
+    state.semesters.forEach(sem => {
+        sem.modules.forEach(mod => {
+            mod.items.forEach(item => {
+                if (item.id === activeDrawerItemId) {
+                    itemRef = item;
+                }
+            });
+        });
+    });
+    
+    const footerBtn = document.getElementById("drawer-mastery-toggle-btn");
+    if (footerBtn && itemRef) {
+        if (itemRef.completed) {
+            footerBtn.innerText = "Mark as Incomplete";
+            footerBtn.style.background = "var(--bg-panel)";
+            footerBtn.style.borderColor = "var(--neon-magenta)";
+            footerBtn.style.color = "var(--neon-magenta)";
+        } else {
+            footerBtn.innerText = "Mark Chapter as Mastered";
+            footerBtn.style.background = "var(--neon-cyan)";
+            footerBtn.style.borderColor = "var(--neon-cyan)";
+            footerBtn.style.color = "var(--bg-dark)";
+        }
+    }
+}
+
+function getWorkspaceFilePath(itemId) {
+    const parts = itemId.split('_');
+    if (parts.length < 2) return '';
+    
+    const sem = parts[0]; 
+    const type = parts[1]; 
+    
+    const semFolders = {
+        sem0: "semester_0_foundation",
+        sem1: "semester_1_cs",
+        sem2: "semester_2_math",
+        sem3: "semester_3_engineering",
+        sem4: "semester_4_unreal_editor",
+        sem5: "semester_5_unreal_cpp",
+        sem6: "semester_6_advanced",
+        sem7: "semester_7_graphics",
+        sem8: "semester_8_production"
+    };
+    
+    const folder = semFolders[sem];
+    if (!folder) return '';
+    
+    if (sem === 'sem0') {
+        if (type === 'm1') {
+            const chapNum = parts[2].replace('c', '');
+            const chapNames = {
+                '1': "chapter_1_how_computers_work.md",
+                '2': "chapter_2_operating_systems.md",
+                '3': "chapter_3_developer_setup.md"
+            };
+            return `semesters/${folder}/module_1_fundamentals/${chapNames[chapNum] || ''}`;
+        } else if (type === 'm2') {
+            if (parts[2].startsWith('u')) {
+                const unitNum = parts[2].replace('u', '').padStart(2, '0');
+                const unitNames = {
+                    '01': "unit_01_variables.cpp",
+                    '08': "unit_08_pointers.cpp",
+                    '10': "unit_10_classes.cpp",
+                    '17': "unit_17_smart_pointers.cpp"
+                };
+                return `semesters/${folder}/module_2_modern_cpp/units/${unitNames[unitNum] || 'unit_' + unitNum + '.cpp'}`;
+            }
+        }
+    }
+    
+    // Fallback paths for all other semesters and items:
+    if (sem === 'sem1') {
+        const num = type.replace('m', '');
+        return `semesters/${folder}/dsa/unit_${num.padStart(2, '0')}.cpp`;
+    }
+    if (sem === 'sem2') {
+        const num = type.replace('m', '');
+        return `semesters/${folder}/math/unit_${num.padStart(2, '0')}.cpp`;
+    }
+    if (sem === 'sem3') {
+        const num = type.replace('m', '');
+        return `semesters/${folder}/design_patterns/unit_${num.padStart(2, '0')}.cpp`;
+    }
+    if (sem === 'sem4') {
+        const num = type.replace('m', '');
+        return `semesters/${folder}/blueprints/unit_${num.padStart(2, '0')}.txt`;
+    }
+    if (sem === 'sem5') {
+        const num = type.replace('m', '');
+        return `semesters/${folder}/unreal_cpp/unit_${num.padStart(2, '0')}.cpp`;
+    }
+    if (sem === 'sem6') {
+        const num = type.replace('m', '');
+        return `semesters/${folder}/multiplayer/unit_${num.padStart(2, '0')}.cpp`;
+    }
+    if (sem === 'sem7') {
+        const num = type.replace('m', '');
+        return `semesters/${folder}/graphics/unit_${num.padStart(2, '0')}.cpp`;
+    }
+    if (sem === 'sem8') {
+        const num = type.replace('m', '');
+        return `semesters/${folder}/career/unit_${num.padStart(2, '0')}.txt`;
+    }
+    
+    return `semesters/${folder}/notes_${itemId}.txt`;
+}
 
 // ----------------------------------------------------
 // VECTOR LABORATORY (MATH VISUALIZER)
@@ -2009,67 +2366,7 @@ const CODE_CHALLENGES = {
     }
 };
 
-const CODEX_DATA = {
-    "sem0_m1_c1": {
-        concept: "CPU registers are inside the core, taking < 1 cycle. Caches (L1/L2/L3) store adjacent memory (spatial locality) to prevent CPU stalls (RAM fetches take 200+ cycles). Contiguous memory layout (arrays, std::vector) ensures cache line prefetching.",
-        code: `// Good: contiguous vector iteration
-std::vector<int> data(1000000);
-int sum = 0;
-for(int x : data) { sum += x; } // Cache hits!
-
-// Bad: Scattered pointers iteration
-struct Node { int val; Node* next; }; // Cache misses!`,
-        trap: "Interviewers often ask: 'Why is vector faster than list?' Do not say 'because index accesses are O(1)'. The real answer for high-performance games is cache friendliness due to contiguous memory spatial locality."
-    },
-    "sem0_m1_c2": {
-        concept: "Processes have separate virtual memory spaces. Threads share the same address space but have their own stack. Race conditions occur when threads read and write memory without locks, leading to memory corruption.",
-        code: `// Prevent race condition using std::atomic
-#include <atomic>
-std::atomic<int> g_enemyCount{0};
-
-void SpawnEnemy() {
-    g_enemyCount.fetch_add(1, std::memory_order_relaxed); // Thread-safe atomic increment
-}`,
-        trap: "Interviewers will ask how to resolve multi-threaded race conditions without heavy lock locks. Be ready to explain lock-free queues, atomic variables, and CAS (Compare-And-Swap) loops."
-    },
-    "sem0_m2_u8": {
-        concept: "Pointers store raw 64-bit virtual memory addresses. Dereferencing a pointer (*ptr) retrieves the value at that address. In AAA game engines, pointers are used for low-level performance, custom memory allocators, and hardware interaction.",
-        code: `int health = 100;
-int* pHealth = &health; // Pointer holds address of health
-*pHealth = 80;          // Dereferencing updates original value
-
-// Check for nullptr before dereferencing!
-if (pHealth != nullptr) {
-    std::cout << *pHealth;
-}`,
-        trap: "Never dereference a nullptr or wildcard uninitialized pointer! It triggers an OS Access Violation crash. Always initialize pointers to nullptr."
-    },
-    "sem0_m2_u17": {
-        concept: "Smart pointers manage heap object lifetimes. std::unique_ptr has single exclusive ownership and deletes resources when out of scope. std::shared_ptr uses reference counts. std::weak_ptr holds non-owning refs to prevent circular cycles.",
-        code: `#include <memory>
-// Exclusive ownership
-std::unique_ptr<Enemy> enemy = std::make_unique<Enemy>();
-
-// Reference counted ownership
-std::shared_ptr<Texture> tex = std::make_shared<Texture>();
-std::weak_ptr<Texture> weakTex = tex; // Breaks loops`,
-        trap: "Never use std::shared_ptr everywhere! It adds runtime overhead due to thread-safe atomic reference count increments. Prefer std::unique_ptr by default, or pass raw pointers/references for temporary access."
-    },
-    "sem0_m2_u18": {
-        concept: "Move semantics allow transferring resources (like dynamic buffers) from temporary objects (rvalues) without deep copying. std::move casts an object to an rvalue reference (T&&), enabling move constructors to steal pointers.",
-        code: `// Move constructor example
-class Buffer {
-    int* m_data;
-public:
-    // Move constructor
-    Buffer(Buffer&& other) noexcept {
-        m_data = other.m_data;    // Steal pointer
-        other.m_data = nullptr;   // Clean source
-    }
-};`,
-        trap: "Adding std::move to a return value (e.g. return std::move(myLocalVar);) can be a trap. It disables NRVO (Named Return Value Optimization / Copy Elision), making the code slower! Let the compiler handle standard local returns."
-    }
-};
+const CODEX_DATA = EXHAUSTIVE_CODEX_DATA;
 
 const MOCK_INTERVIEWS = [
     {

@@ -464,6 +464,84 @@
         </main>
     </div>
     
+    <!-- Study Portal Drawer -->
+    <div id="study-drawer" class="study-drawer">
+        <div class="drawer-header">
+            <div class="drawer-meta">
+                <span id="drawer-sem-name" class="drawer-sem">Semester 0</span>
+                <span id="drawer-mod-name" class="drawer-mod">Module 1</span>
+            </div>
+            <h2 id="drawer-title">Chapter Title</h2>
+            <button class="drawer-close-btn" onclick="closeStudyDrawer()">&times;</button>
+        </div>
+        
+        <div class="drawer-tabs">
+            <button class="drawer-tab-btn active" data-drawer-tab="learn">📖 Learn</button>
+            <button class="drawer-tab-btn" data-drawer-tab="code">💻 Workspace Code</button>
+            <button class="drawer-tab-btn" data-drawer-tab="quiz">⚔️ Self-Test</button>
+        </div>
+        
+        <div class="drawer-body">
+            <!-- Learn Tab -->
+            <div class="drawer-tab-panel active" id="drawer-panel-learn">
+                <div class="codex-section">
+                    <div class="codex-section-title">🧠 AAA Core Concept</div>
+                    <div id="drawer-concept-text" class="drawer-concept-body">Concept content goes here...</div>
+                </div>
+                <div class="codex-section">
+                    <div class="codex-section-title">💻 Correct Code Recipe</div>
+                    <pre class="codex-code-block"><code id="drawer-code-text">Code recipe goes here...</code></pre>
+                </div>
+                <div class="codex-section">
+                    <div class="codex-trap-box">
+                        <strong>⚠️ Interviewer Trap Warning:</strong>
+                        <span id="drawer-trap-text">Trap content goes here...</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Code Tab -->
+            <div class="drawer-tab-panel" id="drawer-panel-code">
+                <div class="file-info-header">
+                    <span id="drawer-file-path">File: semesters/semester_0/unit_01.cpp</span>
+                </div>
+                <pre class="codex-code-block" style="background:#030508; max-height: 400px; overflow-y: auto;"><code id="drawer-file-content">Loading file from workspace...</code></pre>
+                <div id="drawer-file-warning" class="file-warning-box">
+                    <strong>💡 Workspace Link Instructions:</strong>
+                    <p id="drawer-file-warning-text">No workspace file found at this path. To integrate your local studies, create a code/notes file at this location in your repository directory.</p>
+                </div>
+            </div>
+            
+            <!-- Quiz Tab -->
+            <div class="drawer-tab-panel" id="drawer-panel-quiz">
+                <div id="drawer-quiz-container">
+                    <!-- Dynamic micro-quiz questions -->
+                </div>
+                <div id="drawer-quiz-feedback" class="quiz-explanation hidden" style="margin-top: 15px;">
+                    <div class="explanation-title" id="drawer-quiz-status">Correct!</div>
+                    <p id="drawer-quiz-explanation">Explanation...</p>
+                    <button class="btn btn-primary btn-right" id="drawer-quiz-next-btn">Next Question</button>
+                </div>
+                <div id="drawer-quiz-result" class="quiz-result-card hidden" style="margin-top:15px; padding:20px; text-align: center;">
+                    <h3>Self-Test Complete!</h3>
+                    <div class="score-display" style="font-size:32px; margin:15px 0; font-family: var(--font-mono); color: var(--neon-cyan)">
+                        <span id="drawer-quiz-score">0</span> / <span id="drawer-quiz-total">2</span>
+                    </div>
+                    <p id="drawer-quiz-verdict" style="font-size:13px; color: var(--color-text-secondary); margin-bottom: 15px;">Pass the quiz to complete this unit!</p>
+                    <button class="btn btn-primary" id="drawer-quiz-master-btn">Mark as Mastered</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="drawer-footer">
+            <button class="btn btn-primary btn-block" id="drawer-mastery-toggle-btn">Mark Chapter as Mastered</button>
+        </div>
+    </div>
+    
+    <!-- Backdrop Overlay for drawer -->
+    <div id="drawer-overlay" class="drawer-overlay" onclick="closeStudyDrawer()"></div>
+    
+    <script src="codex_data.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
