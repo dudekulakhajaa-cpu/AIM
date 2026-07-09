@@ -1891,11 +1891,11 @@ window.gradeInterviewQuestion = (didPass) => {
         elements.quizTotalVal.innerText = MOCK_INTERVIEWS.length;
         
         if (interviewPassCount === MOCK_INTERVIEWS.length) {
-            elements.quizVerdict.innerText = "👑 Masterful! You met all core rubric metrics. You are demonstrating AAA Principal standard.";
+            elements.quizVerdict.innerText = "👑 Outstanding, Khaja! You hit every core rubric metric. This is AAA studio interview calibre.";
         } else if (interviewPassCount >= 2) {
-            elements.quizVerdict.innerText = "👍 Decent showing. You hit some core architectural explanations, but expand your math/engine study logs.";
+            elements.quizVerdict.innerText = "👍 Solid effort, Khaja. You nailed some key architecture answers — keep deepening your math and engine internals.";
         } else {
-            elements.quizVerdict.innerText = "⚠️ Weak board presence. Focus on memory layouts, cache misses, and Quaternions to pass the loop.";
+            elements.quizVerdict.innerText = "⚠️ Keep grinding, Khaja. Drill memory layouts, cache misses, and Quaternions until they are second nature.";
         }
         playAudioBeep();
     }
