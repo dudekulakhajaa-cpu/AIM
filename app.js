@@ -2191,6 +2191,14 @@ window.startMockInterview = () => {
     }
 };
 
+window.closeMockInterview = () => {
+    const interviewBox = document.getElementById("interview-question-box");
+    if (interviewBox) {
+        interviewBox.classList.add("hidden");
+    }
+    elements.quizIntro.classList.remove("hidden");
+};
+
 const loadInterviewQuestion = () => {
     const qData = MOCK_INTERVIEWS[interviewIndex];
     const progress = document.getElementById("interview-progress-text");

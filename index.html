@@ -251,7 +251,8 @@
                             </div>
                         </div>
 
-                        <div class="glass-card quiz-card hidden" id="quiz-question-box">
+                        <div class="glass-card quiz-card hidden" id="quiz-question-box" style="position: relative;">
+                            <button class="drawer-close-btn" onclick="resetQuizArena()" style="position: absolute; top: 15px; right: 15px; font-size: 24px; background: none; border: none; color: var(--color-text-secondary); cursor: pointer; line-height: 1;">&times;</button>
                             <div class="quiz-header">
                                 <span id="quiz-progress-text">Question 1 of 5</span>
                                 <span class="quiz-timer" id="quiz-timer">Timer: 0s</span>
@@ -270,7 +271,8 @@
                         </div>
 
                         <!-- Mock Interview Board -->
-                        <div class="glass-card quiz-card hidden" id="interview-question-box">
+                        <div class="glass-card quiz-card hidden" id="interview-question-box" style="position: relative;">
+                            <button class="drawer-close-btn" onclick="closeMockInterview()" style="position: absolute; top: 15px; right: 15px; font-size: 24px; background: none; border: none; color: var(--color-text-secondary); cursor: pointer; line-height: 1;">&times;</button>
                             <div class="quiz-header">
                                 <span id="interview-progress-text">AAA Mock Board Interview - Question 1 of 3</span>
                             </div>
