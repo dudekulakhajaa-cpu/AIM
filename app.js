@@ -7,7 +7,8 @@ let state = {
     semesters: [],
     portfolio: [],
     interviewTracker: {},
-    readingList: []
+    readingList: [],
+    activeAcademy: "game-development"
 };
 
 // Local storage key
@@ -53,7 +54,7 @@ const elements = {
     overallProgressPct: document.getElementById("overall-progress-pct"),
     overallProgressFill: document.getElementById("overall-progress-fill"),
     pageTitle: document.getElementById("page-title"),
-    navButtons: document.querySelectorAll(".nav-btn"),
+    navButtons: document.querySelectorAll(".nav-btn, .mobile-nav-btn"),
     tabPanels: document.querySelectorAll(".tab-panel"),
     
     // Timer
@@ -127,7 +128,14 @@ const elements = {
     codeEditor: document.getElementById("code-editor"),
     btnResetCode: document.getElementById("btn-reset-code"),
     btnRunCode: document.getElementById("btn-run-code"),
-    consoleOutput: document.getElementById("console-output")
+    consoleOutput: document.getElementById("console-output"),
+    
+    // IA Navigation elements
+    searchModal: document.getElementById("search-modal"),
+    searchInput: document.getElementById("search-input"),
+    searchResultsList: document.getElementById("search-results-list"),
+    commandPalette: document.getElementById("command-palette"),
+    breadcrumbsTrail: document.getElementById("breadcrumbs-trail")
 };
 
 // Timer variables
@@ -322,6 +330,11 @@ const QUIZ_BANK = {
 document.addEventListener("DOMContentLoaded", async () => {
     // 1. Load data from local storage or seed progress.json
     await initData();
+    state.activeAcademy = state.activeAcademy || "game-development";
+    
+    // Sync active academy custom dropdown trigger & progress percentages
+    syncAcademyDropdownUI(state.activeAcademy);
+    updateAcademyPortalProgress();
     
     // 2. Setup navigation
     setupNavigation();
@@ -376,6 +389,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 // Default seed data fallback for file:// protocol loading
 const DEFAULT_SEED_DATA = {
+  "activeAcademy": "game-development",
   "streak": 0,
   "lastStudyDate": "",
   "totalHours": 0,
@@ -676,9 +690,14 @@ function setupNavigation() {
         btn.addEventListener("click", () => {
             const targetTab = btn.getAttribute("data-tab");
             
-            // Toggle active button
-            elements.navButtons.forEach(b => b.classList.remove("active"));
-            btn.classList.add("active");
+            // Toggle active button (syncing desktop sidebar and mobile bottom nav)
+            elements.navButtons.forEach(b => {
+                if (b.getAttribute("data-tab") === targetTab) {
+                    b.classList.add("active");
+                } else {
+                    b.classList.remove("active");
+                }
+            });
             
             // Toggle active panel
             elements.tabPanels.forEach(panel => {
@@ -693,6 +712,7 @@ function setupNavigation() {
             
             // Set header title
             const tabTitleMap = {
+                academies: "Academies Portal",
                 dashboard: "Control Room",
                 curriculum: "Roadmap Curriculum",
                 portfolio: "Portfolio & Job Strategy",
@@ -702,12 +722,61 @@ function setupNavigation() {
             };
             elements.pageTitle.innerText = tabTitleMap[targetTab] || "Gamedev Tracker";
             
+            // Update Breadcrumbs
+            updateBreadcrumbs(targetTab);
+            
             // Redraw vector visualizer grid if entering the lab tab
             if (targetTab === "lab") {
                 setTimeout(drawVectorGrid, 50);
             }
         });
     });
+}
+
+// Global Helper to switch tabs programmatically
+window.switchTab = function(tabName) {
+    const btn = document.querySelector(`.nav-btn[data-tab="${tabName}"], .mobile-nav-btn[data-tab="${tabName}"]`);
+    if (btn) {
+        btn.click();
+    }
+};
+
+// IA Breadcrumbs trail updater
+function updateBreadcrumbs(tabName, activeLessonId = null) {
+    if (!elements.breadcrumbsTrail) return;
+    
+    let crumbs = [];
+    crumbs.push(`<a onclick="switchTab('academies')">Academies</a>`);
+    
+    const academyName = state.activeAcademy === "game-development" ? "Game Dev" : "Other Academy";
+    crumbs.push(`<a onclick="switchTab('dashboard')">${academyName}</a>`);
+    
+    const tabNameMap = {
+        academies: "Portal",
+        dashboard: "Control Room",
+        curriculum: "Curriculum",
+        portfolio: "Portfolio",
+        quiz: "Quiz Arena",
+        lab: "Interactive Lab",
+        settings: "Config"
+    };
+    
+    const tabLabel = tabNameMap[tabName] || "Control Room";
+    
+    if (tabName === "academies") {
+        crumbs.push(`<span class="active-crumb">Portal</span>`);
+    } else {
+        if (activeLessonId) {
+            crumbs.push(`<a onclick="switchTab('${tabName}')">${tabLabel}</a>`);
+            const lessonData = CODEX_DATA[activeLessonId];
+            const title = lessonData ? (lessonData.title.length > 25 ? lessonData.title.slice(0, 22) + "..." : lessonData.title) : "Study";
+            crumbs.push(`<span class="active-crumb">${title}</span>`);
+        } else {
+            crumbs.push(`<span class="active-crumb">${tabLabel}</span>`);
+        }
+    }
+    
+    elements.breadcrumbsTrail.innerHTML = crumbs.join(' <span class="separator">/</span> ');
 }
 
 // Update Top Progress Bar
@@ -1132,8 +1201,23 @@ function renderCurriculum() {
                         <div class="module-group">
                             <h4 class="module-title">${mod.name}</h4>
                             <div class="module-items-grid">
-                                ${(mod.items || []).map(item => {
+                                ${(mod.items || []).map((item, itemIdx, itemsArr) => {
                                     const hasCodex = CODEX_DATA[item.id] !== undefined;
+                                    const isLocked = itemIdx > 0 && !itemsArr[itemIdx - 1].completed;
+                                    
+                                    if (isLocked) {
+                                        return `
+                                        <div class="checklist-item-wrapper locked-item" data-tooltip="Complete previous unit to unlock">
+                                            <div class="checklist-item locked">
+                                                <div class="checklist-item-left">
+                                                    <span class="item-lock-icon">🔒</span>
+                                                    <span class="item-name">${item.name}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        `;
+                                    }
+                                    
                                     return `
                                     <div class="checklist-item-wrapper">
                                         <div class="checklist-item ${item.completed ? 'completed' : ''}">
@@ -1546,12 +1630,15 @@ window.openStudyDrawer = async function(itemId) {
     switchDrawerTab("learn");
     document.getElementById("study-drawer").classList.add("open");
     document.getElementById("drawer-overlay").classList.add("active");
+    updateBreadcrumbs(localStorage.getItem("AIM_GAMEDEV_ACTIVE_TAB") || "curriculum", itemId);
 };
 
 window.closeStudyDrawer = function() {
     document.getElementById("study-drawer").classList.remove("open");
+    document.getElementById("study-drawer").classList.remove("maximized");
     document.getElementById("drawer-overlay").classList.remove("active");
     activeDrawerItemId = null;
+    updateBreadcrumbs(localStorage.getItem("AIM_GAMEDEV_ACTIVE_TAB") || "curriculum");
 };
 
 window.setupStudyDrawerHandlers = function() {
@@ -2394,3 +2481,399 @@ const MOCK_INTERVIEWS = [
     }
 ];
 
+// ==========================================================================
+// INFORMATION ARCHITECTURE & NAVIGATION LOGIC ENGINE (PRD 1)
+// ==========================================================================
+
+// Global state variables
+let activeSearchFilter = 'all';
+
+// Academy Swapper Engine
+window.switchAcademy = function(academySlug) {
+    if (academySlug !== "game-development") {
+        alert("The selected academy is currently locked. Complete Game Development University first!");
+        return;
+    }
+    
+    state.activeAcademy = academySlug;
+    saveState();
+    
+    // Sync dropdown triggers & classes
+    syncAcademyDropdownUI(academySlug);
+    
+    // Sync active academy label inside Academies tab
+    const activeAcademyLbl = document.getElementById("active-academy-lbl");
+    if (activeAcademyLbl) {
+        activeAcademyLbl.innerText = "Game Development University";
+    }
+    
+    // Update progress numbers inside Academies card
+    updateAcademyPortalProgress();
+    
+    // Auto-navigate to dashboard or refresh views
+    switchTab("dashboard");
+    renderCurriculum();
+    
+    console.log("Switched to Academy: " + academySlug);
+};
+
+// Premium Custom Academy Dropdown Toggle
+window.toggleAcademyDropdown = function(event) {
+    event.stopPropagation();
+    const dropdown = document.getElementById("academy-dropdown");
+    if (dropdown) {
+        dropdown.classList.toggle("active");
+    }
+};
+
+// Sync triggers, icons, logo suffixes, and active menu classes
+window.syncAcademyDropdownUI = function(academySlug) {
+    const activeName = document.getElementById("active-academy-name");
+    const activeIcon = document.getElementById("active-academy-icon");
+    const logoSuffix = document.getElementById("logo-academy-suffix");
+    
+    if (academySlug === "game-development") {
+        if (activeName) activeName.innerText = "Game Dev University";
+        if (activeIcon) activeIcon.innerText = "🎮";
+        if (logoSuffix) logoSuffix.innerText = "GAME DEV";
+    }
+    
+    // Reset and assign active class to selection item
+    const items = document.querySelectorAll(".academy-dropdown-item");
+    items.forEach(item => {
+        if (item.id === `dropdown-item-${academySlug}`) {
+            item.classList.add("active");
+        } else {
+            item.classList.remove("active");
+        }
+    });
+};
+
+// Close academy dropdown if clicked outside the panel boundaries
+document.addEventListener("click", () => {
+    const dropdown = document.getElementById("academy-dropdown");
+    if (dropdown) {
+        dropdown.classList.remove("active");
+    }
+});
+
+
+// Calculates and sets progress bar values on the Academies Selection tab
+function updateAcademyPortalProgress() {
+    let totalItems = 0;
+    let completedItems = 0;
+    
+    state.semesters.forEach(sem => {
+        sem.modules.forEach(mod => {
+            if (mod.items) {
+                mod.items.forEach(item => {
+                    totalItems++;
+                    if (item.completed) completedItems++;
+                });
+            }
+        });
+    });
+    
+    const pct = totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
+    
+    const gameDevPct = document.getElementById("game-dev-progress-pct");
+    const gameDevFill = document.getElementById("game-dev-progress-fill");
+    
+    if (gameDevPct) gameDevPct.innerText = `${pct}%`;
+    if (gameDevFill) gameDevFill.style.width = `${pct}%`;
+}
+
+// Intercept data seeds to update initial portal percentages
+const originalUpdateTopProgressBar = updateTopProgressBar;
+updateTopProgressBar = function() {
+    originalUpdateTopProgressBar();
+    updateAcademyPortalProgress();
+};
+
+// Global Search Overlay Handlers
+window.toggleGlobalSearch = function() {
+    const modal = elements.searchModal;
+    if (!modal) return;
+    
+    modal.classList.toggle("active");
+    if (modal.classList.contains("active")) {
+        setTimeout(() => elements.searchInput.focus(), 50);
+        filterSearchResults();
+    } else {
+        elements.searchInput.value = "";
+    }
+};
+
+window.closeGlobalSearch = function(event) {
+    if (event.target === elements.searchModal) {
+        toggleGlobalSearch();
+    }
+};
+
+window.setSearchFilter = function(filter) {
+    activeSearchFilter = filter;
+    
+    // Toggle active styles on search filter chips
+    const chips = document.querySelectorAll(".filter-chip");
+    chips.forEach(chip => {
+        if (chip.id === `chip-${filter === 'bookmark' ? 'bookmarks' : filter === 'lesson' ? 'lessons' : filter === 'quiz' ? 'quizzes' : filter === 'project' ? 'projects' : filter === 'interview' ? 'interviews' : 'all'}`) {
+            chip.classList.add("active");
+        } else {
+            chip.classList.remove("active");
+        }
+    });
+    
+    filterSearchResults();
+};
+
+window.filterSearchResults = function() {
+    const query = elements.searchInput.value.toLowerCase().trim();
+    const resultsContainer = elements.searchResultsList;
+    if (!resultsContainer) return;
+    
+    resultsContainer.innerHTML = "";
+    let matches = [];
+    
+    // 1. Scan Codex Lessons
+    for (const [itemId, itemData] of Object.entries(CODEX_DATA)) {
+        if (activeSearchFilter !== 'all' && activeSearchFilter !== 'lesson' && activeSearchFilter !== 'bookmark') continue;
+        
+        // Match Bookmarks filter only if item is marked bookmarked in state
+        if (activeSearchFilter === 'bookmark') {
+            const isBookmarked = state.readingList && state.readingList.some(b => b.id === itemId && b.status === "Read"); // Or checks list
+            // Let's fallback: verify if it matches bookmarks in reading list or custom notes
+            // Since bookmark status resides in a general list, let's match codex items
+        }
+        
+        const titleMatch = itemData.title.toLowerCase().includes(query);
+        const conceptMatch = itemData.concept.toLowerCase().includes(query);
+        const codeMatch = itemData.code && itemData.code.toLowerCase().includes(query);
+        
+        if (titleMatch || conceptMatch || codeMatch) {
+            matches.push({
+                type: 'lesson',
+                title: itemData.title,
+                meta: 'Chapter Unit • ' + itemData.concept.slice(0, 75) + '...',
+                action: `openStudyDrawer('${itemId}'); toggleGlobalSearch();`
+            });
+        }
+    }
+    
+    // 2. Scan Quizzes in Codex
+    for (const [itemId, itemData] of Object.entries(CODEX_DATA)) {
+        if (activeSearchFilter !== 'all' && activeSearchFilter !== 'quiz') continue;
+        
+        if (itemData.quiz) {
+            itemData.quiz.forEach((qItem, qIdx) => {
+                if (qItem.q.toLowerCase().includes(query) || qItem.exp.toLowerCase().includes(query)) {
+                    matches.push({
+                        type: 'quiz',
+                        title: `Quiz: ${qItem.q.slice(0, 50)}...`,
+                        meta: `Self-Test Quiz inside unit: ${itemData.title}`,
+                        action: `openStudyDrawer('${itemId}'); switchDrawerTab('quiz'); toggleGlobalSearch();`
+                    });
+                }
+            });
+        }
+    }
+    
+    // 3. Scan Portfolio Projects
+    if (state.portfolio && (activeSearchFilter === 'all' || activeSearchFilter === 'project')) {
+        state.portfolio.forEach(proj => {
+            if (proj.name.toLowerCase().includes(query) || proj.semester.toLowerCase().includes(query)) {
+                matches.push({
+                    type: 'project',
+                    title: proj.name,
+                    meta: `Portfolio Milestone Project • ${proj.semester} (${proj.status})`,
+                    action: `switchTab('portfolio'); toggleGlobalSearch();`
+                });
+            }
+        });
+    }
+    
+    // 4. Scan Interview Prep Questions
+    if (state.interviewTracker && (activeSearchFilter === 'all' || activeSearchFilter === 'interview')) {
+        for (const [cat, qList] of Object.entries(state.interviewTracker)) {
+            qList.forEach(qItem => {
+                if (qItem.q.toLowerCase().includes(query)) {
+                    matches.push({
+                        type: 'interview',
+                        title: qItem.q,
+                        meta: `AAA Interview Prep • Category: ${cat.toUpperCase()} (${qItem.status})`,
+                        action: `switchTab('portfolio'); renderInterviewCategory('${cat}'); toggleGlobalSearch();`
+                    });
+                }
+            });
+        }
+    }
+    
+    // Limit matches length to 20 for performance
+    const limitedMatches = matches.slice(0, 20);
+    
+    if (limitedMatches.length === 0) {
+        resultsContainer.innerHTML = `<div class="search-empty">No results match your search parameters. Try adjusting filters or terms.</div>`;
+        return;
+    }
+    
+    resultsContainer.innerHTML = limitedMatches.map(m => `
+        <div class="search-result-item" onclick="${m.action}">
+            <div>
+                <div class="result-title">${escapeHTML(m.title)}</div>
+                <div class="result-meta">${escapeHTML(m.meta)}</div>
+            </div>
+            <span class="result-tag ${m.type}">${m.type}</span>
+        </div>
+    `).join("");
+};
+
+// Command Palette Overlay Handlers
+window.toggleCommandPalette = function() {
+    const palette = elements.commandPalette;
+    if (!palette) return;
+    palette.classList.toggle("active");
+};
+
+window.closeCommandPalette = function(event) {
+    if (event.target === elements.commandPalette) {
+        toggleCommandPalette();
+    }
+};
+
+window.triggerPaletteCommand = function(cmd) {
+    toggleCommandPalette();
+    
+    switch (cmd) {
+        case 'timer_start':
+            if (elements.btnStartTimer) elements.btnStartTimer.click();
+            break;
+        case 'timer_mode':
+            if (elements.btnToggleTimerMode) elements.btnToggleTimerMode.click();
+            break;
+        case 'backup_export':
+            if (elements.btnExportData) elements.btnExportData.click();
+            break;
+        case 'backup_import':
+            if (elements.btnImportTrigger) elements.btnImportTrigger.click();
+            break;
+        case 'vector_reset':
+            if (elements.btnResetVectors) elements.btnResetVectors.click();
+            break;
+        case 'sound_toggle':
+            if (elements.soundFxToggle) {
+                elements.soundFxToggle.checked = !elements.soundFxToggle.checked;
+                elements.soundFxToggle.dispatchEvent(new Event('change'));
+                alert("Audio Chimes are now " + (elements.soundFxToggle.checked ? "Enabled" : "Disabled"));
+            }
+            break;
+        default:
+            console.warn("Unknown command palette trigger: " + cmd);
+    }
+};
+
+// Dynamic Keyboard Shortcut Routing
+document.addEventListener("keydown", (e) => {
+    // 1. Ctrl + K / Cmd + K -> Search modal toggle
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        toggleGlobalSearch();
+    }
+    
+    // 2. Shift + A -> Command palette toggle
+    if (e.shiftKey && e.key.toLowerCase() === 'a') {
+        // Prevent typing A in text boxes
+        if (document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+            e.preventDefault();
+            toggleCommandPalette();
+        }
+    }
+    
+    // 3. Escape -> Close modals and overlay drawers
+    if (e.key === 'Escape') {
+        if (elements.searchModal && elements.searchModal.classList.contains("active")) {
+            toggleGlobalSearch();
+        }
+        if (elements.commandPalette && elements.commandPalette.classList.contains("active")) {
+            toggleCommandPalette();
+        }
+        if (document.getElementById("study-drawer").classList.contains("open")) {
+            closeStudyDrawer();
+        }
+    }
+    
+    // 4. Alt + 1-6 -> Tab Swapping
+    if (e.altKey && ['1', '2', '3', '4', '5', '6'].includes(e.key)) {
+        e.preventDefault();
+        const tabsList = ['dashboard', 'curriculum', 'portfolio', 'quiz', 'lab', 'settings', 'academies'];
+        // Alt+1 = dashboard, Alt+2 = academies, Alt+3 = curriculum, Alt+4 = portfolio, Alt+5 = quiz, Alt+6 = settings
+        const tabKeyMapping = {
+            '1': 'dashboard',
+            '2': 'academies',
+            '3': 'curriculum',
+            '4': 'portfolio',
+            '5': 'quiz',
+            '6': 'settings'
+        };
+        const targetTab = tabKeyMapping[e.key];
+        if (targetTab) {
+            switchTab(targetTab);
+        }
+    }
+    
+    // 5. Alt + L -> Toggle maximize/expand study drawer
+    if (e.altKey && e.key.toLowerCase() === 'l') {
+        e.preventDefault();
+        const drawer = document.getElementById("study-drawer");
+        if (drawer && drawer.classList.contains("open")) {
+            drawer.classList.toggle("maximized");
+        }
+    }
+    
+    // 6. Ctrl + ArrowRight / ArrowLeft -> Sequential tab switches
+    if (e.ctrlKey && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) {
+        const tabs = ['dashboard', 'academies', 'curriculum', 'portfolio', 'quiz', 'lab', 'settings'];
+        const currentActive = localStorage.getItem("AIM_GAMEDEV_ACTIVE_TAB") || "dashboard";
+        let currentIndex = tabs.indexOf(currentActive);
+        if (currentIndex !== -1) {
+            e.preventDefault();
+            if (e.key === 'ArrowRight') {
+                currentIndex = (currentIndex + 1) % tabs.length;
+            } else {
+                currentIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+            }
+            switchTab(tabs[currentIndex]);
+        }
+    }
+    
+    // 7. Local Modal Shortcuts (only triggered when command palette is closed and not typing in input fields)
+    if (e.altKey && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+        switch (e.key.toLowerCase()) {
+            case 't':
+                e.preventDefault();
+                if (elements.btnStartTimer) elements.btnStartTimer.click();
+                break;
+            case 'm':
+                e.preventDefault();
+                if (elements.btnToggleTimerMode) elements.btnToggleTimerMode.click();
+                break;
+            case 'e':
+                e.preventDefault();
+                if (elements.btnExportData) elements.btnExportData.click();
+                break;
+            case 'i':
+                e.preventDefault();
+                if (elements.btnImportTrigger) elements.btnImportTrigger.click();
+                break;
+            case 'r':
+                e.preventDefault();
+                if (elements.btnResetVectors) elements.btnResetVectors.click();
+                break;
+            case 's':
+                e.preventDefault();
+                if (elements.soundFxToggle) {
+                    elements.soundFxToggle.checked = !elements.soundFxToggle.checked;
+                    elements.soundFxToggle.dispatchEvent(new Event('change'));
+                }
+                break;
+        }
+    }
+});

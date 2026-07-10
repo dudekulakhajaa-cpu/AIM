@@ -15,14 +15,56 @@
         <aside class="sidebar">
             <div class="logo-area">
                 <span class="logo-glow"></span>
-                <div class="logo-text">AIM <span>GAME DEV</span></div>
+                <div class="logo-text">AIM <span id="logo-academy-suffix">GAME DEV</span></div>
                 <div class="logo-sub">Khaja · AIM for AAA</div>
+                
+                <div class="academy-dropdown-container" id="academy-dropdown">
+                    <div class="academy-dropdown-trigger" onclick="toggleAcademyDropdown(event)">
+                        <span class="academy-active-icon" id="active-academy-icon">🎮</span>
+                        <span id="active-academy-name">Game Dev University</span>
+                        <span class="academy-dropdown-chevron">▼</span>
+                    </div>
+                    <div class="academy-dropdown-menu" id="academy-dropdown-menu">
+                        <div class="academy-dropdown-item active" id="dropdown-item-game-development" onclick="switchAcademy('game-development')">
+                            <span class="item-icon">🎮</span>
+                            <div>
+                                <div class="item-title">Game Dev University</div>
+                                <div class="item-desc">AAA Gameplay Programming</div>
+                            </div>
+                        </div>
+                        <div class="academy-dropdown-item locked" id="dropdown-item-ai" onclick="switchAcademy('ai')">
+                            <span class="item-icon">🤖</span>
+                            <div>
+                                <div class="item-title">AI University <span class="lock-lbl">🔒</span></div>
+                                <div class="item-desc">Deep Learning & Neural Nets</div>
+                            </div>
+                        </div>
+                        <div class="academy-dropdown-item locked" id="dropdown-item-graphics" onclick="switchAcademy('graphics')">
+                            <span class="item-icon">✨</span>
+                            <div>
+                                <div class="item-title">Graphics Programming <span class="lock-lbl">🔒</span></div>
+                                <div class="item-desc">Vulkan, Shaders & Engines</div>
+                            </div>
+                        </div>
+                        <div class="academy-dropdown-item locked" id="dropdown-item-backend" onclick="switchAcademy('backend')">
+                            <span class="item-icon">💾</span>
+                            <div>
+                                <div class="item-title">Backend Systems <span class="lock-lbl">🔒</span></div>
+                                <div class="item-desc">High-throughput networks</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             
             <nav class="nav-menu">
                 <button class="nav-btn active" data-tab="dashboard">
                     <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
                     <span>Control Room</span>
+                </button>
+                <button class="nav-btn" data-tab="academies">
+                    <svg viewBox="0 0 24 24"><path d="M12 11.55C9.64 11.55 7.76 9.67 7.76 7.31S9.64 3.07 12 3.07s4.24 1.88 4.24 4.24-1.88 4.24-4.24 4.24zM12 13c-4.42 0-8 3.58-8 8h16c0-4.42-3.58-8-8-8z"/></svg>
+                    <span>Academies Portal</span>
                 </button>
                 <button class="nav-btn" data-tab="curriculum">
                     <svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12z"/></svg>
@@ -62,6 +104,9 @@
             <!-- Topbar -->
             <header class="topbar">
                 <div class="header-title">
+                    <nav class="breadcrumbs" id="breadcrumbs-trail">
+                        <!-- Populated dynamically by app.js -->
+                    </nav>
                     <h1 id="page-title">Control Room</h1>
                     <p class="tagline">Execute daily routines. Unlock high-performance milestones.</p>
                 </div>
@@ -78,6 +123,102 @@
 
             <!-- Tab Panels -->
             <div class="content-body">
+                
+                <!-- Tab 0: Academies Portal -->
+                <section class="tab-panel" id="tab-academies">
+                    <div class="curriculum-info-bar glass-card" style="margin-bottom: 20px;">
+                        <div class="info-metric">
+                            <span class="lbl">Active Academy</span>
+                            <span class="val" id="active-academy-lbl">Game Development University</span>
+                        </div>
+                        <div class="info-metric">
+                            <span class="lbl">Total Academies</span>
+                            <span class="val">1 Active / 4 Locked</span>
+                        </div>
+                    </div>
+                    
+                    <div class="academies-grid">
+                        <!-- Game Dev Card -->
+                        <div class="glass-card academy-card" onclick="switchAcademy('game-development')">
+                            <span class="academy-card-badge badge-active">Active</span>
+                            <h3>🎮 Game Development University</h3>
+                            <p>Master native modern C++, systems architecture, linear algebra, custom engines, and Unreal Engine gameplay framework to achieve AAA studio readiness.</p>
+                            <div class="academy-card-progress">
+                                <div class="academy-card-progress-text">
+                                    <span>Program Progress</span>
+                                    <span id="game-dev-progress-pct">0%</span>
+                                </div>
+                                <div class="progress-bar-wrapper">
+                                    <div class="progress-bar-fill" id="game-dev-progress-fill" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- AI Card -->
+                        <div class="glass-card academy-card locked-card">
+                            <span class="academy-card-badge badge-locked">Locked</span>
+                            <h3>🤖 Artificial Intelligence Academy</h3>
+                            <p>Build Deep Learning neural networks, ML pipelines, optimization models, and AI behaviors for games and robotics applications.</p>
+                            <div class="academy-card-progress">
+                                <div class="academy-card-progress-text">
+                                    <span>Program Progress</span>
+                                    <span>Locked</span>
+                                </div>
+                                <div class="progress-bar-wrapper">
+                                    <div class="progress-bar-fill" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Graphics Card -->
+                        <div class="glass-card academy-card locked-card">
+                            <span class="academy-card-badge badge-locked">Locked</span>
+                            <h3>✨ Graphics Programming Academy</h3>
+                            <p>Dive deep into OpenGL, Vulkan, DirectX, HLSL/GLSL shaders, rasterization math, raytracing architectures, and GPU profiling pipelines.</p>
+                            <div class="academy-card-progress">
+                                <div class="academy-card-progress-text">
+                                    <span>Program Progress</span>
+                                    <span>Locked</span>
+                                </div>
+                                <div class="progress-bar-wrapper">
+                                    <div class="progress-bar-fill" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Backend Card -->
+                        <div class="glass-card academy-card locked-card">
+                            <span class="academy-card-badge badge-locked">Locked</span>
+                            <h3>💾 Backend Systems University</h3>
+                            <p>Design high-throughput distributed architectures, microservices, databases, load balancing systems, and multithreaded network loops.</p>
+                            <div class="academy-card-progress">
+                                <div class="academy-card-progress-text">
+                                    <span>Program Progress</span>
+                                    <span>Locked</span>
+                                </div>
+                                <div class="progress-bar-wrapper">
+                                    <div class="progress-bar-fill" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- DevOps Card -->
+                        <div class="glass-card academy-card locked-card">
+                            <span class="academy-card-badge badge-locked">Locked</span>
+                            <h3>☁️ DevOps & Infrastructure</h3>
+                            <p>Master cloud resource orchestration, CI/CD pipeline automation, container clusters (Kubernetes), and site reliability engineering.</p>
+                            <div class="academy-card-progress">
+                                <div class="academy-card-progress-text">
+                                    <span>Program Progress</span>
+                                    <span>Locked</span>
+                                </div>
+                                <div class="progress-bar-wrapper">
+                                    <div class="progress-bar-fill" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
                 
                 <!-- Tab 1: Dashboard Home -->
                 <section class="tab-panel active" id="tab-dashboard">
@@ -543,6 +684,89 @@
     <!-- Backdrop Overlay for drawer -->
     <div id="drawer-overlay" class="drawer-overlay" onclick="closeStudyDrawer()"></div>
     
+    <!-- Global Search Modal Dialog -->
+    <div id="search-modal" class="modal-overlay" onclick="closeGlobalSearch(event)">
+        <div class="modal-container" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <span class="modal-search-icon">🔍</span>
+                <input type="text" id="search-input" class="modal-input" placeholder="Search lessons, quizzes, traps, concepts... (Ctrl+K)" oninput="filterSearchResults()">
+                <button class="modal-close-btn" onclick="toggleGlobalSearch()">&times;</button>
+            </div>
+            <div class="modal-filters">
+                <button class="filter-chip active" id="chip-all" onclick="setSearchFilter('all')">All</button>
+                <button class="filter-chip" id="chip-lessons" onclick="setSearchFilter('lesson')">Lessons</button>
+                <button class="filter-chip" id="chip-quizzes" onclick="setSearchFilter('quiz')">Quizzes</button>
+                <button class="filter-chip" id="chip-projects" onclick="setSearchFilter('project')">Projects</button>
+                <button class="filter-chip" id="chip-interviews" onclick="setSearchFilter('interview')">Interviews</button>
+                <button class="filter-chip" id="chip-bookmarks" onclick="setSearchFilter('bookmark')">🔖 Bookmarks</button>
+            </div>
+            <div class="modal-results" id="search-results-list">
+                <!-- Populated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Access Command Palette Modal -->
+    <div id="command-palette" class="modal-overlay" onclick="closeCommandPalette(event)">
+        <div class="modal-container" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <span class="modal-search-icon">⚡</span>
+                <span style="font-weight:600;font-size:15px;color:var(--color-text-secondary)">Quick Actions Command Palette</span>
+                <button class="modal-close-btn" style="margin-left:auto" onclick="toggleCommandPalette()">&times;</button>
+            </div>
+            <div class="modal-results" style="padding: 16px;">
+                <div class="palette-item" onclick="triggerPaletteCommand('timer_start')">
+                    <span>⏱️ Start focus session timer</span>
+                    <span class="palette-shortcut">Alt+T</span>
+                </div>
+                <div class="palette-item" onclick="triggerPaletteCommand('timer_mode')">
+                    <span>🔄 Switch study timer mode (Weekday/Weekend)</span>
+                    <span class="palette-shortcut">Alt+M</span>
+                </div>
+                <div class="palette-item" onclick="triggerPaletteCommand('backup_export')">
+                    <span>💾 Backup progress database (Download JSON)</span>
+                    <span class="palette-shortcut">Alt+E</span>
+                </div>
+                <div class="palette-item" onclick="triggerPaletteCommand('backup_import')">
+                    <span>📂 Upload progress backup (Trigger File Upload)</span>
+                    <span class="palette-shortcut">Alt+I</span>
+                </div>
+                <div class="palette-item" onclick="triggerPaletteCommand('vector_reset')">
+                    <span>📐 Reset Vector Lab endpoints</span>
+                    <span class="palette-shortcut">Alt+R</span>
+                </div>
+                <div class="palette-item" onclick="triggerPaletteCommand('sound_toggle')">
+                    <span>🔊 Toggle audio completion chimes</span>
+                    <span class="palette-shortcut">Alt+S</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Bottom Navigation Strip -->
+    <nav class="mobile-bottom-nav">
+        <button class="mobile-nav-btn active" data-tab="dashboard">
+            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            <span>Home</span>
+        </button>
+        <button class="mobile-nav-btn" data-tab="academies">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+            <span>Academies</span>
+        </button>
+        <button class="mobile-nav-btn" data-tab="curriculum">
+            <svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12z"/></svg>
+            <span>Curriculum</span>
+        </button>
+        <button class="mobile-nav-btn" data-tab="portfolio">
+            <svg viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-8-2h4v2h-4V4zm8 15H4V8h16v11z"/></svg>
+            <span>Portfolio</span>
+        </button>
+        <button class="mobile-nav-btn" data-tab="settings">
+            <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58z"/></svg>
+            <span>Config</span>
+        </button>
+    </nav>
+
     <script src="codex_data.js?v=1.2"></script>
     <script src="app.js?v=1.2"></script>
 </body>
