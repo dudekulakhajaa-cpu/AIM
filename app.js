@@ -1218,6 +1218,16 @@ function renderCurriculum() {
                                         `;
                                     }
                                     
+                                    const LESSON_MAP = {
+                                        "sem0_m2_u1": { course: "cpp", lesson: "variables" },
+                                        "sem0_m2_u8": { course: "cpp", lesson: "pointers" },
+                                        "sem0_m2_u9": { course: "cpp", lesson: "references" },
+                                        "sem2_m5": { course: "math", lesson: "vectors" }
+                                    };
+                                    
+                                    const lessonInfo = LESSON_MAP[item.id];
+                                    const lessonButton = lessonInfo ? `<a href="lesson.html#/lesson/${lessonInfo.course}/${lessonInfo.lesson}" target="_blank" class="btn btn-outline btn-xs btn-lesson" style="margin-left: 6px; border-color: rgba(255, 0, 127, 0.3); color: var(--neon-magenta);" onclick="event.stopPropagation();">🎓 Lesson</a>` : '';
+
                                     return `
                                     <div class="checklist-item-wrapper">
                                         <div class="checklist-item ${item.completed ? 'completed' : ''}">
@@ -1227,7 +1237,10 @@ function renderCurriculum() {
                                                 </div>
                                                 <span class="item-name" onclick="event.stopPropagation(); openStudyDrawer('${item.id}')">${item.name}</span>
                                             </div>
-                                            ${hasCodex ? `<button class="btn btn-outline btn-xs btn-codex" onclick="event.stopPropagation(); openStudyDrawer('${item.id}')">📖 Study</button>` : ''}
+                                            <div style="display: flex; gap: 4px;">
+                                                ${hasCodex ? `<button class="btn btn-outline btn-xs btn-codex" onclick="event.stopPropagation(); openStudyDrawer('${item.id}')">📖 Study</button>` : ''}
+                                                ${lessonButton}
+                                            </div>
                                         </div>
                                     </div>
                                     `;
