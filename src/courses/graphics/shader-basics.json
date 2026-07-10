@@ -1,0 +1,27 @@
+{
+  "id": "shader-basics",
+  "course": "Graphics & Engine",
+  "chapter": "Shading & GPU Tools",
+  "title": "Shader Basics (HLSL/GLSL)",
+  "difficulty": "Intermediate",
+  "duration": 25,
+  "description": "Learn HLSL/GLSL shading languages, compile pipelines, uniforms, and interpolating vertex properties.",
+  "prerequisites": ["rendering-pipeline"],
+  "learningObjectives": [
+    "Write basic vertex and pixel/fragment shader code",
+    "Pass variables from CPU to GPU registers using constant buffers/uniforms",
+    "Interpolate vertex color and texture coordinates across primitive raster surfaces"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "HLSL Shading and Constant Buffers",
+      "content": "Shaders are programs executed in parallel on GPU shader cores. High-Level Shading Language (HLSL) is the standard for DirectX/Windows, while OpenGL uses GLSL. \n\nVariables passed from the CPU that remain constant for the entire draw call (like the view matrix or light position) are uploaded to the GPU inside `Constant Buffers` (in HLSL) or `Uniforms` (in GLSL)."
+    },
+    {
+      "type": "example",
+      "title": "Simple HLSL Pixel Shader",
+      "content": "A basic HLSL pixel shader outputting a flat red color:\n\n```hlsl\n// HLSL Pixel Shader outputting colors for fragments\nfloat4 main() : SV_TARGET {\n    // Output Red, Green, Blue, Alpha (1.0f means full red, fully opaque)\n    return float4(1.0f, 0.0f, 0.0f, 1.0f);\n}\n```"
+    }
+  ]
+}

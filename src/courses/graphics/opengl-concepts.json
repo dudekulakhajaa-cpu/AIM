@@ -1,0 +1,27 @@
+{
+  "id": "opengl-concepts",
+  "course": "Graphics & Engine",
+  "chapter": "Rendering Foundations",
+  "title": "OpenGL Concepts & Setup",
+  "difficulty": "Intermediate",
+  "duration": 30,
+  "description": "Understand the OpenGL graphics API, state machine architecture, context creation, and shader loading.",
+  "prerequisites": ["rendering-pipeline"],
+  "learningObjectives": [
+    "Explain the OpenGL state-machine architecture paradigm",
+    "Configure OpenGL rendering contexts and handle buffer swaps",
+    "Upload vertex and index arrays to GPU memory buffers"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "State Machines and Contexts",
+      "content": "OpenGL is a cross-language, cross-platform graphics API. It is structured as a state machine: you bind shader contexts, configure test states (like enabling depth testing), and then submit draw commands. Data is uploaded to the GPU using Vertex Buffer Objects (VBO) and indexed using Element Buffer Objects (EBO) to prevent redundant vertex memory duplication."
+    },
+    {
+      "type": "example",
+      "title": "Uploading Vertex Buffers in OpenGL",
+      "content": "Binding and uploading vertex buffer coordinates to the GPU in C++:\n\n```cpp\n// Concept of GPU buffer allocations using OpenGL state binding\nunsigned int VBO, VAO;\nfloat Vertices[] = {\n    -0.5f, -0.5f, 0.0f, // Vertex 1\n     0.5f, -0.5f, 0.0f, // Vertex 2\n     0.0f,  0.5f, 0.0f  // Vertex 3\n};\n\nvoid UploadGeometry() {\n    // 1. Generate Buffer ID\n    // glGenBuffers(1, &VBO);\n    // 2. Bind buffer to target state\n    // glBindBuffer(GL_ARRAY_BUFFER, VBO);\n    // 3. Upload data block to GPU memory\n    // glBufferData(GL_ARRAY_BUFFER, sizeof(Vertices), Vertices, GL_STATIC_DRAW);\n}\n```"
+    }
+  ]
+}

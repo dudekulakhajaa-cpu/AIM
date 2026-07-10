@@ -1,0 +1,27 @@
+{
+  "id": "networking-concepts",
+  "course": "Advanced Game Programming",
+  "chapter": "Multiplayer & Networking",
+  "title": "Networking Concepts",
+  "difficulty": "Intermediate",
+  "duration": 30,
+  "description": "Compare TCP vs UDP, and explore packet loss, latency, jitter, and bandwidth optimization in game networking.",
+  "prerequisites": ["multiplayer-arch"],
+  "learningObjectives": [
+    "Contrast TCP reliability with UDP high-speed packet delivery",
+    "Identify latency, packet loss, and jitter issues",
+    "Select appropriate protocols for game state synchronization (movement vs chat)"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "TCP vs UDP for Real-time Games",
+      "content": "Network protocols define communication pipelines:\n\n1. **TCP**: Reliable, ordered, connection-oriented. Guarantees delivery by re-sending lost packets, but can block execution (Head-of-Line Blocking). Used for inventory updates or text chats.\n2. **UDP**: Fast, unreliable, connectionless. Packs data and sends it immediately. Ideal for positional updates where old coordinates are useless and speed is paramount."
+    },
+    {
+      "type": "example",
+      "title": "Unreal Network Protocol Layer",
+      "content": "Unreal Engine packages replication state data on top of UDP sockets, implementing a custom reliability mechanism (reliable RPCs) to re-send critical packets without blocking general positional packets."
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "rendering-pipeline",
+  "course": "Graphics & Engine",
+  "chapter": "Rendering Foundations",
+  "title": "Rendering Pipeline",
+  "difficulty": "Intermediate",
+  "duration": 30,
+  "description": "Understand the GPU hardware graphics rendering pipeline: vertex processing, rasterization, and pixel shading.",
+  "prerequisites": [],
+  "learningObjectives": [
+    "Trace geometry through the pipeline stages (Vertex, Rasterizer, Pixel, Output Merger)",
+    "Explain projection transformations from World Coordinates to Clip Space",
+    "Identify rendering bottlenecks at different pipeline stages"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Stages of the Graphics Pipeline",
+      "content": "The Graphics Pipeline translates 3D coordinate vertices into a 2D grid of pixels on your display monitor:\n\n1. **Input Assembler**: Gathers raw vertex buffers.\n2. **Vertex Shader**: Transforms vertex coordinates from local space to clip space. Calculates vertex animations.\n3. **Rasterizer**: Converts transformed 3D geometry lines into flat 2D pixel fragments.\n4. **Pixel Shader**: Calculates color values for each fragment. Applies textures and lighting calculations.\n5. **Output Merger**: Merges pixel depth values to resolve final frame rendering."
+    },
+    {
+      "type": "example",
+      "title": "Clip Space Coordinate Shift",
+      "content": "A simple vertex transformation formula inside graphics hardware:\n\n```hlsl\n// HLSL Vertex Shader calculation\nstruct VS_INPUT {\n    float4 Position : POSITION;\n};\n\nstruct VS_OUTPUT {\n    float4 Position : SV_POSITION;\n};\n\ncbuffer TransformBuffer : register(b0) {\n    float4x4 WVPMatrix; // World-View-Projection composition matrix\n};\n\nVS_OUTPUT Main(VS_INPUT Input) {\n    VS_OUTPUT Output;\n    // Multiply local position by WVP matrix to project to clip space\n    Output.Position = mul(Input.Position, WVPMatrix);\n    return Output;\n}\n```"
+    }
+  ]
+}

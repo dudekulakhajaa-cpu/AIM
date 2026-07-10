@@ -1,0 +1,27 @@
+{
+  "id": "how-computers-work",
+  "course": "Computer Fundamentals",
+  "chapter": "Computer Science Foundations",
+  "title": "How Computers Work",
+  "difficulty": "Beginner",
+  "duration": 20,
+  "description": "Understand CPU execution, memory registers, pointers, caches, and instructions from a low-level perspective.",
+  "prerequisites": [],
+  "learningObjectives": [
+    "Explain the Von Neumann architecture (CPU, RAM, I/O)",
+    "Describe registers, the program counter, and the Fetch-Decode-Execute cycle",
+    "Identify how C++ code maps to CPU machine instructions"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "The CPU and RAM Hierarchy",
+      "content": "At the hardware level, a computer consists of a Central Processing Unit (CPU) executing instructions from Random Access Memory (RAM). Because fetching from RAM is slow, CPUs contain tiny, ultra-fast memory storage units called Registers (like the Program Counter which tracks the active instruction address) and caches (L1, L2, L3) to speed up data execution flows."
+    },
+    {
+      "type": "example",
+      "title": "Mapping Code to Assembly Instructions",
+      "content": "A high-level C++ statement like adding values translates directly to assembly CPU commands:\n\n```assembly\n; C++: int x = a + b;\nMOV EAX, [a]  ; Load value of 'a' into accumulator register EAX\nADD EAX, [b]  ; Add value of 'b' to EAX register\nMOV [x], EAX  ; Store result back to memory address of 'x'\n```"
+    }
+  ]
+}

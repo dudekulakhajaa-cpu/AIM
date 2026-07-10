@@ -1,0 +1,27 @@
+{
+  "id": "hash-tables",
+  "course": "Core CS & Data Structures",
+  "chapter": "Data Structures",
+  "title": "Hash Tables & Collisions",
+  "difficulty": "Intermediate",
+  "duration": 25,
+  "description": "Master hash tables, hash functions, collision resolution mechanisms, and O(1) data lookup.",
+  "prerequisites": ["data-structures"],
+  "learningObjectives": [
+    "Explain key-to-index mapping via hash functions",
+    "Resolve collisions using Chaining or Open Addressing",
+    "Identify performance costs of hashing lookups in real-time updates"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Hash Map Internals and Collisions",
+      "content": "Hash tables map key objects to indices in a flat array using a Hash Function, enabling O(1) lookups. When two unique keys produce the same index (a Collision), the table resolves it via:\n\n1. **Chaining (Buckets)**: Storing colliding nodes in a linked list at that index.\n2. **Open Addressing**: Finding another empty slot nearby (Linear Probing, Double Hashing)."
+    },
+    {
+      "type": "example",
+      "title": "Simple Hash Function",
+      "content": "A basic string hash function (djb2 algorithm) commonly used in C++ mappings:\n\n```cpp\n#include <string>\n\nunsigned long GetHash(const std::string& Key) {\n    unsigned long Hash = 5381;\n    for (char C : Key) {\n        Hash = ((Hash << 5) + Hash) + C; // Hash * 33 + C\n    }\n    return Hash;\n}\n```"
+    }
+  ]
+}

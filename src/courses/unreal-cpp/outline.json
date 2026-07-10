@@ -1,0 +1,23 @@
+{
+  "courseId": "unreal-cpp",
+  "courseName": "Unreal C++ Integration",
+  "chapters": [
+    {
+      "chapterName": "Unreal C++ Architecture",
+      "lessons": [
+        { "id": "uobject-lifecycle", "title": "UObject Lifecycle & GC", "file": "uobject-lifecycle.json" },
+        { "id": "aactor-components", "title": "AActor & Components", "file": "aactor-components.json" },
+        { "id": "unreal-delegates", "title": "Delegates & Bindings", "file": "unreal-delegates.json" },
+        { "id": "reflection-system", "title": "Reflection & Garbage Collection", "file": "reflection-system.json" }
+      ]
+    },
+    {
+      "chapterName": "Advanced Gameplay Coding",
+      "lessons": [
+        { "id": "ai-systems", "title": "AI Behavior & Blackboard", "file": "ai-systems.json" },
+        { "id": "inventory-cpp", "title": "Inventory Systems in C++", "file": "inventory-cpp.json" },
+        { "id": "save-game", "title": "Save Game & Serialization", "file": "save-game.json" }
+      ]
+    }
+  ]
+}

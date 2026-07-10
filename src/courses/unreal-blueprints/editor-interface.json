@@ -1,0 +1,27 @@
+{
+  "id": "editor-interface",
+  "course": "Unreal Editor & Blueprints",
+  "chapter": "Unreal Engine Basics",
+  "title": "Unreal Editor Interface",
+  "difficulty": "Beginner",
+  "duration": 15,
+  "description": "Navigate the Unreal Engine 5 Editor interface, viewports, content browser, details panel, and world outliner.",
+  "prerequisites": [],
+  "learningObjectives": [
+    "Navigate viewports using standard control schemes",
+    "Manage asset importing and content folder structures",
+    "Manipulate transforms (translation, rotation, scale) of actors placed in levels"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Unreal Engine 5 Editor Panels",
+      "content": "The Unreal Editor provides tools to assemble levels and build logic:\n\n1. **Viewport**: 3D spatial window of the level.\n2. **Content Browser**: Local asset library manager (materials, meshes, blueprints).\n3. **Details Panel**: Shows properties and components of the selected actor.\n4. **World Outliner**: Hierarchical directory of all actors currently spawned in the loaded level."
+    },
+    {
+      "type": "example",
+      "title": "Configuring Actor Details",
+      "content": "When you select a static mesh actor in the Viewport, you configure its transform, collision profiles, and active material slots inside the Details panel, which writes coordinates directly to the actor's properties array."
+    }
+  ]
+}

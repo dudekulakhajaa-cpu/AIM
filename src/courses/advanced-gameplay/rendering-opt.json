@@ -1,0 +1,27 @@
+{
+  "id": "rendering-opt",
+  "course": "Advanced Game Programming",
+  "chapter": "Systems Optimizations",
+  "title": "Rendering Optimization",
+  "difficulty": "Advanced",
+  "duration": 30,
+  "description": "Optimize rendering pipelines: draw calls, instancing, LODs, occlusion culling, and GPU profiling.",
+  "prerequisites": [],
+  "learningObjectives": [
+    "Differentiate rendering bottlenecks: Draw Calls (CPU) vs Pixel Shading (GPU)",
+    "Implement Level of Detail (LOD) reductions for dense geometry meshes",
+    "Profile render states using GPU debugging tools like RenderDoc"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Draw Calls and Mesh Instancing",
+      "content": "A Draw Call is a command from the CPU to the GPU directing it to render a mesh. Every draw call introduces CPU overhead. Batching multiple meshes into a single draw call via Instanced Static Meshes (ISM) is critical for rendering dense fields (like grass or trees) without frame rate degradation. Level of Detail (LOD) systems swap high-poly meshes with lower-poly versions as distance from camera increases, saving vertex calculation costs."
+    },
+    {
+      "type": "example",
+      "title": "Instanced Static Meshes",
+      "content": "Instancing identical foliage meshes in Level blueprints. Instead of spawning 500 separate Static Mesh Actors (each triggering a unique draw call), you add a single `InstancedStaticMeshComponent` and register 500 transform offsets, rendering the entire batch in a single draw command."
+    }
+  ]
+}

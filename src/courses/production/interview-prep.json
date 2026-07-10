@@ -1,0 +1,27 @@
+{
+  "id": "interview-prep",
+  "course": "Production & Career",
+  "chapter": "Career Strategy",
+  "title": "AAA Interview Prep & Coding",
+  "difficulty": "Beginner",
+  "duration": 25,
+  "description": "Prepare for technical game developer interviews: C++ concepts, systems design, 3D math, and whiteboard coding.",
+  "prerequisites": [],
+  "learningObjectives": [
+    "Whiteboard standard CS algorithms and analyze Big O complexity",
+    "Resolve common C++ technical questions (virtual tables, smart pointers)",
+    "Explain 3D math transformations (dot/cross products, matrices)"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Technical Interview Structure",
+      "content": "AAA studio interviews evaluate three pillars:\n\n1. **Core C++**: Deep questions on pointers, references, memory allocation, vtable lookups, and modern standards.\n2. **3D Math**: Vector trigonometry, matrix multiplications, dot/cross products, and quaternion rotations.\n3. **Algorithms/Systems**: Spatial partitioning, collision sweeps, object pooling, and thread safety."
+    },
+    {
+      "type": "example",
+      "title": "Vtable Lookup Interview Question",
+      "content": "A classic interview question asks: 'If Class A has 3 virtual functions and is inherited by Class B which overrides 2, how many Vtables exist and how are calls dispatched?'\n\n- **Answer**: Two Vtables exist in memory (one for A, one for B). Calls are dispatched via the instance's hidden `vptr` which dereferences to the corresponding table, locating the resolved function address."
+    }
+  ]
+}

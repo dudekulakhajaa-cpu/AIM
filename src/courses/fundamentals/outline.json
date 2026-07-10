@@ -1,0 +1,14 @@
+{
+  "courseId": "fundamentals",
+  "courseName": "Computer Fundamentals",
+  "chapters": [
+    {
+      "chapterName": "Computer Science Foundations",
+      "lessons": [
+        { "id": "how-computers-work", "title": "How Computers Work", "file": "how-computers-work.json" },
+        { "id": "os-threading", "title": "Operating Systems & Threading", "file": "os-threading.json" },
+        { "id": "developer-setup", "title": "Developer Setup", "file": "developer-setup.json" }
+      ]
+    }
+  ]
+}

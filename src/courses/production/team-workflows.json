@@ -1,0 +1,27 @@
+{
+  "id": "team-workflows",
+  "course": "Production & Career",
+  "chapter": "Production Pipelines",
+  "title": "Team Workflows & Production",
+  "difficulty": "Beginner",
+  "duration": 15,
+  "description": "Understand Agile workflows, Scrum, sprints, Jira tracking, documentation, and code reviews.",
+  "prerequisites": [],
+  "learningObjectives": [
+    "Navigate Agile sprints, standups, and retrospective meetings",
+    "Track tasks, bugs, and milestones inside Jira boards",
+    "Participate in code reviews and write clean pull request descriptions"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Agile Sprints and Code Reviews",
+      "content": "Game production standardizes on Agile Scrum methodologies. Development is split into time-boxed intervals (Sprints, typically 2 weeks) tracked on Scrum boards (Jira). Pull Requests (PRs) enforce peer reviews before merging code changes into the main repository branch, preventing broken builds and validating architecture standards."
+    },
+    {
+      "type": "example",
+      "title": "Pull Request checklist",
+      "content": "A standard PR template. Before submitting code changes, engineers complete checks: verify code compiles, write down steps for manual QA testing, and attach performance logs (e.g. profiling stats showing no frame rate hitches)."
+    }
+  ]
+}

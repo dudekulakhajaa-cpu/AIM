@@ -1,0 +1,27 @@
+{
+  "id": "unit-testing",
+  "course": "Design & Software Architecture",
+  "chapter": "Testing & Debugging",
+  "title": "Unit Testing & TDD",
+  "difficulty": "Beginner",
+  "duration": 20,
+  "description": "Explore Unit Testing, test frameworks, assertions, and Test-Driven Development (TDD) loop flows.",
+  "prerequisites": [],
+  "learningObjectives": [
+    "Write isolated assertion test suites for gameplay logic",
+    "Identify red-green-refactor loops in Test-Driven Development",
+    "Design interfaces with mock dependencies for isolated unit test scenarios"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Isolated Assertions and Test Cycles",
+      "content": "Testing confirms code executes as specified. Unit tests run isolated tests targeting individual methods. Test-Driven Development (TDD) flips implementation ordering: write a failing test first (Red), implement code to pass test (Green), and optimize structure (Refactor). Testing code ensures future optimizations do not break existing game calculations."
+    },
+    {
+      "type": "example",
+      "title": "Simple Unit Test Assertion",
+      "content": "A basic calculation function test suite block:\n\n```cpp\n#include <cassert>\n\nfloat CalculateXPToNextLevel(int Level) {\n    return Level * 100.0f;\n}\n\nvoid TestXPFormula() {\n    // Assertions check assumptions at runtime or compile-time\n    assert(CalculateXPToNextLevel(1) == 100.0f);\n    assert(CalculateXPToNextLevel(2) == 200.0f);\n    assert(CalculateXPToNextLevel(5) == 500.0f);\n}\n```"
+    }
+  ]
+}

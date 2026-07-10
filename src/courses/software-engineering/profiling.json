@@ -1,0 +1,27 @@
+{
+  "id": "profiling",
+  "course": "Design & Software Architecture",
+  "chapter": "Testing & Debugging",
+  "title": "Profiling & Optimization",
+  "difficulty": "Intermediate",
+  "duration": 30,
+  "description": "Understand CPU/GPU profiling, frame time budgeting, hotspot identification, and memory leak tracking.",
+  "prerequisites": ["debugging"],
+  "learningObjectives": [
+    "Identify frame execution bottlenecks using profile instrumentation tools (Unreal Insights)",
+    "Differentiate CPU bottlenecks from GPU-bound pixel shading constraints",
+    "Identify expensive heap allocation hotspots in render tick sweeps"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Frame Time Budgets and Profilers",
+      "content": "Profiling measures execution performance. Frame Time Budget is the maximum time allowed for updates (16.6ms for 60 FPS, 33.3ms for 30 FPS). Profilers track call hierarchies and execution durations. \n\n1. **CPU Bottlenecks**: Caused by heavy collision logic, AI navigation, or serialization.\n2. **GPU Bottlenecks**: Caused by overdrawn transparent materials, dense lighting grids, or heavy post-processing shaders."
+    },
+    {
+      "type": "example",
+      "title": "Instrumenting Code with Profile Scopes",
+      "content": "Using RAII scope timers to profile execution blocks:\n\n```cpp\n#include <chrono>\n#include <iostream>\n#include <string>\n\nclass FProfileScope {\nprivate:\n    std::string Name;\n    std::chrono::steady_clock::time_point StartTime;\n\npublic:\n    FProfileScope(std::string InName) : Name(InName) {\n        StartTime = std::chrono::steady_clock::now();\n    }\n    ~FProfileScope() {\n        auto EndTime = std::chrono::steady_clock::now();\n        auto Duration = std::chrono::duration_cast<std::chrono::microseconds>(EndTime - StartTime).count();\n        std::cout << "[PROFILE] " << Name << " took " << Duration << " us." << std::endl;\n    }\n};\n\nvoid LoadResources() {\n    // Scope timer automatically logs duration on block exit!\n    FProfileScope Timer("LoadResources");\n    // Read file, initialize arrays...\n}\n```"
+    }
+  ]
+}

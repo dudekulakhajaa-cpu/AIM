@@ -1,0 +1,27 @@
+{
+  "id": "unreal-delegates",
+  "course": "Unreal C++ Integration",
+  "chapter": "Unreal C++ Architecture",
+  "title": "Delegates & Bindings",
+  "difficulty": "Intermediate",
+  "duration": 30,
+  "description": "Master Unreal delegates: Single-cast, Multi-cast, and Dynamic delegates for event-driven gameplay architectures.",
+  "prerequisites": ["uobject-lifecycle"],
+  "learningObjectives": [
+    "Differentiate Single-cast, Multi-cast, and Dynamic delegates",
+    "Declare custom delegate structures using Unreal Engine macros",
+    "Bind functions and execute delegates dynamically to trigger gameplay events"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Decoupled Event Handling via Delegates",
+      "content": "Unreal Engine uses Delegates to implement event-driven architectures. They are type-safe function pointers:\n\n1. **Single-cast**: Binds to only one function. Returns value.\n2. **Multi-cast**: Binds to multiple functions. Executed sequentially. No return values.\n3. **Dynamic**: Can be serialized and exposed to Blueprint graph editors (slower call cost)."
+    },
+    {
+      "type": "example",
+      "title": "Exposing Dynamic Multi-cast Delegates",
+      "content": "Exposing character death events to blueprints:\n\n```cpp\n#include "CoreMinimal.h"\n#include "GameFramework/Actor.h"\n#include "CombatActor.generated.h"\n\n// Declare dynamic multi-cast signature (accessible from BP)\nDECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDeathSignature, AActor*, Killer);\n\nUCLASS()\nclass ACombatActor : public AActor {\n    GENERATED_BODY()\n\npublic:\n    UPROPERTY(BlueprintAssignable, Category = "Combat")\n    FOnDeathSignature OnDeathEvent;\n\n    void ApplyFatalDamage(AActor* DamageCauser) {\n        // Broadcast calls all bound listener functions on server and clients\n        OnDeathEvent.Broadcast(DamageCauser);\n    }\n};\n```"
+    }
+  ]
+}

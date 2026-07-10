@@ -1,0 +1,27 @@
+{
+  "id": "developer-setup",
+  "course": "Computer Fundamentals",
+  "chapter": "Computer Science Foundations",
+  "title": "Developer Setup",
+  "difficulty": "Beginner",
+  "duration": 15,
+  "description": "Prepare compiler tools, IDE structures, and linker configurations for building C++ projects.",
+  "prerequisites": [],
+  "learningObjectives": [
+    "Differentiate compilers, linkers, and assemblers",
+    "Configure standard development environments like Visual Studio",
+    "Resolve common linker errors and compile-time issues"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Build Chain Foundations",
+      "content": "Compiling translates readable C++ text files into hardware machine instructions. The build pipeline consists of:\n\n1. **Preprocessor**: Expands headers (#include) and macros (#define).\n2. **Compiler**: Translates code to assembly/object files (.obj).\n3. **Linker**: Combines object files and external libraries into a single executable (.exe)."
+    },
+    {
+      "type": "example",
+      "title": "Unresolved External Symbol Errors",
+      "content": "One of the most common beginner compile hitches is a linker error (LNK2019: unresolved external symbol), indicating a function was declared in a header but the compiler could not find its compiled implementation object:\n\n```cpp\n// header.h\nvoid PrintPlayerStats(); // Declared\n\n// main.cpp\n#include "header.h"\nint main() {\n    PrintPlayerStats(); // LNK2019: Linker can't find compiled object for PrintPlayerStats!\n    return 0;\n}\n```"
+    }
+  ]
+}

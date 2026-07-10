@@ -1,0 +1,27 @@
+{
+  "id": "directx-concepts",
+  "course": "Graphics & Engine",
+  "chapter": "Rendering Foundations",
+  "title": "DirectX & Command Buffers",
+  "difficulty": "Intermediate",
+  "duration": 30,
+  "description": "Understand Microsoft DirectX graphics APIs (DX11 vs DX12), command queues, and descriptor heaps.",
+  "prerequisites": ["rendering-pipeline"],
+  "learningObjectives": [
+    "Differentiate high-level DX11 abstractions from low-level DX12 control pipelines",
+    "Record rendering instructions into Command Lists and submit them to Command Queues",
+    "Manage GPU descriptor resources using Descriptor Heaps"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Modern Low-Level API Pipelines",
+      "content": "Microsoft's DirectX APIs represent the graphics standard on Windows and Xbox. While DirectX 11 uses a single immediate context to execute commands sequentially, DirectX 12 moves to a low-level, multi-threaded model. \n\nIn DX12, you record draw instructions into multiple independent `Command Lists` concurrently across CPU cores, and submit them to a centralized `Command Queue` (the GPU work coordinator). This reduces CPU driver bottlenecks significantly but requires manual memory barrier synchronization (resource transitioning)."
+    },
+    {
+      "type": "example",
+      "title": "DirectX 12 Command Submission",
+      "content": "Recording and executing rendering commands in DX12:\n\n```cpp\n// Concept of DX12 API recording steps\nvoid RecordAndSubmitCommands() {\n    // 1. Reset command allocator and lists\n    // CommandAllocator->Reset();\n    // CommandList->Reset(CommandAllocator, InitialPipelineState);\n    \n    // 2. Record draw instructions\n    // CommandList->SetGraphicsRootSignature(RootSignature);\n    // CommandList->DrawIndexedInstanced(3, 1, 0, 0, 0);\n    \n    // 3. Close and execute command lists via the command queue coordinator\n    // CommandList->Close();\n    // ID3D12CommandList* ListArray[] = { CommandList };\n    // CommandQueue->ExecuteCommandLists(1, ListArray);\n}\n```"
+    }
+  ]
+}

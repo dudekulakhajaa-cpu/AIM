@@ -1,0 +1,27 @@
+{
+  "id": "portfolio-polish",
+  "course": "Production & Career",
+  "chapter": "Career Strategy",
+  "title": "Resume & Portfolio Polish",
+  "difficulty": "Beginner",
+  "duration": 20,
+  "description": "Construct game developer portfolios: showcasing gameplay features, structural code, breakdowns, and resume formatting.",
+  "prerequisites": [],
+  "learningObjectives": [
+    "Select and format gameplay features to highlight in breakdown videos",
+    "Structure GitHub repositories with clean README files and readable code files",
+    "Optimize resume formatting to target studio recruiters"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Portfolios and Code Showcases",
+      "content": "A strong portfolio is the single most important asset for getting a game developer job. Recruiters want to see concrete code: clean, structured, and performant. Showcasing technical breakdowns (e.g. explaining the mathematics of a custom pathfinding system or displaying profiling logs of an optimized system) is far more effective than just showing a finished gameplay video."
+    },
+    {
+      "type": "example",
+      "title": "GitHub Repository Structure",
+      "content": "A high-quality repository should include a clear README with GIFs showcasing gameplay features, detailed architecture diagrams mapping modules, and quick installation links, followed by folders separating clean code from raw assets."
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "solid-principles",
+  "course": "Design & Software Architecture",
+  "chapter": "Design Principles",
+  "title": "SOLID Principles",
+  "difficulty": "Intermediate",
+  "duration": 30,
+  "description": "Master Single Responsibility, Open-Closed, Liskov Substitution, Interface Segregation, and Dependency Inversion.",
+  "prerequisites": ["clean-code"],
+  "learningObjectives": [
+    "Explain all 5 SOLID design principles",
+    "Refactor rigid classes using Open-Closed inheritance hooks",
+    "Apply Dependency Inversion via Interfaces/Abstract classes to decouple modules"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "SOLID Design Patterns for Games",
+      "content": "SOLID principles guide OOP design:\n\n1. **Single Responsibility**: A class should have one reason to change.\n2. **Open-Closed**: Open for extension, closed for modification.\n3. **Liskov Substitution**: Derived types must be substituteable for their base types.\n4. **Interface Segregation**: Lean interfaces over massive, general-purpose ones.\n5. **Dependency Inversion**: Depend on abstractions, not concrete implementations."
+    },
+    {
+      "type": "example",
+      "title": "Dependency Inversion in Audio Systems",
+      "content": "Decoupling game classes from concrete audio libraries using abstract interfaces:\n\n```cpp\n// Abstract Interface class\nclass IAudioDevice {\npublic:\n    virtual ~IAudioDevice() {}\n    virtual void PlaySound(const char* AssetPath) = 0;\n};\n\n// Decoupled gameplay class accepts interface injection instead of concrete class dependency\nclass AButtonActor {\nprivate:\n    IAudioDevice* AudioSystem;\n\npublic:\n    AButtonActor(IAudioDevice* InAudio) : AudioSystem(InAudio) {}\n\n    void OnClicked() {\n        AudioSystem->PlaySound("Click.wav"); // Works with any concrete device implementation!\n    }\n};\n```"
+    }
+  ]
+}

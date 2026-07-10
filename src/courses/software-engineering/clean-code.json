@@ -1,0 +1,27 @@
+{
+  "id": "clean-code",
+  "course": "Design & Software Architecture",
+  "chapter": "Design Principles",
+  "title": "Clean Code Principles",
+  "difficulty": "Beginner",
+  "duration": 20,
+  "description": "Learn naming conventions, functions constraints, code formatting, and code readability standards.",
+  "prerequisites": [],
+  "learningObjectives": [
+    "Differentiate clean code from complex code structures",
+    "Apply clear naming conventions for classes, variables, and methods",
+    "Design small, single-purpose functions with minimal arguments"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Readability and Naming Conventions",
+      "content": "Clean code is code that is easy to read, test, and maintain. Code is read far more often than it is written. In AAA game development, where teams consist of hundreds of engineers, adhering to consistent styling guidelines (like PascalCase for variables and methods in Unreal) prevents misunderstandings. Functions should do one thing, do it well, and have no side effects."
+    },
+    {
+      "type": "example",
+      "title": "Refactoring to Clean Functions",
+      "content": "A comparison of complex code versus clean, readable code:\n\n```cpp\n// DIRTY CODE: Large function doing too many operations\nvoid Process(float dt) {\n    // Check state, loop through nodes, update positions, render meshes, play sounds...\n}\n\n// CLEAN CODE: Small, single-responsibility helper functions\nvoid UpdateGameplayTick(float DeltaTime) {\n    UpdatePlayerPositions(DeltaTime);\n    UpdateAIVisionChecks();\n    PruneExpiredParticles();\n}\n```"
+    }
+  ]
+}

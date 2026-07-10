@@ -1,0 +1,27 @@
+{
+  "id": "game-patterns",
+  "course": "Design & Software Architecture",
+  "chapter": "Game Architecture Patterns",
+  "title": "Game Programming Patterns",
+  "difficulty": "Intermediate",
+  "duration": 30,
+  "description": "Understand Game Loop, Update Method, Double Buffer, and Object Pool patterns for performance.",
+  "prerequisites": ["creational-patterns"],
+  "learningObjectives": [
+    "Design structure of a decoupled core Game Loop",
+    "Apply the Double Buffer pattern to render graphics without tearing",
+    "Implement an Object Pool to reuse bullet instances and prevent memory fragmentation"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Performance Patterns for Games",
+      "content": "Games have execution constraints. The Game Loop drives inputs, physics updates, and rendering. The Double Buffer pattern prevents rendering half-drawn frames by writing to a back buffer while showing the front buffer. Object Pools instantiate a batch of objects (like projectile bullets) in a flat array on startup and disable/enable them dynamically, avoiding high-latency runtime heap allocations."
+    },
+    {
+      "type": "example",
+      "title": "Object Pool Implementation",
+      "content": "A simple array-based particle object pool:\n\n```cpp\n#include <vector>\n\nstruct FProjectile {\n    bool IsActive = false;\n    float Position = 0.0f;\n};\n\nclass UProjectilePool {\nprivate:\n    std::vector<FProjectile> Pool;\n\npublic:\n    UProjectilePool(int Size) {\n        Pool.resize(Size);\n    }\n\n    FProjectile* Spawn() {\n        for (auto& Item : Pool) {\n            if (!Item.IsActive) {\n                Item.IsActive = true;\n                Item.Position = 0.0f;\n                return &Item; // Reuses index instead of dynamic allocation!\n            }\n        }\n        return nullptr; // Pool fully exhausted\n    }\n};\n```"
+    }
+  ]
+}

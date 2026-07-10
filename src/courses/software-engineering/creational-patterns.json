@@ -1,0 +1,27 @@
+{
+  "id": "creational-patterns",
+  "course": "Design & Software Architecture",
+  "chapter": "Game Architecture Patterns",
+  "title": "Design Patterns",
+  "difficulty": "Intermediate",
+  "duration": 30,
+  "description": "Explore Factory, Singleton, Observer, and Command design patterns in game systems.",
+  "prerequisites": ["solid-principles"],
+  "learningObjectives": [
+    "Implement Factory patterns to create dynamic spawns",
+    "Identify pitfalls of using global singletons in multi-threaded loops",
+    "Decouple systems using the Observer (Event/Listener) pattern"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Common Design Patterns",
+      "content": "Design patterns represent standard solutions to common software design problems. The Observer (event-listener) pattern decouples systems (e.g. character takes damage, triggers UI updates and health bars without character class knowing UI exists). Singletons represent global managers, but introduce global state dependencies and should be used with extreme caution."
+    },
+    {
+      "type": "example",
+      "title": "Decoupled Event Listeners (Observer)",
+      "content": "A basic event dispatcher pattern in C++ gameplay coding:\n\n```cpp\n#include <vector>\n\nclass IHealthListener {\npublic:\n    virtual ~IHealthListener() {}\n    virtual void OnHealthChanged(float NewHealth) = 0;\n};\n\nclass UCharacterStats {\nprivate:\n    std::vector<IHealthListener*> Listeners;\n    float Health = 100.0f;\n\npublic:\n    void RegisterListener(IHealthListener* Listener) {\n        Listeners.push_back(Listener);\n    }\n\n    void ApplyDamage(float Amt) {\n        Health -= Amt;\n        for (auto* L : Listeners) {\n            L->OnHealthChanged(Health); // Triggers updates decoupling concrete UI or Audio\n        }\n    }\n};\n```"
+    }
+  ]
+}

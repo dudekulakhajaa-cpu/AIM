@@ -1,0 +1,27 @@
+{
+  "id": "material-shader-graph",
+  "course": "Unreal Editor & Blueprints",
+  "chapter": "Scripting & Assets",
+  "title": "Materials & Shader Graphs",
+  "difficulty": "Beginner",
+  "duration": 20,
+  "description": "Create surface shaders using Unreal's node-based Material Editor, blending color, roughness, and normals.",
+  "prerequisites": ["editor-interface"],
+  "learningObjectives": [
+    "Identify PBR material properties (Base Color, Metallic, Specular, Roughness, Normal)",
+    "Implement texture coordinate offsets (panning) inside shader node networks",
+    "Differentiate static material assets from dynamic Material Instances parameterized at runtime"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Physically Based Rendering Shaders",
+      "content": "Unreal's Material Editor compiles node graphs into HLSL graphics instructions. Surface rendering standardizes on Physically Based Rendering (PBR), calculating light reflection using parameters like Roughness (matte vs shiny), Metallic (dielectric vs metal), and Normal Maps (micro-bump details). Material Instances allow modifying variables (parameters) at runtime without triggering heavy compile operations."
+    },
+    {
+      "type": "example",
+      "title": "Panning Normal Texture Coordinates",
+      "content": "A material node setup calculating flowing water. You feed a Texture Coordinate node into a Panner node (with speed values), and connect the resulting modified coordinate pins directly to a normal map sampler input."
+    }
+  ]
+}

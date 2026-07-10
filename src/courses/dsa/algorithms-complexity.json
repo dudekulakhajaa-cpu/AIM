@@ -1,0 +1,27 @@
+{
+  "id": "algorithms-complexity",
+  "course": "Core CS & Data Structures",
+  "chapter": "Algorithms & Systems",
+  "title": "Algorithms & Complexity",
+  "difficulty": "Beginner",
+  "duration": 20,
+  "description": "Understand Big O notation, time/space complexity analysis, and standard sorting/searching algorithms.",
+  "prerequisites": [],
+  "learningObjectives": [
+    "Read and write Big O notation for time and space complexities",
+    "Analyze sequential loop execution time parameters",
+    "Compare search complexities: O(N) linear search vs O(log N) binary search"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Big O Notation and Scalability",
+      "content": "Big O notation measures algorithm scaling relative to input size (N). In game loops running at 60 FPS, execution budgets are tight (~16.6ms per frame). An O(N^2) double-loop (like basic particle collision tests) will quickly cause frame rate hitching as entity count rises. Optimizing these to O(N log N) or O(N) via spatial division is mandatory for AAA scale."
+    },
+    {
+      "type": "example",
+      "title": "Binary Search (O(log N))",
+      "content": "Searching a sorted inventory array using binary division:\n\n```cpp\n#include <vector>\n\nint BinarySearch(const std::vector<int>& SortedArray, int Target) {\n    int Low = 0;\n    int High = SortedArray.size() - 1;\n    \n    while (Low <= High) {\n        int Mid = Low + (High - Low) / 2;\n        if (SortedArray[Mid] == Target) return Mid;\n        if (SortedArray[Mid] < Target) Low = Mid + 1;\n        else High = Mid - 1;\n    }\n    return -1; // Not found\n}\n```"
+    }
+  ]
+}

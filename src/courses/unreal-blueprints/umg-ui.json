@@ -1,0 +1,27 @@
+{
+  "id": "umg-ui",
+  "course": "Unreal Editor & Blueprints",
+  "chapter": "Physics, UI & Audio",
+  "title": "UI Creation with UMG",
+  "difficulty": "Beginner",
+  "duration": 20,
+  "description": "Construct user interfaces using Unreal Motion Graphics (UMG), widgets, and event dispatchers.",
+  "prerequisites": ["blueprints-basics"],
+  "learningObjectives": [
+    "Assemble layouts using UMG canvas panels, grids, and progress bars",
+    "Bind variables dynamically to display stats (health, ammo)",
+    "Implement UI event handlers (button click dispatchers) inside widget blueprints"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Unreal Motion Graphics Interfaces",
+      "content": "Unreal Motion Graphics (UMG) builds layouts via Widget Blueprints. Widgets consist of a Designer View (visual hierarchy like canvas panels, text boxes, and status bars) and a Graph View (blueprints script code). \n\nBinding variables directly to widgets calls values every frame, which can degrade rendering performance. Using event dispatchers to update UI text values only when change events occur is highly recommended."
+    },
+    {
+      "type": "example",
+      "title": "Event-Driven UI Updates",
+      "content": "Instead of polling health variables inside UMG widgets on Tick, the HUD widget registers a callback: `OnHealthChanged` binds a listener that explicitly modifies the HUD progress bar percentage parameter only when character stats are modified."
+    }
+  ]
+}

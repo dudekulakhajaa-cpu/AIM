@@ -1,0 +1,27 @@
+{
+  "id": "debugging",
+  "course": "Design & Software Architecture",
+  "chapter": "Testing & Debugging",
+  "title": "Debugging Strategies",
+  "difficulty": "Intermediate",
+  "duration": 25,
+  "description": "Master breakpoints, stack traces, watch variables, memory dumps, and address sanitizers.",
+  "prerequisites": [],
+  "learningObjectives": [
+    "Navigate Visual Studio debugger options (step-over, step-into, step-out)",
+    "Inspect local variable register values and evaluate stack frames",
+    "Analyze crash dump files to trace memory leak sources"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Breakpoints and Call Stack Inspection",
+      "content": "Debugging allows you to suspend process execution and examine state variables. A Breakpoint halts execution on a line. The Call Stack pane lists all active nested function returns. Inspecting these is crucial for tracing how a null pointer was passed into a subsystem. Address Sanitizers (ASan) are compiler options instrumenting binary files to immediately throw exceptions on memory out-of-bound errors."
+    },
+    {
+      "type": "example",
+      "title": "Inspecting Variable Watch States",
+      "content": "Conditional breakpoints can halt execution only when variables violate boundaries, e.g. when speed values turn negative:\n\n```cpp\n// Breakpoint set here in IDE\n// Condition: Speed < 0.0f\nvoid UpdateSpeed(float& Speed, float Acceleration, float dt) {\n    Speed += Acceleration * dt;\n}\n```"
+    }
+  ]
+}

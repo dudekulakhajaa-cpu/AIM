@@ -1,0 +1,27 @@
+{
+  "id": "post-processing",
+  "course": "Graphics & Engine",
+  "chapter": "Shading & GPU Tools",
+  "title": "Post Processing Shaders",
+  "difficulty": "Intermediate",
+  "duration": 25,
+  "description": "Learn screen space effects, render targets, framebuffers, color grading, tone mapping, and bloom shaders.",
+  "prerequisites": ["shader-basics"],
+  "learningObjectives": [
+    "Render scenes into off-screen Framebuffer objects (Render Targets)",
+    "Apply shaders on screen-aligned quads (Screen Space)",
+    "Implement color grading, vignettes, and Reinhard Tone Mapping equations"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Render Targets and Full-screen Quads",
+      "content": "Post-processing applies effects after the 3D scene is rendered. We redirect rendering from the screen to an off-screen texture called a Render Target (attached to a Framebuffer Object). We then render a flat, full-screen quad (two triangles covering the screen) and sample that texture, applying pixel shader calculations (like vignette margins, color grading LUTs, or Reinhard tone mapping to scale HDR lighting into LDR monitors)."
+    },
+    {
+      "type": "example",
+      "title": "Reinhard Tone Mapping in HLSL",
+      "content": "Compressing High Dynamic Range (HDR) colors to Standard Dynamic Range (SDR) space:\n\n```hlsl\n// HLSL Tone mapping shader snippet\nfloat3 ReinhardToneMap(float3 HDRColor) {\n    // Formula: Color = Color / (Color + 1)\n    float3 LDRColor = HDRColor / (HDRColor + float3(1.0f, 1.0f, 1.0f));\n    return LDRColor;\n}\n```"
+    }
+  ]
+}

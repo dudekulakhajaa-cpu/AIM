@@ -1,0 +1,27 @@
+{
+  "id": "gameplay-framework",
+  "course": "Unreal Editor & Blueprints",
+  "chapter": "Unreal Engine Basics",
+  "title": "Gameplay Framework",
+  "difficulty": "Beginner",
+  "duration": 25,
+  "description": "Understand GameMode, PlayerController, Pawn, Character, GameState, and PlayerState in Unreal.",
+  "prerequisites": ["editor-interface"],
+  "learningObjectives": [
+    "Identify responsibilities of the Unreal Gameplay Framework classes",
+    "Configure custom GameMode rules and assign default spawning pawn classes",
+    "Explain the division between PlayerController input logic and Pawn physical simulation representation"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Gameplay Architecture Classes",
+      "content": "Unreal divides game rules, simulation representations, and player inputs into dedicated classes:\n\n1. **GameModeBase**: Rules of the game (e.g. victory conditions, default spawns). Only exists on the server.\n2. **PlayerController**: The interface translating player physical inputs into gameplay actions.\n3. **Pawn**: Any actor that can be possessed by a controller and receive inputs.\n4. **Character**: A specialized Pawn containing a Movement Component designed for walking, jumping, and swimming simulation."
+    },
+    {
+      "type": "example",
+      "title": "Possession Flow",
+      "content": "When a level loads, the GameMode instantiates the PlayerController. The controller then possess the player character Pawn, establishing the link to route hardware keyboard/mouse signals to movement vectors."
+    }
+  ]
+}

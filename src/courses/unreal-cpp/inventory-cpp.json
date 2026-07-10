@@ -1,0 +1,27 @@
+{
+  "id": "inventory-cpp",
+  "course": "Unreal C++ Integration",
+  "chapter": "Advanced Gameplay Coding",
+  "title": "Inventory Systems in C++",
+  "difficulty": "Intermediate",
+  "duration": 30,
+  "description": "Design modular inventory systems in Unreal C++ using data assets, structures, and actor components.",
+  "prerequisites": ["aactor-components"],
+  "learningObjectives": [
+    "Define item data structures using USTRUCT and Data Assets",
+    "Implement an Actor Component managing array slots and items",
+    "Expose item properties for usage in UMG UI widgets"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Item Data Assets and Inventory Component",
+      "content": "Designing inventories in C++ involves separating item static templates (definition) from dynamic instance data:\n\n1. **UPrimaryDataAsset**: Stores static properties of an item type (icon, name, description, static mesh).\n2. **FInventorySlot**: Stores dynamic instance parameters (quantity, durability, metadata).\n3. **UActorComponent**: Manages the array of slots and implements add/remove item routines."
+    },
+    {
+      "type": "example",
+      "title": "Inventory Slot Structure",
+      "content": "Declaring inventory slot structures and item data asset references:\n\n```cpp\n#include "Engine/DataAsset.h"\n#include "ItemSlot.generated.h"\n\nUCLASS()\nclass UItemDataAsset : public UPrimaryDataAsset {\n    GENERATED_BODY()\npublic:\n    UPROPERTY(EditDefaultsOnly, Category = "Details")\n    FText ItemName;\n};\n\nUSTRUCT(BlueprintType)\nstruct FItemSlot {\n    GENERATED_BODY()\n\n    UPROPERTY(EditAnywhere, BlueprintReadOnly)\n    UItemDataAsset* ItemData = nullptr;\n\n    UPROPERTY(EditAnywhere, BlueprintReadOnly)\n    int32 StackCount = 1;\n};\n```"
+    }
+  ]
+}

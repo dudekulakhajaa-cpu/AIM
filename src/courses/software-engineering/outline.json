@@ -1,0 +1,29 @@
+{
+  "courseId": "software-engineering",
+  "courseName": "Design & Software Architecture",
+  "chapters": [
+    {
+      "chapterName": "Design Principles",
+      "lessons": [
+        { "id": "clean-code", "title": "Clean Code Principles", "file": "clean-code.json" },
+        { "id": "solid-principles", "title": "SOLID Principles", "file": "solid-principles.json" }
+      ]
+    },
+    {
+      "chapterName": "Game Architecture Patterns",
+      "lessons": [
+        { "id": "creational-patterns", "title": "Design Patterns", "file": "creational-patterns.json" },
+        { "id": "game-patterns", "title": "Game Programming Patterns", "file": "game-patterns.json" },
+        { "id": "ecs", "title": "Entity Component System (ECS)", "file": "ecs.json" }
+      ]
+    },
+    {
+      "chapterName": "Testing & Debugging",
+      "lessons": [
+        { "id": "unit-testing", "title": "Unit Testing & TDD", "file": "unit-testing.json" },
+        { "id": "debugging", "title": "Debugging Strategies", "file": "debugging.json" },
+        { "id": "profiling", "title": "Profiling & Optimization", "file": "profiling.json" }
+      ]
+    }
+  ]
+}

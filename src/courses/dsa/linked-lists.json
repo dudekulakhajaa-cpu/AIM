@@ -1,0 +1,27 @@
+{
+  "id": "linked-lists",
+  "course": "Core CS & Data Structures",
+  "chapter": "Data Structures",
+  "title": "Linked Lists",
+  "difficulty": "Intermediate",
+  "duration": 25,
+  "description": "Master Single, Double, and Circular Linked Lists, node allocations, and pointer manipulations.",
+  "prerequisites": ["data-structures"],
+  "learningObjectives": [
+    "Differentiate Singly Linked Lists from Doubly Linked Lists",
+    "Perform insert and delete node operations on lists",
+    "Identify memory fragmentation costs of node-based lists in game engines"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Node allocations and Pointer links",
+      "content": "Unlike arrays, Linked Lists store elements scattered in memory, connected via pointers. Inserting or deleting elements requires only changing pointer references (O(1) complexity), making them highly efficient for dynamic buffers. However, because nodes are allocated randomly on the heap, traversing a list causes constant CPU cache misses, making them slower than arrays for bulk gameplay updates."
+    },
+    {
+      "type": "example",
+      "title": "Singly Linked List Implementation",
+      "content": "Declaring nodes and manipulating pointer links in C++:\n\n```cpp\nstruct FListNode {\n    int Data;\n    FListNode* Next = nullptr;\n    \n    FListNode(int InVal) : Data(InVal) {}\n};\n\nvoid InsertNode(FListNode* Head, int NewVal) {\n    FListNode* NewNode = new FListNode(NewVal);\n    // Insert right after head\n    NewNode->Next = Head->Next;\n    Head->Next = NewNode;\n}\n```"
+    }
+  ]
+}

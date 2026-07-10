@@ -1,0 +1,27 @@
+{
+  "id": "audio-sounds",
+  "course": "Unreal Editor & Blueprints",
+  "chapter": "Physics, UI & Audio",
+  "title": "Audio & MetaSounds",
+  "difficulty": "Beginner",
+  "duration": 20,
+  "description": "Understand Unreal's audio engine, spatialization, attenuation curves, Sound Cues, and MetaSounds.",
+  "prerequisites": ["editor-interface"],
+  "learningObjectives": [
+    "Differentiate standard Sound Wave assets from procedural Sound Cues",
+    "Configure 3D Spatialization and Attenuation (volume falloff over distance)",
+    "Build procedural synthesis audio patches using the MetaSounds node system"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Unreal Audio Pipelines",
+      "content": "Unreal's audio system synthesizes and directs game sounds. Sound Cues combine sound waves with math operators to randomize pitch and volume, preventing repetitive audio loops. MetaSounds introduces a procedural, node-based digital signal processing (DSP) synthesis engine, enabling sample-accurate audio patching and complex procedural sounds directly inside the game executable."
+    },
+    {
+      "type": "example",
+      "title": "Sound Attenuation",
+      "content": "Attenuation limits sound ranges. Placing a campfire sound in a level requires linking an Attenuation asset defining an inner radius (full volume) and falloff radius (silent) to prevent the audio from playing globally."
+    }
+  ]
+}

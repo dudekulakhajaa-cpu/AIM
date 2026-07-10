@@ -1,0 +1,27 @@
+{
+  "id": "advanced-ai",
+  "course": "Advanced Game Programming",
+  "chapter": "Systems Optimizations",
+  "title": "Advanced AI (EQS & Utility AI)",
+  "difficulty": "Advanced",
+  "duration": 30,
+  "description": "Explore Unreal's Environment Query System (EQS), utility-based AI models, and performance-efficient AI sensory systems.",
+  "prerequisites": [],
+  "learningObjectives": [
+    "Query environmental pathways using Unreal's Environment Query System (EQS)",
+    "Implement Utility AI algorithms evaluating multiple priority curves",
+    "Configure AI Perception components for vision, hearing, and damage senses"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "EQS Queries and Utility AI",
+      "content": "Advanced game AI requires environmental awareness. Unreal's Environment Query System (EQS) queries locations around an AI using spatial tests (e.g. 'find a cover point that blocks line-of-sight to player but allows shooting'). Utility AI evaluates multiple competing actions (e.g. flee, attack, heal) by running variables (like health or ammo) through mathematical curves to determine the action with the highest utility score."
+    },
+    {
+      "type": "example",
+      "title": "EQS Query Blueprint Node",
+      "content": "An EQS query generates grid points around the AI, runs tests (Distance to Player, Trace visibility), scores each point, and returns the point with the highest rating for the AI pathfinding to navigate to."
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "multiplayer-arch",
+  "course": "Advanced Game Programming",
+  "chapter": "Multiplayer & Networking",
+  "title": "Multiplayer Architecture",
+  "difficulty": "Intermediate",
+  "duration": 30,
+  "description": "Understand the Server-Client network model, Dedicated vs Listen servers, and authority validation in multiplayer games.",
+  "prerequisites": [],
+  "learningObjectives": [
+    "Differentiate Dedicated Servers from Listen Servers",
+    "Explain the authoritative server model ('the server is the source of truth')",
+    "Design validation checks to prevent clients from cheating"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Dedicated Servers and Authority Validation",
+      "content": "Multiplayer games use the Server-Client architecture. The server acts as the absolute authority (Source of Truth) for all gameplay state calculations. Clients send request coordinates and button click events, and the server validates inputs and runs calculation ticks. Dedicated Servers run headless (no graphics or sound rendering) in cloud nodes, while Listen Servers host gameplay on one player's machine."
+    },
+    {
+      "type": "example",
+      "title": "Validating Hit Points on the Server",
+      "content": "Why damage logic must execute exclusively on the server:\n\n```cpp\nvoid AMyCharacter::ApplyDamage_ServerOnly(float Amount) {\n    // Check authority before updating critical stats\n    if (HasAuthority()) {\n        Health -= Amount;\n        if (Health <= 0.0f) {\n            Die();\n        }\n    }\n}\n```"
+    }
+  ]
+}

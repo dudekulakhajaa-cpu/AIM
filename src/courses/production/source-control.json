@@ -1,0 +1,27 @@
+{
+  "id": "source-control",
+  "course": "Production & Career",
+  "chapter": "Production Pipelines",
+  "title": "Source Control (Perforce/Git)",
+  "difficulty": "Beginner",
+  "duration": 20,
+  "description": "Master version control structures: Perforce (P4) locks, Git LFS for binary files, merge conflicts, and branching workflows.",
+  "prerequisites": [],
+  "learningObjectives": [
+    "Differentiate centralized systems (Perforce) from distributed systems (Git)",
+    "Manage large binary assets (textures, meshes) using Git LFS or Perforce depots",
+    "Resolve merge conflicts and handle file locks on binary assets"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Version Control for AAA Games",
+      "content": "Real-time game projects contain huge binary assets (GB-sized textures, levels, models) that cannot be merged like text files. \n\n1. **Perforce (P4)**: Centralized. Standard in AAA. Supports exclusive file locking (`p4 checkout`), preventing two artists from editing the same binary asset simultaneously.\n2. **Git**: Distributed. Lightweight for code. Requires Git LFS (Large File Storage) extension to redirect large binary pointers to external servers instead of bloating the code history size."
+    },
+    {
+      "type": "example",
+      "title": "Git LFS Config File (.gitattributes)",
+      "content": "Configuring Git to route binary files through Large File Storage instead of direct repository commits:\n\n```text\n# Force binary mesh and texture extensions to use LFS pointers\n*.uasset filter=lfs diff=lfs merge=lfs -text\n*.umap filter=lfs diff=lfs merge=lfs -text\n*.png filter=lfs diff=lfs merge=lfs -text\n*.fbx filter=lfs diff=lfs merge=lfs -text\n```"
+    }
+  ]
+}

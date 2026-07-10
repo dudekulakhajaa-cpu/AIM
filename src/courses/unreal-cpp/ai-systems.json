@@ -1,0 +1,27 @@
+{
+  "id": "ai-systems",
+  "course": "Unreal C++ Integration",
+  "chapter": "Advanced Gameplay Coding",
+  "title": "AI Behavior & Blackboard",
+  "difficulty": "Intermediate",
+  "duration": 30,
+  "description": "Understand AIControllers, Behavior Trees, Blackboards, Behavior Tree Tasks, and NavMesh navigation in Unreal.",
+  "prerequisites": ["aactor-components"],
+  "learningObjectives": [
+    "Differentiate AIControllers from possessed Character Pawns",
+    "Define AI states and target keys using Blackboard structures",
+    "Create custom Behavior Tree Tasks in C++ to direct AI movements"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Behavior Trees and Blackboards",
+      "content": "Unreal Engine AI consists of:\n\n1. **AIController**: The controller possessing the AI pawn. Runs execution ticks.\n2. **Blackboard**: Memory storage containing keys (variables like `TargetActor` or `SelfLocation`).\n3. **Behavior Tree**: Execution flowchart directing AI behavior based on blackboard keys (e.g. sequence: check target → move to target → attack target)."
+    },
+    {
+      "type": "example",
+      "title": "Custom Behavior Tree Task in C++",
+      "content": "Writing a custom C++ task to trigger a dash movement on the AI Character:\n\n```cpp\n#include "BehaviorTree/BTTaskNode.h"\n#include "AIController.h"\n#include "MyBTTask.generated.h"\n\nUCLASS()\nclass UBTTask_DashAttack : public UBTTaskNode {\n    GENERATED_BODY()\n\n    virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override {\n        AAIController* MyController = OwnerComp.GetAIOwner();\n        if (!MyController) return EBTNodeResult::Failed;\n        \n        APawn* AIPawn = MyController->GetPawn();\n        // Execute character specific dash attack actions...\n        \n        return EBTNodeResult::Succeeded;\n    }\n};\n```"
+    }
+  ]
+}

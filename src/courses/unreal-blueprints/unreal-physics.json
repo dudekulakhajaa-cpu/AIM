@@ -1,0 +1,27 @@
+{
+  "id": "unreal-physics",
+  "course": "Unreal Editor & Blueprints",
+  "chapter": "Physics, UI & Audio",
+  "title": "Physics Engine & Collisions",
+  "difficulty": "Beginner",
+  "duration": 20,
+  "description": "Configure collision profiles, object channels, line traces, raycasts, and physics materials.",
+  "prerequisites": ["editor-interface"],
+  "learningObjectives": [
+    "Differentiate collision options: Ignore, Overlap, and Block",
+    "Configure custom Collision Object Channels and Trace Presets",
+    "Perform Single Line Traces by Channel to detect hit results in gameplay code"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Collisions and Trace Channels",
+      "content": "Unreal's physics engine manages physical simulation and intersection queries. Collision behaviors are:\n\n1. **Ignore**: No overlap events or physics blocks.\n2. **Overlap**: Generates trigger events (OverlapBegin) but permits penetration. Used for sensors.\n3. **Block**: Prevents penetration. Triggers hit events. Used for solid geometry.\n\nRaycasting (Line Traces) queries spatial corridors to detect targets (e.g. gun shooting mechanics check if trace hits a target box)."
+    },
+    {
+      "type": "example",
+      "title": "Line Trace for Gun Hits",
+      "content": "Performing a query trace from a camera location forward:\n\n```cpp\n// Concept of executing queries in blueprint or code frameworks\nFHitResult OutHit;\nFVector Start = CameraLocation;\nFVector End = Start + (CameraForward * 5000.f);\n\n// Run spatial raycast\nbool bHit = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_Visibility);\nif (bHit) {\n    AActor* HitActor = OutHit.GetActor();\n    // Apply damage...\n}\n```"
+    }
+  ]
+}

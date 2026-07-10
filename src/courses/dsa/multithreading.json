@@ -1,0 +1,27 @@
+{
+  "id": "multithreading",
+  "course": "Core CS & Data Structures",
+  "chapter": "Algorithms & Systems",
+  "title": "Multithreading & Concurrency",
+  "difficulty": "Intermediate",
+  "duration": 30,
+  "description": "Understand execution threads, mutual exclusions (mutexes), lock guards, race conditions, and lock deadlocks.",
+  "prerequisites": ["how-computers-work"],
+  "learningObjectives": [
+    "Manage std::thread instantiation and lifecycle",
+    "Synchronize shared variable access using std::mutex and std::lock_guard",
+    "Identify concurrency bugs like race conditions and thread lock deadlocks"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Thread Synchronization and Locking Primitives",
+      "content": "When multiple threads read and write to the same memory location simultaneously, data corruption occurs (Race Condition). To prevent this, we use Mutual Exclusions (`std::mutex`). A thread locks the mutex, accesses the shared resource, and unlocks it. \n\nLocking introduces overhead, and if Thread A is waiting for a lock held by Thread B while Thread B is waiting for a lock held by Thread A, execution freezes entirely (Deadlock). Standardizing on RAII locks (`std::lock_guard`) prevents leaving locks open."
+    },
+    {
+      "type": "example",
+      "title": "Safe Thread Writes via Lock Guards",
+      "content": "Protecting shared actor arrays from concurrent writing crashes:\n\n```cpp\n#include <thread>\n#include <mutex>\n#include <vector>\n\nstd::vector<int> SharedActiveActorIDs;\nstd::mutex ActorIDsMutex;\n\nvoid AddActorID_ThreadSafe(int NewID) {\n    // lock_guard locks mutex on creation and unlocks it automatically when exiting scope\n    std::lock_guard<std::mutex> Lock(ActorIDsMutex);\n    SharedActiveActorIDs.push_back(NewID); \n}\n```"
+    }
+  ]
+}

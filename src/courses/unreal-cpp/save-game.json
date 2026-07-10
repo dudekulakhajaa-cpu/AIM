@@ -1,0 +1,27 @@
+{
+  "id": "save-game",
+  "course": "Unreal C++ Integration",
+  "chapter": "Advanced Gameplay Coding",
+  "title": "Save Game & Serialization",
+  "difficulty": "Intermediate",
+  "duration": 25,
+  "description": "Understand USaveGame classes, variable serialization, and save/load file pipelines in Unreal Engine.",
+  "prerequisites": ["uobject-lifecycle"],
+  "learningObjectives": [
+    "Define custom save variables inside a USaveGame subclass",
+    "Serialize character transforms and stats into dynamic variables",
+    "Write and read save files using the Gameplay Statics saving API"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Save Game Serialization",
+      "content": "Unreal provides the `USaveGame` class to serialize object state variables into binary files (.sav). Reflected properties inside `USaveGame` are automatically serialized when you call the saving API, converting runtime structures into disk-persistent variables that survive process termination."
+    },
+    {
+      "type": "example",
+      "title": "Saving Player Coordinates",
+      "content": "A basic save execution block mapping character coords to a save file:\n\n```cpp\n#include "GameFramework/SaveGame.h" \n#include "Kismet/GameplayStatics.h"\n#include "MySaveGame.generated.h"\n\nUCLASS()\nclass UMySaveGame : public USaveGame {\n    GENERATED_BODY()\npublic:\n    UPROPERTY()\n    FVector PlayerLocation;\n};\n\nvoid SavePlayerLocation(APawn* PlayerPawn) {\n    UMySaveGame* SaveGameInstance = Cast<UMySaveGame>(UGameplayStatics::CreateSaveGameObject(UMySaveGame::StaticClass()));\n    SaveGameInstance->PlayerLocation = PlayerPawn->GetActorLocation();\n    \n    // Save to disk slot\n    UGameplayStatics::SaveGameToSlot(SaveGameInstance, TEXT("Slot1"), 0);\n}\n```"
+    }
+  ]
+}

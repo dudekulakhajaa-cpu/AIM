@@ -1,0 +1,29 @@
+{
+  "courseId": "unreal-blueprints",
+  "courseName": "Unreal Editor & Blueprints",
+  "chapters": [
+    {
+      "chapterName": "Unreal Engine Basics",
+      "lessons": [
+        { "id": "editor-interface", "title": "Unreal Editor Interface", "file": "editor-interface.json" },
+        { "id": "gameplay-framework", "title": "Gameplay Framework", "file": "gameplay-framework.json" }
+      ]
+    },
+    {
+      "chapterName": "Scripting & Assets",
+      "lessons": [
+        { "id": "blueprints-basics", "title": "Blueprints Scripting Basics", "file": "blueprints-basics.json" },
+        { "id": "material-shader-graph", "title": "Materials & Shader Graphs", "file": "material-shader-graph.json" },
+        { "id": "animation-blueprints", "title": "Animation & State Machines", "file": "animation-blueprints.json" }
+      ]
+    },
+    {
+      "chapterName": "Physics, UI & Audio",
+      "lessons": [
+        { "id": "unreal-physics", "title": "Physics Engine & Collisions", "file": "unreal-physics.json" },
+        { "id": "umg-ui", "title": "UI Creation with UMG", "file": "umg-ui.json" },
+        { "id": "audio-sounds", "title": "Audio & MetaSounds", "file": "audio-sounds.json" }
+      ]
+    }
+  ]
+}

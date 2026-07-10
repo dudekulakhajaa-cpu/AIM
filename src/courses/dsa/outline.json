@@ -1,0 +1,25 @@
+{
+  "courseId": "dsa",
+  "courseName": "Core CS & Data Structures",
+  "chapters": [
+    {
+      "chapterName": "Data Structures",
+      "lessons": [
+        { "id": "data-structures", "title": "Data Structures Basics", "file": "data-structures.json" },
+        { "id": "linked-lists", "title": "Linked Lists", "file": "linked-lists.json" },
+        { "id": "trees", "title": "Trees (BST, AVL, Red-Black)", "file": "trees.json" },
+        { "id": "graphs", "title": "Graphs & Pathfinding", "file": "graphs.json" },
+        { "id": "hash-tables", "title": "Hash Tables & Collisions", "file": "hash-tables.json" }
+      ]
+    },
+    {
+      "chapterName": "Algorithms & Systems",
+      "lessons": [
+        { "id": "algorithms-complexity", "title": "Algorithms & Complexity", "file": "algorithms-complexity.json" },
+        { "id": "recursion", "title": "Recursion & Backtracking", "file": "recursion.json" },
+        { "id": "dynamic-programming", "title": "Dynamic Programming", "file": "dynamic-programming.json" },
+        { "id": "multithreading", "title": "Multithreading & Concurrency", "file": "multithreading.json" }
+      ]
+    }
+  ]
+}

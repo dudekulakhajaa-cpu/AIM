@@ -1,0 +1,27 @@
+{
+  "id": "aactor-components",
+  "course": "Unreal C++ Integration",
+  "chapter": "Unreal C++ Architecture",
+  "title": "AActor & Components",
+  "difficulty": "Intermediate",
+  "duration": 25,
+  "description": "Master AActor lifecycle, component hierarchies, component replication, and actor spawning in Unreal C++.",
+  "prerequisites": ["uobject-lifecycle"],
+  "learningObjectives": [
+    "Identify key actor lifecycle hooks (PostInitializeComponents, BeginPlay, Tick, EndPlay)",
+    "Instantiate and attach scene and actor components in C++ constructors",
+    "Spawn actors dynamically using the World Spawning API"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Actor Components and Spawning",
+      "content": "An `AActor` is any object that can be placed or spawned in a level. Actors are composite structures containing `UActorComponent` instances. Components are divided into Scene Components (having a spatial transform like static meshes or lights) and Actor Components (pure logic components like inventories or health counters). Actor construction is registered via `CreateDefaultSubobject` in constructors."
+    },
+    {
+      "type": "example",
+      "title": "Constructing and Attaching Components",
+      "content": "Initializing components inside character class constructors:\n\n```cpp\n#include "GameFramework/Character.h"\n#include "Components/StaticMeshComponent.h"\n#include "MyPlayer.generated.h"\n\nUCLASS()\nclass AMyPlayer : public ACharacter {\n    GENERATED_BODY()\n\n    UPROPERTY(VisibleAnywhere)\n    UStaticMeshComponent* WeaponMesh;\n\n    AMyPlayer() {\n        // Instantiate component object\n        WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WeaponMesh"));\n        \n        // Attach mesh to character skeletal mesh sockets\n        WeaponMesh->SetupAttachment(GetMesh(), TEXT("WeaponSocket"));\n    }\n};\n```"
+    }
+  ]
+}

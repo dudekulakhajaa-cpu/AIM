@@ -1,0 +1,27 @@
+{
+  "id": "trees",
+  "course": "Core CS & Data Structures",
+  "chapter": "Data Structures",
+  "title": "Trees (BST, AVL, Red-Black)",
+  "difficulty": "Intermediate",
+  "duration": 30,
+  "description": "Explore Binary Search Trees (BST), self-balancing trees (AVL, Red-Black), and spatial partitioning trees.",
+  "prerequisites": ["linked-lists"],
+  "learningObjectives": [
+    "Identify Binary Search Tree properties",
+    "Describe self-balancing operations (rotations in AVL/Red-Black trees)",
+    "Explain spatial trees (Quadtrees, Octrees) used in collision detection"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Tree Hierarchies and Self-Balancing",
+      "content": "Trees organize hierarchical data. A Binary Search Tree (BST) stores smaller values in the left subtree and larger in the right, enabling O(log N) searches. If elements are inserted sequentially (e.g. 1, 2, 3), the tree degenerates into a linear linked list (O(N)). Self-balancing trees (AVL, Red-Black) use rotations to keep height balanced. Game engines use spatial trees (like Quadtrees for 2D, Octrees for 3D) to partition space and rapidly prune objects outside the camera frustum."
+    },
+    {
+      "type": "example",
+      "title": "Basic BST Node Traversal",
+      "content": "In-order traversal to print tree nodes in sorted order:\n\n```cpp\n#include <iostream>\n\nstruct FTreeNode {\n    int Value;\n    FTreeNode* Left = nullptr;\n    FTreeNode* Right = nullptr;\n};\n\nvoid PrintInOrder(FTreeNode* Root) {\n    if (!Root) return;\n    PrintInOrder(Root->Left);\n    std::cout << Root->Value << " ";\n    PrintInOrder(Root->Right);\n}\n```"
+    }
+  ]
+}

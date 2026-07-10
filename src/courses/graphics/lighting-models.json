@@ -1,0 +1,27 @@
+{
+  "id": "lighting-models",
+  "course": "Graphics & Engine",
+  "chapter": "Shading & GPU Tools",
+  "title": "Lighting Models (PBR/Phong)",
+  "difficulty": "Intermediate",
+  "duration": 30,
+  "description": "Understand Phong specular reflection models, microfacet theory, Cook-Torrance BRDF, and Physically Based Rendering (PBR).",
+  "prerequisites": ["shader-basics"],
+  "learningObjectives": [
+    "Differentiate empirical models (Phong) from physical models (PBR)",
+    "Explain specular, diffuse, and ambient reflection components",
+    "Implement light calculations using vectors: Normal (N), Light (L), View (V)"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Empirical vs Physically Based Lighting",
+      "content": "Lighting models calculate pixel color values based on surface vectors:\n\n1. **Phong Model (Empirical)**: Approximates lighting using three components: Ambient (background bounce), Diffuse (Lambertian scattering), and Specular (shiny highlight based on reflection vector).\n2. **PBR Model (Physical)**: Uses the Cook-Torrance Bidirectional Reflective Distribution Function (BRDF). Simulates light interaction using physical material parameters (roughness, metalness) and conserves energy (diffuse reflection + specular reflection ≤ incoming light)."
+    },
+    {
+      "type": "example",
+      "title": "Phong Specular Light Equation",
+      "content": "Calculating diffuse and specular intensities using vector dot products in HLSL:\n\n```hlsl\n// HLSL Lighting calculations\nfloat3 CalculatePhong(float3 Normal, float3 LightDir, float3 ViewDir) {\n    // Diffuse component (Lambertian)\n    float DiffuseIntensity = max(dot(Normal, LightDir), 0.0f);\n    \n    // Specular component\n    float3 ReflectionVector = reflect(-LightDir, Normal);\n    float SpecularIntensity = pow(max(dot(ReflectionVector, ViewDir), 0.0f), 32); // 32 is shininess\n    \n    return (DiffuseIntensity * float3(0.8f, 0.8f, 0.8f)) + (SpecularIntensity * float3(1.0f, 1.0f, 1.0f));\n}\n```"
+    }
+  ]
+}

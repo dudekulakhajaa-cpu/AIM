@@ -1,0 +1,27 @@
+{
+  "id": "actor-replication",
+  "course": "Advanced Game Programming",
+  "chapter": "Multiplayer & Networking",
+  "title": "Replication & Net Driver",
+  "difficulty": "Advanced",
+  "duration": 35,
+  "description": "Master Actor replication, variable replication, RepNotifies, and Remote Procedure Calls (RPCs) in Unreal Engine.",
+  "prerequisites": ["networking-concepts"],
+  "learningObjectives": [
+    "Replicate actors and variables across the server-client pipeline",
+    "Implement RepNotify callbacks to trigger local visual updates on value changes",
+    "Execute Remote Procedure Calls (Server, Client, Multicast) with reliability configurations"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Variable Replication and Remote Calls",
+      "content": "Replication syncs state parameters. Variable replication copies server variables to client copies. A `RepNotify` binds a local client function to execute automatically when a replicated variable is updated. Remote Procedure Calls (RPCs) are network functions:\n\n1. **Server RPC**: Called by client, executed on server.\n2. **Client RPC**: Called by server, executed on owning client.\n3. **Multicast RPC**: Called by server, executed on all connected clients."
+    },
+    {
+      "type": "example",
+      "title": "Declaring Replicated Variables and Server RPCs",
+      "content": "A character class replicating health and executing a server attack RPC:\n\n```cpp\n#include "Net/UnrealNetwork.h"\n#include "ReplicatedCharacter.generated.h"\n\nUCLASS()\nclass AReplicatedCharacter : public ACharacter {\n    GENERATED_BODY()\n\npublic:\n    // Replicated specifier registers variable with Net Driver replication sweeps\n    UPROPERTY(ReplicatedUsing = OnRep_Health)\n    float Health = 100.0f;\n\n    UFUNCTION()\n    void OnRep_Health() {\n        // Trigger visual updates on clients when health changes\n    }\n\n    // Server RPC declaration (With validation check to block cheat inputs)\n    UFUNCTION(Server, Reliable, WithValidation)\n    void ServerAttack(AActor* Target);\n};\n\nvoid AReplicatedCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const {\n    Super::GetLifetimeReplicatedProps(OutLifetimeProps);\n    DOREPLIFETIME(AReplicatedCharacter, Health); // Register Health variable\n}\n```"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "animation-blueprints",
+  "course": "Unreal Editor & Blueprints",
+  "chapter": "Scripting & Assets",
+  "title": "Animation & State Machines",
+  "difficulty": "Beginner",
+  "duration": 25,
+  "description": "Master Animation Blueprints, skeletal meshes, blend spaces, and animation state transition rules.",
+  "prerequisites": ["blueprints-basics"],
+  "learningObjectives": [
+    "Differentiate the AnimGraph (pose generation) from the EventGraph (data gathering)",
+    "Configure 1D and 2D Blend Spaces to smooth character motion transitions",
+    "Design locomotion State Machines managing idle, walking, and jumping pose states"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Animation State Dispatching",
+      "content": "Animation Blueprints control skeletal mesh transformations. The class divides responsibilities into:\n\n1. **EventGraph**: Updates variables (like character speed or falling states) by querying the possessed pawn.\n2. **AnimGraph**: Evaluation pipeline generating skeletal frame poses based on variables (using Blend Spaces to merge walking/running speeds, and State Machines to route transition rules)."
+    },
+    {
+      "type": "example",
+      "title": "Jumping Transition Rule",
+      "content": "In the state machine graph, transitioning from Locomotion to JumpStart is governed by a transition rule checking a boolean variable: `IsInAir == true` (updated via the EventGraph query tick)."
+    }
+  ]
+}

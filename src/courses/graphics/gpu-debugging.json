@@ -1,0 +1,27 @@
+{
+  "id": "gpu-debugging",
+  "course": "Graphics & Engine",
+  "chapter": "Shading & GPU Tools",
+  "title": "GPU Debugging (RenderDoc/PIX)",
+  "difficulty": "Advanced",
+  "duration": 30,
+  "description": "Capture frames and inspect GPU state, texture binds, pipeline stages, and shader step execution in RenderDoc and PIX.",
+  "prerequisites": ["rendering-pipeline"],
+  "learningObjectives": [
+    "Execute frame captures in game executables using RenderDoc",
+    "Inspect pipeline state views to locate bound textures and constant buffers",
+    "Debug pixel color calculations by tracing shader step executions"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "GPU Frame Captures and Analysis",
+      "content": "Because the CPU and GPU execute asynchronously, debugging graphics requires capturing the exact sequence of API calls (draw calls, bindings) sent to the GPU in a single frame. Tools like RenderDoc capture this data. Opening a capture allows you to view the Pipeline State (checking which textures and buffers were bound at each draw call) and inspect inputs/outputs at each stage to locate bugs (like corrupt vertex indices)."
+    },
+    {
+      "type": "example",
+      "title": "Debugging Texture Bind Mismatches",
+      "content": "If a mesh renders black, you capture the frame in RenderDoc, select the draw call in the Event Browser, inspect the Pixel Shader (PS) resource bindings panel, and verify if the texture slot was bound correctly or left bound to a default NULL texture."
+    }
+  ]
+}

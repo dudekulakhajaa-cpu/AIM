@@ -1,0 +1,27 @@
+{
+  "id": "blueprints-basics",
+  "course": "Unreal Editor & Blueprints",
+  "chapter": "Scripting & Assets",
+  "title": "Blueprints Scripting Basics",
+  "difficulty": "Beginner",
+  "duration": 20,
+  "description": "Learn visual scripting in Unreal Engine using node graphs, variables, functions, and events.",
+  "prerequisites": ["gameplay-framework"],
+  "learningObjectives": [
+    "Connect execution pins and data pins to construct visual logic flow graphs",
+    "Declare variables, call functions, and use branch nodes in blueprint scripts",
+    "Identify performance costs of blueprint execution compared to native C++ compiled paths"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Visual Node Graphs",
+      "content": "Blueprints are a node-based visual scripting language compiled at runtime using virtual machine instructions. White wire connections represent execution pins (routing flow), while colored wires represent data pins (values). Blueprint graphs are highly integrated with the editor but run 10x to 100x slower than compiled C++ loops, making them ideal for high-level scripting but inappropriate for CPU-heavy simulation loops."
+    },
+    {
+      "type": "example",
+      "title": "Basic Blueprint Branch",
+      "content": "A visual script branch checks health bounds. In Blueprint, this is structured as an Event Tick connecting to a Branch Node evaluated by a health comparison variable, routing execution to either a 'Update HUD' or 'Play Death Sound' function pin."
+    }
+  ]
+}

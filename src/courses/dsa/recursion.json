@@ -1,0 +1,27 @@
+{
+  "id": "recursion",
+  "course": "Core CS & Data Structures",
+  "chapter": "Algorithms & Systems",
+  "title": "Recursion & Backtracking",
+  "difficulty": "Intermediate",
+  "duration": 25,
+  "description": "Understand recursive functions, stack frames, call overhead, and backtracking search strategies.",
+  "prerequisites": ["algorithms-complexity"],
+  "learningObjectives": [
+    "Identify call stack frame mechanics in recursive methods",
+    "Design proper base cases to prevent Stack Overflow crashes",
+    "Implement backtracking strategies for finding paths or solving puzzles"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Stack Frames and Base Cases",
+      "content": "Recursion occurs when a function calls itself. Each nested call allocates a new stack frame storing arguments and local registers. If a base case (stopping condition) is missing or call depth is too large, the stack memory limits will exceed, triggering a crash (Stack Overflow). Backtracking is a refinement of recursion that aborts branches early if they violate game rules (like maze traversal)."
+    },
+    {
+      "type": "example",
+      "title": "Solving Fibonacci via Recursion",
+      "content": "Comparing recursive calls with base cases:\n\n```cpp\nint GetFibonacci(int N) {\n    // Base cases prevent infinite recursion\n    if (N <= 0) return 0;\n    if (N == 1) return 1;\n    \n    // Recursive step calls itself\n    return GetFibonacci(N - 1) + GetFibonacci(N - 2);\n}\n```"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "data-structures",
+  "course": "Core CS & Data Structures",
+  "chapter": "Data Structures",
+  "title": "Data Structures Basics",
+  "difficulty": "Beginner",
+  "duration": 20,
+  "description": "Understand primitive data structures, stacks, queues, and continuous layouts in system memory.",
+  "prerequisites": [],
+  "learningObjectives": [
+    "Explain physical memory storage layouts",
+    "Implement Stack (LIFO) and Queue (FIFO) structures",
+    "Apply stacks and queues in game components like command histories or pathfinding"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Data Layout Structures",
+      "content": "Data structures organize data in memory. The simplest is the stack (Last-In, First-Out) used for undo histories or undoing player moves. The queue (First-In, First-Out) represents structures like network packet message flows or animation update queues."
+    },
+    {
+      "type": "example",
+      "title": "Basic Command Queue",
+      "content": "A simple queue layout storing game commands to execute sequentially on tick:\n\n```cpp\n#include <queue>\n#include <string>\n\nstruct FGameCommand {\n    std::string Action;\n};\n\nclass UCommandProcessor {\nprivate:\n    std::queue<FGameCommand> CommandQueue;\n\npublic:\n    void EnqueueCommand(FGameCommand Cmd) {\n        CommandQueue.push(Cmd);\n    }\n\n    void ProcessCommands() {\n        while (!CommandQueue.empty()) {\n            FGameCommand ActiveCmd = CommandQueue.front();\n            Execute(ActiveCmd.Action);\n            CommandQueue.pop(); // Remove processed command\n        }\n    }\n\nprivate:\n    void Execute(std::string Action) {}\n};\n```"
+    }
+  ]
+}

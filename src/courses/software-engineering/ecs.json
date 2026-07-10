@@ -1,0 +1,27 @@
+{
+  "id": "ecs",
+  "course": "Design & Software Architecture",
+  "chapter": "Game Architecture Patterns",
+  "title": "Entity Component System (ECS)",
+  "difficulty": "Intermediate",
+  "duration": 30,
+  "description": "Understand Entity-Component-System (ECS) vs Object-Oriented hierarchies, composition, and cache-friendly loops.",
+  "prerequisites": ["game-patterns"],
+  "learningObjectives": [
+    "Differentiate ECS architectures from traditional OOP inheritance",
+    "Identify composition and data-oriented layouts",
+    "Analyze how flat component arrays maximize CPU L1/L2 cache line hits"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Data-Oriented Design and Cache Locality",
+      "content": "OOP inheritance splits class properties and methods. In ECS: Entities are raw IDs, Components are pure data structs, and Systems are pure functions operating on collections. Components are stored in flat, contiguous arrays (one array per component type). Since systems iterate through sequentially packed component lists, the CPU cache operates at peak efficiency, executing calculations (like movements) thousands of times faster than visiting scattered OOP heap nodes."
+    },
+    {
+      "type": "example",
+      "title": "Contiguous Position Updates in ECS",
+      "content": "Representing position and velocity components and updating them in flat system loops:\n\n```cpp\n#include <vector>\n\nstruct FPositionComponent {\n    float X, Y;\n};\n\nstruct FVelocityComponent {\n    float VX, VY;\n};\n\n// Flat contiguous arrays are extremely cache friendly\nstd::vector<FPositionComponent> Positions;\nstd::vector<FVelocityComponent> Velocities;\n\nvoid MovementSystem(float dt) {\n    const size_t Count = Positions.size();\n    for (size_t i = 0; i < Count; ++i) {\n        // Sequential memory accesses trigger hardware pre-fetching\n        Positions[i].X += Velocities[i].VX * dt;\n        Positions[i].Y += Velocities[i].VY * dt;\n    }\n}\n```"
+    }
+  ]
+}

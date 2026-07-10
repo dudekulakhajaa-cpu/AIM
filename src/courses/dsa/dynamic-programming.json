@@ -1,0 +1,27 @@
+{
+  "id": "dynamic-programming",
+  "course": "Core CS & Data Structures",
+  "chapter": "Algorithms & Systems",
+  "title": "Dynamic Programming",
+  "difficulty": "Intermediate",
+  "duration": 30,
+  "description": "Master memoization, tabulation, sub-problems, and optimization algorithms using Dynamic Programming.",
+  "prerequisites": ["recursion"],
+  "learningObjectives": [
+    "Identify overlapping sub-problems and optimal substructures",
+    "Implement top-down optimization via Memoization",
+    "Implement bottom-up tabulation tables to speed up algorithms"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Sub-problem Cache Optimizations",
+      "content": "Dynamic Programming optimizes algorithms by breaking them down into overlapping sub-problems, solving each once, and storing the result to prevent redundant computations. \n\n1. **Memoization (Top-down)**: Solves recursively but caches results.\n2. **Tabulation (Bottom-up)**: Solves iteratively, populating a lookup table from base cases up. Excellent for calculating optimal combat path weightings or inventory packing checks (Knapsack problem)."
+    },
+    {
+      "type": "example",
+      "title": "Memoized Fibonacci (O(N) vs O(2^N))",
+      "content": "Caching results to optimize recursive complexity from exponential to linear:\n\n```cpp\n#include <vector>\n\nstd::vector<int> MemoTable;\n\nint FibMemoized(int N) {\n    if (N <= 0) return 0;\n    if (N == 1) return 1;\n    \n    // Resize cache table if needed\n    if (MemoTable.size() <= N) {\n        MemoTable.resize(N + 1, -1);\n    }\n    \n    // Return cached result if already calculated\n    if (MemoTable[N] != -1) return MemoTable[N];\n    \n    MemoTable[N] = FibMemoized(N - 1) + FibMemoized(N - 2);\n    return MemoTable[N];\n}\n```"
+    }
+  ]
+}

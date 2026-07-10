@@ -1,0 +1,27 @@
+{
+  "id": "reflection-system",
+  "course": "Unreal C++ Integration",
+  "chapter": "Unreal C++ Architecture",
+  "title": "Reflection & Garbage Collection",
+  "difficulty": "Intermediate",
+  "duration": 30,
+  "description": "Explore Unreal's reflection system, UPROPERTY/UFUNCTION metadata, UCLASS specifiers, and generated header files.",
+  "prerequisites": ["uobject-lifecycle"],
+  "learningObjectives": [
+    "Explain how the Unreal Header Tool (UHT) parses source code variables",
+    "Use UPROPERTY and UFUNCTION specifiers to expose C++ variables to Blueprints",
+    "Identify the generated code linkage structures in generated.h headers"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Unreal reflection metadata system",
+      "content": "C++ does not natively support reflection (the ability of a program to inspect its own types, classes, and properties at runtime). Unreal Engine builds a custom reflection system by running a pre-compile parse tool called the Unreal Header Tool (UHT). \n\nUHT parses macro definitions (UCLASS(), UPROPERTY(), UFUNCTION(), USTRUCT()) and writes reflection glue code in helper files (e.g. `MyClass.generated.h`), allowing the editor to display C++ variables, bind Blueprint pins, and perform garbage collection sweeps."
+    },
+    {
+      "type": "example",
+      "title": "Exposing variables to Blueprint graphs",
+      "content": "Configuring variable read/write metadata access specifiers:\n\n```cpp\n#include "CoreMinimal.h"\n#include "GameFramework/Actor.h"\n#include "ReflectedActor.generated.h"\n\nUCLASS(BlueprintType)\nclass AReflectedActor : public AActor {\n    GENERATED_BODY()\n\npublic:\n    // EditDefaultsOnly restricts changes to default templates only\n    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config")\n    float MaxSpeed = 500.0f;\n\n    // EditAnywhere allows changes per instance placed in levels\n    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")\n    float CurrentHealth = 100.0f;\n};\n```"
+    }
+  ]
+}

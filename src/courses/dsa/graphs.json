@@ -1,0 +1,27 @@
+{
+  "id": "graphs",
+  "course": "Core CS & Data Structures",
+  "chapter": "Data Structures",
+  "title": "Graphs & Pathfinding",
+  "difficulty": "Intermediate",
+  "duration": 30,
+  "description": "Understand graphs, adjacency matrices, DFS, BFS, Dijkstra, and A* pathfinding for AI navigation.",
+  "prerequisites": ["linked-lists"],
+  "learningObjectives": [
+    "Represent graphs using adjacency matrices and lists",
+    "Traverse graphs using Depth-First Search (DFS) and Breadth-First Search (BFS)",
+    "Implement Dijkstra's and A* heuristics for AI pathfinding on game grids"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Graphs and AI Navigation",
+      "content": "Graphs model connections between nodes (vertices) linked by edges. In game engines, pathfinding systems (NavMesh) represent walkable geometry as a graph. AI navigation algorithms find paths through this grid: BFS finds the shortest path on unweighted graphs, Dijkstra handles weighted edges (e.g. mud slows movement), and A* adds a distance heuristic (estimated cost to target) to find paths significantly faster."
+    },
+    {
+      "type": "example",
+      "title": "A* Heuristic Logic",
+      "content": "Calculating the Manhattan distance heuristic for A* coordinates:\n\n```cpp\n#include <cmath>\n\nstruct FIntPoint {\n    int X, Y;\n};\n\n// Manhattan distance is ideal for grid-based orthogonal movement\nint CalculateHeuristic(FIntPoint Current, FIntPoint Destination) {\n    return std::abs(Current.X - Destination.X) + std::abs(Current.Y - Destination.Y);\n}\n```"
+    }
+  ]
+}

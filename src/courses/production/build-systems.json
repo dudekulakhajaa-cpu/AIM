@@ -1,0 +1,27 @@
+{
+  "id": "build-systems",
+  "course": "Production & Career",
+  "chapter": "Production Pipelines",
+  "title": "Build Systems & CI/CD",
+  "difficulty": "Beginner",
+  "duration": 20,
+  "description": "Understand compile configurations, automated build chains, Continuous Integration (CI), and artifact packaging.",
+  "prerequisites": ["source-control"],
+  "learningObjectives": [
+    "Differentiate Development, Shipping, and Debug configurations",
+    "Configure automated build scripts (Jenkins, GitHub Actions)",
+    "Build and package release-ready game executables"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Continuous Integration (CI) and Packaging",
+      "content": "Continuous Integration (CI) systems automatically monitor code repositories. When an engineer commits code, the CI server pulls the changes, compiles the game executable in all target configurations (Development, Shipping, Debug), packages cook files (assets converted to platform formats), and generates test builds, alerting developers immediately if compile errors occur."
+    },
+    {
+      "type": "example",
+      "title": "Unreal Build Tool Configurations",
+      "content": "Why build configurations matter:\n\n1. **Debug**: No compiler optimizations, keeps all symbol tables. Slow, used for step-debugging.\n2. **Development**: Compiles with some optimizations, keeps console logs and profile markers. Used for testing.\n3. **Shipping**: Max compiler optimizations, strips console logs, cheats, and debug symbols to maximize performance and protect security."
+    }
+  ]
+}

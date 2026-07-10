@@ -1,0 +1,27 @@
+{
+  "id": "console-publishing",
+  "course": "Production & Career",
+  "chapter": "Production Pipelines",
+  "title": "Steam & Console Publishing",
+  "difficulty": "Beginner",
+  "duration": 20,
+  "description": "Understand SDK integration, devkits, certification (TRCs/XRRs), steam pipe deployments, and age rating checks.",
+  "prerequisites": [],
+  "learningObjectives": [
+    "Navigate developer portals (Steamworks, Sony DevNet, Xbox Developer)",
+    "Integrate platform Software Development Kits (SDKs) for achievements and save sync",
+    "Identify console certification requirements (Sony TRC, Microsoft XRRs)"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Certification requirements (TRCs and XRRs)",
+      "content": "Publishing on commercial platforms requires passing strict certification audits. Sony requires meeting Technical Requirements (TRCs), while Microsoft requires Xbox Requirements (XRRs). These enforce behaviors like handling controller disconnect states gracefully, displaying standard profiles loading prompts, and managing offline local user profiles safely."
+    },
+    {
+      "type": "example",
+      "title": "Handling Controller Disconnection Events",
+      "content": "A compliance script handler. If a wireless gamepad disconnects during gameplay, certification requirements mandate that the game must automatically pause and display a compliance HUD overlay ('Please reconnect controller to resume gameplay')."
+    }
+  ]
+}

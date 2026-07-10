@@ -1,0 +1,22 @@
+{
+  "courseId": "advanced-gameplay",
+  "courseName": "Advanced Game Programming",
+  "chapters": [
+    {
+      "chapterName": "Multiplayer & Networking",
+      "lessons": [
+        { "id": "multiplayer-arch", "title": "Multiplayer Architecture", "file": "multiplayer-arch.json" },
+        { "id": "networking-concepts", "title": "Networking Concepts", "file": "networking-concepts.json" },
+        { "id": "actor-replication", "title": "Replication & Net Driver", "file": "actor-replication.json" }
+      ]
+    },
+    {
+      "chapterName": "Systems Optimizations",
+      "lessons": [
+        { "id": "rendering-opt", "title": "Rendering Optimization", "file": "rendering-opt.json" },
+        { "id": "custom-memory", "title": "Memory Management & Pool Allocators", "file": "custom-memory.json" },
+        { "id": "advanced-ai", "title": "Advanced AI (EQS & Utility AI)", "file": "advanced-ai.json" }
+      ]
+    }
+  ]
+}

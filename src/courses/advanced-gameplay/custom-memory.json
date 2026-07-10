@@ -1,0 +1,27 @@
+{
+  "id": "custom-memory",
+  "course": "Advanced Game Programming",
+  "chapter": "Systems Optimizations",
+  "title": "Memory Management & Pool Allocators",
+  "difficulty": "Advanced",
+  "duration": 35,
+  "description": "Understand custom memory structures, pool allocators, memory alignment, and cache performance.",
+  "prerequisites": [],
+  "learningObjectives": [
+    "Differentiate general heap allocators (malloc) from specialized Pool Allocators",
+    "Identify padding and memory alignment requirements on 64-bit hardware",
+    "Prevent memory fragmentation issues by allocating memory in pre-defined segments"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Allocators and Alignment",
+      "content": "General heap allocation (`malloc`/`new`) is slow because the OS search algorithm must locate open addresses. In high-performance game loops, we bypass this by implementing Custom Allocators:\n\n1. **Linear (Arena) Allocator**: Allocates contiguous memory blocks, resets offset pointer to zero to clear all. Fast, zero fragmentation, but cannot delete single elements.\n2. **Pool Allocator**: Divides a pre-allocated memory chunk into identical, fixed-size blocks. Deallocations return blocks to a free list. Ideal for constant instantiation/destruction of identical objects (bullets, particles)."
+    },
+    {
+      "type": "example",
+      "title": "Structure Alignment and Padding",
+      "content": "Why compiler padding changes structure memory footprints:\n\n```cpp\n// Struct footprint: 12 bytes due to 3-byte compiler padding after boolean\nstruct FPaddedStruct {\n    int32_t ID;      // 4 bytes\n    bool bActive;    // 1 byte (+ 3 bytes padding for 4-byte boundary alignment)\n    float Scale;     // 4 bytes\n};\n\n// Struct footprint: 8 bytes (rearranged to pack members tight)\nstruct FPackedStruct {\n    int32_t ID;      // 4 bytes\n    float Scale;     // 4 bytes\n    bool bActive;    // 1 byte (+ 3 bytes padding at end if aligned on 4-byte boundary, total 12? No, if on 8-byte boundary)\n};\n```"
+    }
+  ]
+}

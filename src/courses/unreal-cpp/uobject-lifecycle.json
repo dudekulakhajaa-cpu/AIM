@@ -1,0 +1,27 @@
+{
+  "id": "uobject-lifecycle",
+  "course": "Unreal C++ Integration",
+  "chapter": "Unreal C++ Architecture",
+  "title": "UObject Lifecycle & GC",
+  "difficulty": "Intermediate",
+  "duration": 25,
+  "description": "Understand the UObject base class hierarchy, reflection registration, garbage collection, and memory management in Unreal Engine.",
+  "prerequisites": [],
+  "learningObjectives": [
+    "Identify the root classes of the Unreal hierarchy (UObject, AActor)",
+    "Explain how the Garbage Collector (GC) runs object sweeps based on reference trees",
+    "Prevent garbage collection crashes using UPROPERTY pointers"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "UObject Memory Management",
+      "content": "In Unreal Engine, native C++ memory management is wrapped by the UObject framework. Objects registered under `UObject` are tracked by a Garbage Collection (GC) system. The GC periodically scans a root object index and sweeps away objects that have no active reflected pointers referencing them. Declaring object pointers with `UPROPERTY()` is mandatory to prevent the GC from sweeping active pointers."
+    },
+    {
+      "type": "example",
+      "title": "UPROPERTY Protection",
+      "content": "Preventing GC sweeping on custom object variables:\n\n```cpp\n#include "CoreMinimal.h"\n#include "UObject/NoExportTypes.h"\n#include "MyClass.generated.h"\n\nUCLASS()\nclass UInventoryItem : public UObject {\n    GENERATED_BODY()\n};\n\nUCLASS()\nclass APlayerCharacter : public ACharacter {\n    GENERATED_BODY()\n\n    // UPROPERTY registration ensures the reference tracking registry knows about this pointer\n    UPROPERTY()\n    UInventoryItem* EquippedItem;\n};\n```"
+    }
+  ]
+}

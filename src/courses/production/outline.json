@@ -1,0 +1,22 @@
+{
+  "courseId": "production",
+  "courseName": "Production & Career",
+  "chapters": [
+    {
+      "chapterName": "Production Pipelines",
+      "lessons": [
+        { "id": "console-publishing", "title": "Steam & Console Publishing", "file": "console-publishing.json" },
+        { "id": "source-control", "title": "Source Control (Perforce/Git)", "file": "source-control.json" },
+        { "id": "team-workflows", "title": "Team Workflows & Production", "file": "team-workflows.json" },
+        { "id": "build-systems", "title": "Build Systems & CI/CD", "file": "build-systems.json" }
+      ]
+    },
+    {
+      "chapterName": "Career Strategy",
+      "lessons": [
+        { "id": "interview-prep", "title": "AAA Interview Prep & Coding", "file": "interview-prep.json" },
+        { "id": "portfolio-polish", "title": "Resume & Portfolio Polish", "file": "portfolio-polish.json" }
+      ]
+    }
+  ]
+}

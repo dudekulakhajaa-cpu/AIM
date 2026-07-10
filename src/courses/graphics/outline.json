@@ -1,0 +1,23 @@
+{
+  "courseId": "graphics",
+  "courseName": "Graphics & Engine",
+  "chapters": [
+    {
+      "chapterName": "Rendering Foundations",
+      "lessons": [
+        { "id": "rendering-pipeline", "title": "Rendering Pipeline", "file": "rendering-pipeline.json" },
+        { "id": "opengl-concepts", "title": "OpenGL Concepts & Setup", "file": "opengl-concepts.json" },
+        { "id": "directx-concepts", "title": "DirectX & Command Buffers", "file": "directx-concepts.json" }
+      ]
+    },
+    {
+      "chapterName": "Shading & GPU Tools",
+      "lessons": [
+        { "id": "shader-basics", "title": "Shader Basics (HLSL/GLSL)", "file": "shader-basics.json" },
+        { "id": "lighting-models", "title": "Lighting Models (PBR/Phong)", "file": "lighting-models.json" },
+        { "id": "post-processing", "title": "Post Processing Shaders", "file": "post-processing.json" },
+        { "id": "gpu-debugging", "title": "GPU Debugging (RenderDoc/PIX)", "file": "gpu-debugging.json" }
+      ]
+    }
+  ]
+}

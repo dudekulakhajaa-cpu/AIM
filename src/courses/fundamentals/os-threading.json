@@ -1,0 +1,27 @@
+{
+  "id": "os-threading",
+  "course": "Computer Fundamentals",
+  "chapter": "Computer Science Foundations",
+  "title": "Operating Systems & Threading",
+  "difficulty": "Beginner",
+  "duration": 25,
+  "description": "Explore operating systems processes, threads, virtual memory, and concurrency primitives.",
+  "prerequisites": ["how-computers-work"],
+  "learningObjectives": [
+    "Differentiate operating system processes from execution threads",
+    "Explain virtual memory pages and memory mapping",
+    "Identify concurrency problems like race conditions and deadlocks"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Processes, Threads, and Concurrency",
+      "content": "An Operating System manages hardware resources. A Process is an isolated running instance of a program with its own memory space. A Thread is a unit of execution within a process; multiple threads share the same process memory space. In game loops, offloading heavy calculations (like asset loading or pathfinding) to worker threads keeps the main render thread running smoothly."
+    },
+    {
+      "type": "example",
+      "title": "Multi-threaded C++ Execution",
+      "content": "A basic concurrent task running asynchronously in C++:\n\n```cpp\n#include <thread>\n#include <iostream>\n\nvoid LoadAssetsAsync() {\n    std::cout << "Loading heavy textures in background thread..." << std::endl;\n}\n\nvoid TestThreading() {\n    // Launch async thread\n    std::thread WorkerThread(LoadAssetsAsync);\n    \n    // Continue main game loop updates\n    std::cout << "Updating frame rendering on main thread..." << std::endl;\n    \n    // Re-join worker before exiting scope\n    WorkerThread.join();\n}\n```"
+    }
+  ]
+}
