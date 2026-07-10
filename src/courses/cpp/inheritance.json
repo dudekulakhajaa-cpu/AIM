@@ -1,0 +1,27 @@
+{
+  "id": "inheritance",
+  "course": "Modern C++",
+  "chapter": "Object-Oriented Programming",
+  "title": "Inheritance",
+  "difficulty": "Beginner",
+  "duration": 25,
+  "description": "Learn to inherit properties and methods from base classes, use access control specifiers, and avoid multiple inheritance traps.",
+  "prerequisites": ["classes"],
+  "learningObjectives": [
+    "Derive classes from base classes using public inheritance",
+    "Override properties while calling base implementation methods",
+    "Avoid multiple inheritance traps using composition paradigms"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Extending Blueprints and Hierarchies",
+      "content": "Inheritance enables a derived class to acquire members of a base class, expressing an 'is-a' relationship. In game engines, this is how specialized classes (e.g. `APawn` -> `ACharacter` -> `APlayerCharacter`) build on generic engine subsystems.\n\nWhile C++ supports multiple inheritance (inheriting from more than one class), this often introduces complexity (like the Diamond Problem, where a class inherits from two classes that share a common base). Game programmers prefer composition ('has-a') or single-inheritance hierarchies for clarity and cache safety."
+    },
+    {
+      "type": "example",
+      "title": "Base Class Method Calls",
+      "content": "Deriving a player class and calling the base initialization flow:\n\n```cpp\nclass AActor {\npublic:\n    virtual void BeginPlay() {\n        // Basic actor initialization\n    }\n};\n\nclass ACharacter : public AActor {\npublic:\n    // Override and invoke parent implementation\n    void BeginPlay() override {\n        AActor::BeginPlay(); // Call base version first!\n        \n        // Setup character health and mesh components\n        SetupInputComponent();\n    }\n\nprivate:\n    void SetupInputComponent() {}\n};\n```"
+    }
+  ]
+}

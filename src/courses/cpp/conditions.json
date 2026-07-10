@@ -1,0 +1,27 @@
+{
+  "id": "conditions",
+  "course": "Modern C++",
+  "chapter": "Foundations",
+  "title": "Conditions",
+  "difficulty": "Beginner",
+  "duration": 15,
+  "description": "Explore branching logic in C++ using if-else statements and switch-cases to handle dynamic game loops.",
+  "prerequisites": ["variables"],
+  "learningObjectives": [
+    "Implement if, else if, and else branching logic",
+    "Create switch-case blocks for enum states",
+    "Explain compile-time optimizations like switch-case jump tables"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Decision Making in Game Systems",
+      "content": "Branching statements allow your code to execute different logic blocks based on runtime circumstances. In games, this represents logic like check triggers, collisions, and state machines. \n\nUsing `switch` statements over large chains of `if-else` is highly recommended for categorical checks (like Enums) because compilers can optimize them into 'jump tables' (O(1) lookups in memory) instead of executing sequential branching tests."
+    },
+    {
+      "type": "example",
+      "title": "State Machines via Switch-Case",
+      "content": "A simple example using switch-case to direct game updates based on enum states:\n\n```cpp\nenum class EEnemyState {\n    Idle,\n    Patrolling,\n    Chasing,\n    Attacking\n};\n\nvoid UpdateEnemyAI(EEnemyState CurrentState) {\n    switch (CurrentState) {\n        case EEnemyState::Idle:\n            PlayIdleAnimation();\n            break;\n        case EEnemyState::Patrolling:\n            MoveAlongPatrolPath();\n            break;\n        case EEnemyState::Chasing:\n            FindPathToTarget(Player->Location);\n            break;\n        case EEnemyState::Attacking:\n            TriggerMeleeAttack();\n            break;\n        default:\n            break;\n    }\n}\n```"
+    }
+  ]
+}

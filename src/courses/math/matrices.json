@@ -1,0 +1,27 @@
+{
+  "id": "matrices",
+  "course": "Game Mathematics",
+  "chapter": "Linear Algebra",
+  "title": "Matrices",
+  "difficulty": "Intermediate",
+  "duration": 25,
+  "description": "Master transformation matrices, identity values, multiplication order, and coordinate transformations.",
+  "prerequisites": ["linear-algebra"],
+  "learningObjectives": [
+    "Define matrices and identity matrix properties",
+    "Combine translation, rotation, and scaling transformations into a single matrix",
+    "Explain the importance of matrix multiplication ordering (TRS vs SRT)"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Transform Matrices and Multiplications",
+      "content": "A matrix is a grid of numbers representing a linear transformation. In 3D engines, we use 4x4 homogenous matrices to encode Translation (Position), Rotation (Orientation), and Scale (Size) into a single 16-float array. \n\nMultiplying matrices combines their transformations. However, matrix multiplication is non-commutative: A × B ≠ B × A. The ordering is critical: in DirectX/Unreal, we use TRS (Scale first, then Rotate, then Translate). Reversing this order yields distorted results."
+    },
+    {
+      "type": "example",
+      "title": "Applying Matrix Transforms",
+      "content": "A simple visualization of matrix composition in game code:\n\n```cpp\n// Concept of matrix composition in engine coding\nstruct FMatrix {\n    float M[4][4];\n    static FMatrix Identity();\n    FMatrix operator*(const FMatrix& Other) const;\n};\n\nFMatrix GetWorldTransform(FMatrix ScaleMatrix, FMatrix RotationMatrix, FMatrix TranslationMatrix) {\n    // TRS composition order (Unreal/DirectX right-to-left or left-to-right depending on conventions)\n    // Here we perform Scale * Rotation * Translation\n    FMatrix Result = ScaleMatrix * RotationMatrix * TranslationMatrix;\n    return Result;\n}\n```"
+    }
+  ]
+}

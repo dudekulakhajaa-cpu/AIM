@@ -1,0 +1,27 @@
+{
+  "id": "classes",
+  "course": "Modern C++",
+  "chapter": "Object-Oriented Programming",
+  "title": "Classes",
+  "difficulty": "Beginner",
+  "duration": 25,
+  "description": "Master OOP structures in C++ by declaring classes, encapsulating data, and using visibility access specifiers.",
+  "prerequisites": ["variables"],
+  "learningObjectives": [
+    "Declare classes containing both properties and methods",
+    "Enforce data encapsulation using public, private, and protected levels",
+    "Explain memory footprints of simple structures versus classes"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Encapsulation and Blueprinting",
+      "content": "A class acts as a blueprint defining properties (data members) and actions (member functions) for an object. The key paradigm is Encapsulation: hiding internal complexity and state from external entities. Access levels control this:\n\n1. `public`: Accessible anywhere in code.\n2. `private`: Accessible only within the declaring class.\n3. `protected`: Accessible within the declaring class and derived classes."
+    },
+    {
+      "type": "example",
+      "title": "Encapsulating Character Stats",
+      "content": "A standard C++ class encapsulating hit points to ensure sanity check validation:\n\n```cpp\nclass ACharacter {\nprivate:\n    float Health = 100.0f;\n    float MaxHealth = 100.0f;\n\npublic:\n    float GetHealth() const { return Health; }\n\n    void ApplyDamage(float Amount) {\n        if (Amount <= 0.0f) return;\n        Health -= Amount;\n        if (Health < 0.0f) {\n            Health = 0.0f;\n            OnDeath();\n        }\n    }\n\nprotected:\n    virtual void OnDeath() {\n        // Override in subclasses for ragdolls, sound triggers, etc.\n    }\n};\n```"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "loops",
+  "course": "Modern C++",
+  "chapter": "Foundations",
+  "title": "Loops",
+  "difficulty": "Beginner",
+  "duration": 20,
+  "description": "Learn to repeat operations in C++ using for, while, do-while, and range-based loops in high-frequency game ticks.",
+  "prerequisites": ["variables"],
+  "learningObjectives": [
+    "Use for loops, while loops, and do-while loops",
+    "Implement modern C++ range-based for loops to iterate over collections",
+    "Identify and prevent game-freezing infinite loops on the main thread"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Iterative Structures in Game Loops",
+      "content": "Iteration mechanisms execute code blocks repeatedly until conditions are met. In games, loops iterate through active particle collections, active projectiles, or characters. Range-based for loops (C++11) are preferred for collections because they compile to safe and optimized pointer operations, eliminating manual bounds indexing mistakes."
+    },
+    {
+      "type": "example",
+      "title": "Updating Projectiles using Range-Based Loops",
+      "content": "Iterating through and cleaning up projectiles using range-based loops and reference semantics:\n\n```cpp\n#include <vector>\n\nstruct AProjectile {\n    float Speed = 10.0f;\n    bool IsActive = true;\n    void Update(float DeltaTime) {\n        // Position changes...\n    }\n};\n\nstd::vector<AProjectile> Projectiles;\n\nvoid UpdateActiveProjectiles(float DeltaTime) {\n    // Use references to prevent copying objects!\n    for (AProjectile& CurrentProjectile : Projectiles) {\n        if (CurrentProjectile.IsActive) {\n            CurrentProjectile.Update(DeltaTime);\n        }\n    }\n}\n```"
+    }
+  ]
+}

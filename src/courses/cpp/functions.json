@@ -1,0 +1,27 @@
+{
+  "id": "functions",
+  "course": "Modern C++",
+  "chapter": "Foundations",
+  "title": "Functions",
+  "difficulty": "Beginner",
+  "duration": 25,
+  "description": "Explore declaration, arguments, return values, overloading, and performance optimizations like inline functions in C++.",
+  "prerequisites": ["variables"],
+  "learningObjectives": [
+    "Declare and define functions with parameters and return values",
+    "Contrast function overloading with unique parameter types",
+    "Use inline functions to avoid stack frame overhead in math helper code"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Reusable Logic and Calling Conventions",
+      "content": "Functions group statements into modular, callable blocks of code. When a function is called, the CPU pushes local variables and return registers to the stack. For tiny, high-frequency helper functions (like vector additions or distance calculations), this stack frame creation introduces performance overhead. Declaring these helpers `inline` signals the compiler to copy the function body directly to the call site, eliminating call overhead."
+    },
+    {
+      "type": "example",
+      "title": "Inline Helpers and Overloading",
+      "content": "Using inline helpers and overloaded math functions:\n\n```cpp\nstruct FVector2D {\n    float X, Y;\n};\n\n// Inline directive inserts instructions directly to eliminate function call overhead\ninline float Square(float Val) {\n    return Val * Val;\n}\n\n// Overloaded functions have the same name but different signatures\ninline float DistanceSquared(float X1, float Y1, float X2, float Y2) {\n    return Square(X2 - X1) + Square(Y2 - Y1);\n}\n\ninline float DistanceSquared(FVector2D A, FVector2D B) {\n    return Square(B.X - A.X) + Square(B.Y - A.Y);\n}\n```"
+    }
+  ]
+}

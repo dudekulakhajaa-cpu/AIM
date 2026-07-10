@@ -1,0 +1,27 @@
+{
+  "id": "operators",
+  "course": "Modern C++",
+  "chapter": "Foundations",
+  "title": "Operators",
+  "difficulty": "Beginner",
+  "duration": 20,
+  "description": "Master C++ operators including arithmetic, logical, comparison, and bitwise flags for game programming.",
+  "prerequisites": ["variables"],
+  "learningObjectives": [
+    "Understand arithmetic, logical, and comparison operators",
+    "Explain bitwise operations (AND, OR, XOR, shifts)",
+    "Use bitwise flags to efficiently store game character states"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Operators in Game Logic",
+      "content": "Operators allow you to manipulate data. While arithmetic (+, -, *, /) and comparison (==, !=, <, >) operators are common, game programmers heavily utilize bitwise operators (&, |, ^, ~) for flag manipulation. Storing active character states (e.g. Crouching, Poisoned, Invulnerable) as bit fields saves memory and improves CPU performance by reducing branch mispredictions."
+    },
+    {
+      "type": "example",
+      "title": "Bitwise Flags for Character States",
+      "content": "Here is how game engines use bitwise operations to set, clear, and check boolean states in a single integer variable:\n\n```cpp\n// Define binary flags\nconstexpr uint8_t STATE_NONE        = 0;\nconstexpr uint8_t STATE_CROUCHING    = 1 << 0; // 0001\nconstexpr uint8_t STATE_POISONED      = 1 << 1; // 0010\nconstexpr uint8_t STATE_INVULNERABLE  = 1 << 2; // 0100\n\nuint8_t PlayerState = STATE_NONE;\n\n// Set state using bitwise OR\nPlayerState |= STATE_CROUCHING;\n\n// Check state using bitwise AND\nbool isInvulnerable = (PlayerState & STATE_INVULNERABLE) != 0;\n\n// Clear state using bitwise AND & NOT\nPlayerState &= ~STATE_CROUCHING;\n```"
+    }
+  ]
+}

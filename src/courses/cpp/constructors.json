@@ -1,0 +1,27 @@
+{
+  "id": "constructors",
+  "course": "Modern C++",
+  "chapter": "Object-Oriented Programming",
+  "title": "Constructors",
+  "difficulty": "Beginner",
+  "duration": 25,
+  "description": "Master Default, Parameterized, Copy, and Move constructors alongside Member Initializer Lists.",
+  "prerequisites": ["classes"],
+  "learningObjectives": [
+    "Implement default and parameterized constructors",
+    "Use Member Initializer Lists to optimize property setting",
+    "Contrast copy constructors with move constructors in resource-heavy classes"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Object Lifecycle and Initializers",
+      "content": "Constructors are special member functions called automatically when an object is instantiated. Standardizing on Member Initializer Lists (`MyClass() : Member(Val) {}`) is crucial in C++. Unlike assignments inside constructor brackets (`MyClass() { Member = Val; }`), initializers construct members directly with values, avoiding double-initialization overhead for nested custom classes."
+    },
+    {
+      "type": "example",
+      "title": "Initializer Lists and Copy Constructors",
+      "content": "Implementing optimized initialization and copy/move blocks:\n\n```cpp\n#include <string>\n\nclass UTexture {\npublic:\n    std::string Name;\n    UTexture(std::string InName) : Name(InName) {} // Parameterized with initializer list\n};\n\nclass AMaterial {\nprivate:\n    UTexture* diffuseMap;\n\npublic:\n    // Initializer list prevents double-initialization\n    AMaterial(UTexture* InDiffuse) : diffuseMap(InDiffuse) {}\n\n    // Copy Constructor - Deep copies the underlying texture\n    AMaterial(const AMaterial& Other) {\n        diffuseMap = new UTexture(Other.diffuseMap->Name);\n    }\n\n    ~AMaterial() {\n        delete diffuseMap;\n    }\n};\n```"
+    }
+  ]
+}

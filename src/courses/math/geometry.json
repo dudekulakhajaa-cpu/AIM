@@ -1,0 +1,27 @@
+{
+  "id": "geometry",
+  "course": "Game Mathematics",
+  "chapter": "Basic Mathematics",
+  "title": "Geometry",
+  "difficulty": "Beginner",
+  "duration": 20,
+  "description": "Master circles, bounding boxes (AABB vs OBB), and basic intersection tests for collision geometry.",
+  "prerequisites": [],
+  "learningObjectives": [
+    "Define circles, spheres, and rectangular bounding areas",
+    "Contrast Axis-Aligned Bounding Boxes (AABB) with Oriented Bounding Boxes (OBB)",
+    "Perform basic overlaps checks for simple boundary geometry"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Bounding Volumes and Collision Performance",
+      "content": "Geometry defines the shapes of objects in games. Bounding volumes simplify complex 3D meshes into basic primitives to speed up collision queries:\n\n1. **Axis-Aligned Bounding Box (AABB)**: The box edges are parallel to the global coordinate axes. Fast to check but doesn't rotate with the object.\n2. **Oriented Bounding Box (OBB)**: The box rotates with the object. Fits the object tighter but requires complex matrix projections to test collisions."
+    },
+    {
+      "type": "example",
+      "title": "AABB vs AABB Collision Check",
+      "content": "A simple 2D Axis-Aligned Bounding Box overlap test:\n\n```cpp\nstruct FAABB2D {\n    float MinX, MinY;\n    float MaxX, MaxY;\n};\n\nbool CheckAABBOverlap(const FAABB2D& BoxA, const FAABB2D& BoxB) {\n    // If any gap exists, they cannot overlap\n    if (BoxA.MaxX < BoxB.MinX || BoxB.MaxX < BoxA.MinX) return false;\n    if (BoxA.MaxY < BoxB.MinY || BoxB.MaxY < BoxA.MinY) return false;\n    \n    return true;\n}\n```"
+    }
+  ]
+}

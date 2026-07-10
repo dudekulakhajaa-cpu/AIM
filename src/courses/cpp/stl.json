@@ -1,0 +1,27 @@
+{
+  "id": "stl",
+  "course": "Modern C++",
+  "chapter": "Generic Programming & STL",
+  "title": "Standard Template Library",
+  "difficulty": "Intermediate",
+  "duration": 35,
+  "description": "Explore STL containers like std::vector and std::unordered_map, and understand their performance implications in games.",
+  "prerequisites": ["templates"],
+  "learningObjectives": [
+    "Use std::vector dynamically and understand capacity vs size",
+    "Use std::unordered_map for O(1) key-value hash lookups",
+    "Analyze the cache and performance impact of collections during game updates"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Dynamic Containers and Allocation Costs",
+      "content": "The Standard Template Library (STL) provides dynamic collections. In games, `std::vector` is the absolute standard because it stores elements contiguously. However, pushing elements dynamically past capacity triggers a heap re-allocation and copy of the entire collection. Pre-allocating memory using `.reserve(N)` is crucial to maintain steady frame rates. \n\nFor key-value pairs, `std::unordered_map` offers O(1) lookups via hash functions but incurs a heavy cache penalty due to node-based heap configurations."
+    },
+    {
+      "type": "example",
+      "title": "Optimizing Vector Allocations",
+      "content": "Using vectors safely and efficiently without triggering runtime frame hitches:\n\n```cpp\n#include <vector>\n#include <iostream>\n\nstruct FActorSpawnParams {\n    int TypeID;\n};\n\nvoid SpawnActorsBatch(const std::vector<FActorSpawnParams>& ParamsList) {\n    std::vector<int> SpawnedIDs;\n    \n    // CRITICAL PERFORMANCE TIP: Reserve space to avoid reallocations!\n    SpawnedIDs.reserve(ParamsList.size());\n\n    for (const auto& Params : ParamsList) {\n        int NewID = 1000 + Params.TypeID;\n        SpawnedIDs.push_back(NewID);\n    }\n    \n    std::cout << "Vector Size: " << SpawnedIDs.size() << " | Capacity: " << SpawnedIDs.capacity() << std::endl;\n}\n```"
+    }
+  ]
+}

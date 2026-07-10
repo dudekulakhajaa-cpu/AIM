@@ -1,57 +1,66 @@
 /**
  * Lesson Navigation Module
- * Resolves previous/next lesson references and manages scroll progress tracking
+ * Renders Previous/Next navigation buttons and manages scroll reading progress.
+ * 
+ * Receives pre-computed navigation data from course-manager —
+ * does not compute lesson ordering itself.
+ * 
+ * @module lesson-navigation
  */
 
-export function setupLessonNavigation(outline, currentLessonId, onNavigate) {
-    // 1. Flatten all lessons from chapters to find sequence ordering
-    const flatLessons = [];
-    outline.chapters.forEach(chap => {
-        chap.lessons.forEach(l => {
-            flatLessons.push({
-                id: l.id,
-                title: l.title,
-                courseId: outline.courseId
-            });
-        });
-    });
-
-    const currentIndex = flatLessons.findIndex(l => l.id === currentLessonId);
-    const prevLesson = currentIndex > 0 ? flatLessons[currentIndex - 1] : null;
-    const nextLesson = currentIndex < flatLessons.length - 1 ? flatLessons[currentIndex + 1] : null;
-
-    const navContainer = document.getElementById("navigation-footer");
+/**
+ * Render the Previous/Next lesson navigation footer.
+ * 
+ * @param {Object} navigation - Pre-computed navigation from course-manager.computeNavigation()
+ * @param {Object|null} navigation.prev - Previous lesson `{ id, title, courseId }` or null
+ * @param {Object|null} navigation.next - Next lesson `{ id, title, courseId }` or null
+ * @param {Function} onNavigate - Callback invoked with (courseId, lessonId)
+ */
+export function setupLessonNavigation(navigation, onNavigate) {
+    const navContainer = document.getElementById('navigation-footer');
     if (!navContainer) return;
 
+    const { prev, next } = navigation;
+
     navContainer.innerHTML = `
-        <button class="nav-link-btn btn-prev ${!prevLesson ? 'disabled' : ''}" id="nav-btn-prev">
+        <button class="nav-link-btn btn-prev ${!prev ? 'disabled' : ''}"
+                id="nav-btn-prev"
+                ${!prev ? 'disabled' : ''}
+                aria-label="${prev ? `Go to previous lesson: ${prev.title}` : 'No previous lesson'}">
             <span class="nav-btn-lbl">← Previous Lesson</span>
-            <span class="nav-btn-title">${prevLesson ? prevLesson.title : 'First Lesson'}</span>
+            <span class="nav-btn-title">${prev ? prev.title : 'First Lesson'}</span>
         </button>
-        <button class="nav-link-btn btn-next ${!nextLesson ? 'disabled' : ''}" id="nav-btn-next">
+        <button class="nav-link-btn btn-next ${!next ? 'disabled' : ''}"
+                id="nav-btn-next"
+                ${!next ? 'disabled' : ''}
+                aria-label="${next ? `Go to next lesson: ${next.title}` : 'No next lesson'}">
             <span class="nav-btn-lbl">Next Lesson →</span>
-            <span class="nav-btn-title">${nextLesson ? nextLesson.title : 'End of Course'}</span>
+            <span class="nav-btn-title">${next ? next.title : 'End of Course'}</span>
         </button>
     `;
 
-    const prevBtn = navContainer.querySelector("#nav-btn-prev");
-    const nextBtn = navContainer.querySelector("#nav-btn-next");
+    const prevBtn = navContainer.querySelector('#nav-btn-prev');
+    const nextBtn = navContainer.querySelector('#nav-btn-next');
 
-    if (prevBtn && prevLesson) {
-        prevBtn.addEventListener("click", () => {
-            onNavigate(prevLesson.courseId, prevLesson.id);
+    if (prevBtn && prev) {
+        prevBtn.addEventListener('click', () => {
+            onNavigate(prev.courseId, prev.id);
         });
     }
 
-    if (nextBtn && nextLesson) {
-        nextBtn.addEventListener("click", () => {
-            onNavigate(nextLesson.courseId, nextLesson.id);
+    if (nextBtn && next) {
+        nextBtn.addEventListener('click', () => {
+            onNavigate(next.courseId, next.id);
         });
     }
 }
 
+/**
+ * Initialize the scroll-based reading progress bar.
+ * Attaches a single scroll listener that updates the progress fill width.
+ */
 export function initScrollProgress() {
-    const progressFill = document.getElementById("scroll-progress-fill");
+    const progressFill = document.getElementById('scroll-progress-fill');
     if (!progressFill) return;
 
     const updateScrollProgress = () => {
@@ -61,9 +70,10 @@ export function initScrollProgress() {
         progressFill.style.width = `${scrollPct}%`;
     };
 
+    // Remove previous listener to prevent duplicates on re-render
     window.removeEventListener('scroll', updateScrollProgress);
-    window.addEventListener('scroll', updateScrollProgress);
-    
-    // Initial call
+    window.addEventListener('scroll', updateScrollProgress, { passive: true });
+
+    // Initial calculation
     updateScrollProgress();
 }

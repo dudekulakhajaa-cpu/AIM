@@ -1,0 +1,27 @@
+{
+  "id": "linear-algebra",
+  "course": "Game Mathematics",
+  "chapter": "Linear Algebra",
+  "title": "Linear Algebra Foundations",
+  "difficulty": "Beginner",
+  "duration": 20,
+  "description": "Explore scalars, vectors, operations, and transformations across Local, World, and View coordinate spaces.",
+  "prerequisites": [],
+  "learningObjectives": [
+    "Distinguish scalar properties from vector quantities",
+    "Define vectors as offsets in Cartesian coordinate grids",
+    "Differentiate coordinate reference frames (Local, World, View, Screen)"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Coordinate Spaces and Reference Frames",
+      "content": "Linear algebra is the study of vectors and linear transformations. In game development, spaces translate locations and orientations:\n\n1. **Local Space**: Coordinates relative to the object's origin (e.g. 'the weapon tip is 50 units in front of the model origin').\n2. **World Space**: Coordinates relative to the global map center (e.g. 'the player is standing at coordinates (4500, -2300, 100)').\n3. **View Space**: Coordinates relative to the camera lens orientation. Used for rendering projections."
+    },
+    {
+      "type": "example",
+      "title": "Converting Local Forward to World Space",
+      "content": "Rotating a local direction vector into world space coords:\n\n```cpp\nstruct FRotator {\n    float Pitch, Yaw, Roll;\n};\n\nstruct FVector3D {\n    float X, Y, Z;\n};\n\n// Simple mathematical representation of coordinate space shifts\nFVector3D TransformLocalToWorld(FVector3D LocalVector, FRotator ActorRotation) {\n    // In practice, multiply the local vector by the actor's world transform matrix\n    FVector3D WorldVector;\n    // Matrix multiplication details...\n    return WorldVector;\n}\n```"
+    }
+  ]
+}

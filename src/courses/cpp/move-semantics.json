@@ -1,0 +1,27 @@
+{
+  "id": "move-semantics",
+  "course": "Modern C++",
+  "chapter": "Memory & Pointers",
+  "title": "Move Semantics",
+  "difficulty": "Advanced",
+  "duration": 40,
+  "description": "Master Rvalues (&&), std::move, Move Constructors, and Move Assignment Operators to bypass expensive copies.",
+  "prerequisites": ["references"],
+  "learningObjectives": [
+    "Distinguish Lvalues from Rvalues in C++ code structures",
+    "Implement custom Move Constructors and Move Assignment Operators",
+    "Use std::move to transfer resource pointers without memory allocation"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Transferring Ownership via Rvalues",
+      "content": "Before C++11, passing large objects (like arrays or vectors) meant copying their entire contents or dealing with raw pointers. Move semantics introduces Rvalue references (`T&&`), allowing the compiler to 'steal' resources from temporary objects (rvalues) instead of copying them. `std::move` casts an object to an rvalue reference, allowing its state to be pilfered."
+    },
+    {
+      "type": "example",
+      "title": "Implementing a Move Constructor",
+      "content": "Designing a memory buffer class that moves resources without re-allocation:\n\n```cpp\n#include <utility>\n\nclass FMeshBuffer {\nprivate:\n    float* VertexData;\n    int Size;\n\npublic:\n    FMeshBuffer(int InSize) : Size(InSize) {\n        VertexData = new float[Size];\n    }\n    \n    ~FMeshBuffer() {\n        delete[] VertexData;\n    }\n\n    // Move Constructor - Steals resources from temporary object\n    FMeshBuffer(FMeshBuffer&& Other) noexcept {\n        VertexData = Other.VertexData; // Copy pointer directly\n        Size = Other.Size;\n\n        Other.VertexData = nullptr; // Nullify source to prevent deletion\n        Other.Size = 0;\n    }\n\n    // Move Assignment Operator\n    FMeshBuffer& operator=(FMeshBuffer&& Other) noexcept {\n        if (this != &Other) {\n            delete[] VertexData; // Clean up current resource first\n\n            VertexData = Other.VertexData;\n            Size = Other.Size;\n\n            Other.VertexData = nullptr;\n            Other.Size = 0;\n        }\n        return *this;\n    }\n};\n```"
+    }
+  ]
+}

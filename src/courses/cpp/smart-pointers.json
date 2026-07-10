@@ -1,0 +1,27 @@
+{
+  "id": "smart-pointers",
+  "course": "Modern C++",
+  "chapter": "Memory & Pointers",
+  "title": "Smart Pointers",
+  "difficulty": "Intermediate",
+  "duration": 35,
+  "description": "Master unique_ptr, shared_ptr, and weak_ptr to enforce automatic memory reclamation in game engines.",
+  "prerequisites": ["pointers"],
+  "learningObjectives": [
+    "Implement std::unique_ptr for exclusive resource ownership",
+    "Use std::shared_ptr and std::weak_ptr for multi-owner designs",
+    "Break cyclic reference memory leaks with weak references"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "RAII and Smart Pointers",
+      "content": "Smart pointers are wrappers enforcing Resource Acquisition Is Initialization (RAII). They ensure dynamically allocated objects are destroyed automatically when they are no longer needed. \n\n1. `std::unique_ptr`: Sole owner of the allocated object. Zero overhead compared to raw pointers.\n2. `std::shared_ptr`: Co-owner of the object. Maintains an atomic reference counter in a control block.\n3. `std::weak_ptr`: Holds a weak, non-owning reference to break cycles."
+    },
+    {
+      "type": "example",
+      "title": "Unique Pointers in Scope",
+      "content": "Using unique_ptr to manage weapon instances inside character inventories:\n\n```cpp\n#include <memory>\n#include <iostream>\n\nclass UWeapon {\npublic:\n    void Attack() { std::cout << "Attack!" << std::endl; }\n};\n\nclass APlayer {\nprivate:\n    // player character holds exclusive ownership of this weapon instance\n    std::unique_ptr<UWeapon> EquippedWeapon;\n\npublic:\n    void EquipWeapon(std::unique_ptr<UWeapon> NewWeapon) {\n        // Ownership is moved using std::move, transferring the raw pointer\n        EquippedWeapon = std::move(NewWeapon);\n    }\n\n    void UseEquipped() {\n        if (EquippedWeapon) EquippedWeapon->Attack();\n    }\n    // Destructor runs automatically, deleting the weapon pointer implicitly!\n};\n```"
+    }
+  ]
+}

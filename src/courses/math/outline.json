@@ -3,9 +3,26 @@
   "courseName": "Game Mathematics",
   "chapters": [
     {
+      "chapterName": "Basic Mathematics",
+      "lessons": [
+        { "id": "algebra", "title": "Algebra", "file": "algebra.json" },
+        { "id": "trigonometry", "title": "Trigonometry", "file": "trigonometry.json" },
+        { "id": "geometry", "title": "Geometry", "file": "geometry.json" }
+      ]
+    },
+    {
       "chapterName": "Linear Algebra",
       "lessons": [
-        { "id": "math-vectors", "title": "Vectors", "file": "vectors.json" }
+        { "id": "linear-algebra", "title": "Linear Algebra Foundations", "file": "linear-algebra.json" },
+        { "id": "vectors", "title": "Vectors", "file": "vectors.json" },
+        { "id": "matrices", "title": "Matrices", "file": "matrices.json" },
+        { "id": "quaternions", "title": "Quaternions", "file": "quaternions.json" }
+      ]
+    },
+    {
+      "chapterName": "Physics",
+      "lessons": [
+        { "id": "physics", "title": "Physics Basics", "file": "physics.json" }
       ]
     }
   ]

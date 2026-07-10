@@ -1,0 +1,27 @@
+{
+  "id": "algebra",
+  "course": "Game Mathematics",
+  "chapter": "Basic Mathematics",
+  "title": "Algebra",
+  "difficulty": "Beginner",
+  "duration": 15,
+  "description": "Understand linear equations, systems of equations, and their applications in solving game logic issues like trigger checks.",
+  "prerequisites": [],
+  "learningObjectives": [
+    "Solve simple linear equations dynamically",
+    "Use algebraic transformations for trigger boundaries",
+    "Solve systems of linear equations for intercepting moving objects"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Algebra in Gameplay Code",
+      "content": "Algebra forms the foundation of all game physics, AI calculations, and graphics positioning. Simple algebraic equations allow us to calculate target hit points, interpolate positions, or evaluate scaling factors. Solving system of equations is highly critical for mechanics like projectile target interception (e.g. predicting where an arrow needs to be fired to hit a running player)."
+    },
+    {
+      "type": "example",
+      "title": "Linear Interpolation (Lerp)",
+      "content": "One of the most common algebraic operations in game development is Linear Interpolation (Lerp), used to smoothly blend between two values over time:\n\n```cpp\n// Algebraic Formula: Result = A + t * (B - A)\nfloat Lerp(float A, float B, float t) {\n    // Clamp t between 0.0 and 1.0\n    if (t < 0.0f) t = 0.0f;\n    if (t > 1.0f) t = 1.0f;\n    return A + t * (B - A);\n}\n```"
+    }
+  ]
+}

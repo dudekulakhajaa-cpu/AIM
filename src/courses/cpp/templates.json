@@ -1,0 +1,27 @@
+{
+  "id": "templates",
+  "course": "Modern C++",
+  "chapter": "Generic Programming & STL",
+  "title": "Templates",
+  "difficulty": "Intermediate",
+  "duration": 30,
+  "description": "Explore generic template programming for functions and classes to write type-safe reusable code.",
+  "prerequisites": ["variables"],
+  "learningObjectives": [
+    "Implement type-agnostic function templates",
+    "Build template classes like generic vectors or buffers",
+    "Explain template instantiation and potential code bloat implications"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Compile-Time Generic Dispatch",
+      "content": "Templates allow you to write algorithms and containers without hardcoding specific types. When you declare `MyTemplate<int>` or `MyTemplate<float>`, the compiler instantiates a separate version of the code for each type at compile time. This ensures type safety and has zero runtime overhead (compared to casting void pointers), but can increase compiler time and binary executable sizes ('code bloat')."
+    },
+    {
+      "type": "example",
+      "title": "Custom Math Template Structure",
+      "content": "Defining a generic mathematical vector type supporting float, double, or int structures:\n\n```cpp\ntemplate<typename T>\nstruct TVector3 {\n    T X, Y, Z;\n\n    TVector3(T InX, T InY, T InZ) : X(InX), Y(InY), Z(InZ) {}\n\n    TVector3 operator+(const TVector3& Other) const {\n        return TVector3(X + Other.X, Y + Other.Y, Z + Other.Z);\n    }\n    \n    T Dot(const TVector3& Other) const {\n        return X * Other.X + Y * Other.Y + Z * Other.Z;\n    }\n};\n\nvoid TestTemplate() {\n    // Compiler generates two separate struct layouts from the template!\n    TVector3<float> FloatVec(1.0f, 2.0f, 3.0f);\n    TVector3<int> IntVec(1, 2, 3);\n}\n```"
+    }
+  ]
+}

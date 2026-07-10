@@ -1,0 +1,27 @@
+{
+  "id": "physics",
+  "course": "Game Mathematics",
+  "chapter": "Physics",
+  "title": "Physics Basics",
+  "difficulty": "Beginner",
+  "duration": 25,
+  "description": "Explore velocity, acceleration, forces, Euler integration, and simple sphere collision resolution.",
+  "prerequisites": [],
+  "learningObjectives": [
+    "Implement velocity and acceleration equations",
+    "Use Euler integration to update positions over time",
+    "Perform sphere-to-sphere collision resolution checks"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Euler Integration and Particle Movement",
+      "content": "Physics engines simulate movements by integrating derivatives over time increments (dt). Euler Integration is the simplest method: we update velocity based on acceleration, and then position based on velocity. While simple and fast, Euler integration can drift in high-speed or varying frame rate scenarios, making semi-implicit Euler or Verlet integration preferred for complex game systems."
+    },
+    {
+      "type": "example",
+      "title": "Euler Integration and Sphere Collisions",
+      "content": "A simple rigid body particle integration and sphere-to-sphere overlap resolver:\n\n```cpp\n#include <cmath>\n\nstruct FVector3D {\n    float X, Y, Z;\n    float Distance(const FVector3D& Other) const {\n        return std::sqrt((X-Other.X)*(X-Other.X) + (Y-Other.Y)*(Y-Other.Y) + (Z-Other.Z)*(Z-Other.Z));\n    }\n};\n\nstruct FRigidParticle {\n    FVector3D Position;\n    FVector3D Velocity;\n    FVector3D Acceleration;\n    float Radius = 10.0f;\n\n    // Euler Integration\n    void Integrate(float DeltaTime) {\n        Velocity.X += Acceleration.X * DeltaTime;\n        Velocity.Y += Acceleration.Y * DeltaTime;\n        Velocity.Z += Acceleration.Z * DeltaTime;\n\n        Position.X += Velocity.X * DeltaTime;\n        Position.Y += Velocity.Y * DeltaTime;\n        Position.Z += Velocity.Z * DeltaTime;\n    }\n};\n\nbool ResolveCollision(FRigidParticle& A, FRigidParticle& B) {\n    float Dist = A.Position.Distance(B.Position);\n    float SumRadii = A.Radius + B.Radius;\n    \n    // Check if overlap exists\n    if (Dist < SumRadii) {\n        // Overlap detected! Simple push back resolver logic...\n        return true;\n    }\n    return false;\n}\n```"
+    }
+  ]
+}

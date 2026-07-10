@@ -1,92 +1,166 @@
 /**
  * Sidebar Component
- * Renders the course chapters outline and lessons list
+ * Renders the course chapter outline with collapsible groups,
+ * search filtering, active/completed/locked states, and responsive drawer.
+ * 
+ * @module sidebar
  */
 
+/**
+ * Render the sidebar navigation panel.
+ * 
+ * @param {HTMLElement} container - The sidebar DOM element
+ * @param {Object} outline - The course outline object
+ * @param {string} currentLessonId - The currently active lesson ID
+ * @param {string[]} completedIds - Array of completed lesson IDs
+ * @param {Function} onSelectLesson - Callback invoked with (lessonId) when a lesson is clicked
+ */
 export function renderSidebar(container, outline, currentLessonId, completedIds, onSelectLesson) {
     if (!container) return;
 
-    // Header logo and collapse button
+    // Track which chapters are collapsed (persist across re-renders)
+    if (!container._collapsedChapters) {
+        container._collapsedChapters = new Set();
+    }
+
     container.innerHTML = `
         <div class="sidebar-header">
             <div class="sidebar-logo">AIM <span>GAME DEV</span></div>
-            <button class="hamburger-btn" id="sidebar-close-btn" style="display: none;">✕</button>
+            <button class="hamburger-btn sidebar-close-btn" id="sidebar-close-btn"
+                    aria-label="Close navigation menu">✕</button>
         </div>
         <div class="sidebar-search-box">
-            <input type="text" class="sidebar-search" id="sidebar-search-input" placeholder="Search lessons..." aria-label="Search lessons">
+            <input type="text" class="sidebar-search" id="sidebar-search-input"
+                   placeholder="Search lessons..." aria-label="Search lessons"
+                   autocomplete="off">
         </div>
-        <div class="sidebar-outline" id="sidebar-outline-list">
-            <!-- Outlines will be rendered here dynamically -->
-        </div>
+        <nav class="sidebar-outline" id="sidebar-outline-list"
+             role="navigation" aria-label="Course lessons">
+        </nav>
     `;
 
-    const outlineList = container.querySelector("#sidebar-outline-list");
-    const searchInput = container.querySelector("#sidebar-search-input");
-    const closeBtn = container.querySelector("#sidebar-close-btn");
+    const outlineList = container.querySelector('#sidebar-outline-list');
+    const searchInput = container.querySelector('#sidebar-search-input');
+    const closeBtn = container.querySelector('#sidebar-close-btn');
 
     if (closeBtn) {
-        // Toggle display block only on mobile screen widths (handled via media queries in CSS)
-        closeBtn.addEventListener("click", () => {
-            container.classList.remove("open");
+        closeBtn.addEventListener('click', () => {
+            container.classList.remove('open');
         });
     }
 
-    // Function to render items matching search filter
-    const renderFilteredItems = (filterText = "") => {
-        let chaptersHTML = "";
+    /**
+     * Render lesson items filtered by search text.
+     * @param {string} filterText - Search filter string
+     */
+    const renderFilteredItems = (filterText = '') => {
+        let chaptersHTML = '';
         const query = filterText.toLowerCase().trim();
 
-        outline.chapters.forEach(chap => {
-            const matchingLessons = chap.lessons.filter(l => 
+        outline.chapters.forEach((chap, chapIdx) => {
+            const matchingLessons = chap.lessons.filter(l =>
                 l.title.toLowerCase().includes(query)
             );
 
-            if (matchingLessons.length > 0) {
-                chaptersHTML += `
-                    <div class="chapter-group">
-                        <div class="chapter-title">${chap.chapterName}</div>
-                        <ul class="lesson-list">
-                            ${matchingLessons.map(l => {
-                                const isActive = l.id === currentLessonId ? "active" : "";
-                                const isCompleted = completedIds.includes(l.id) ? "completed" : "";
-                                return `
-                                    <li>
-                                        <button class="lesson-item-btn ${isActive} ${isCompleted}" data-lesson-id="${l.id}">
-                                            <div class="status-dot"></div>
-                                            <span class="lesson-item-title">${l.title}</span>
-                                        </button>
-                                    </li>
-                                `;
-                            }).join("")}
-                        </ul>
-                    </div>
-                `;
-            }
+            if (matchingLessons.length === 0) return;
+
+            const completedInChapter = chap.lessons.filter(l => completedIds.includes(l.id)).length;
+            const totalInChapter = chap.lessons.length;
+            const isCollapsed = container._collapsedChapters.has(chapIdx);
+
+            chaptersHTML += `
+                <div class="chapter-group ${isCollapsed ? 'collapsed' : ''}" data-chapter-idx="${chapIdx}">
+                    <button class="chapter-title" 
+                            aria-expanded="${!isCollapsed}"
+                            aria-controls="chapter-lessons-${chapIdx}"
+                            data-chapter-toggle="${chapIdx}">
+                        <span class="chapter-toggle-icon" aria-hidden="true">${isCollapsed ? '▶' : '▼'}</span>
+                        <span>${chap.chapterName}</span>
+                        <span class="chapter-progress-badge">${completedInChapter}/${totalInChapter}</span>
+                    </button>
+                    <ul class="lesson-list" id="chapter-lessons-${chapIdx}" role="list"
+                        ${isCollapsed ? 'style="display: none;"' : ''}>
+                        ${matchingLessons.map(l => {
+                            const isActive = l.id === currentLessonId;
+                            const isCompleted = completedIds.includes(l.id);
+                            const classes = [
+                                'lesson-item-btn',
+                                isActive ? 'active' : '',
+                                isCompleted ? 'completed' : ''
+                            ].filter(Boolean).join(' ');
+
+                            return `
+                                <li role="listitem">
+                                    <button class="${classes}"
+                                            data-lesson-id="${l.id}"
+                                            aria-label="${l.title}${isCompleted ? ' (completed)' : ''}${isActive ? ' (current)' : ''}"
+                                            ${isActive ? 'aria-current="true"' : ''}>
+                                        <span class="status-dot" aria-hidden="true"></span>
+                                        <span class="lesson-item-title">${l.title}</span>
+                                    </button>
+                                </li>
+                            `;
+                        }).join('')}
+                    </ul>
+                </div>
+            `;
         });
 
         if (!chaptersHTML) {
-            outlineList.innerHTML = `<div style="text-align: center; color: var(--color-text-muted); font-size: 13px; padding-top: 20px;">No matching units found</div>`;
+            outlineList.innerHTML = `
+                <div class="sidebar-empty-state" role="status">No matching lessons found</div>
+            `;
         } else {
             outlineList.innerHTML = chaptersHTML;
         }
 
-        // Attach click listeners
-        outlineList.querySelectorAll(".lesson-item-btn").forEach(btn => {
-            btn.addEventListener("click", () => {
-                const lessonId = btn.getAttribute("data-lesson-id");
-                onSelectLesson(lessonId);
-                // Auto-close on mobile layout click
-                container.classList.remove("open");
+        // Attach chapter toggle listeners
+        outlineList.querySelectorAll('[data-chapter-toggle]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const idx = parseInt(btn.getAttribute('data-chapter-toggle'), 10);
+                const group = outlineList.querySelector(`[data-chapter-idx="${idx}"]`);
+                const lessonList = outlineList.querySelector(`#chapter-lessons-${idx}`);
+
+                if (container._collapsedChapters.has(idx)) {
+                    container._collapsedChapters.delete(idx);
+                    group.classList.remove('collapsed');
+                    lessonList.style.display = '';
+                    btn.setAttribute('aria-expanded', 'true');
+                    btn.querySelector('.chapter-toggle-icon').textContent = '▼';
+                } else {
+                    container._collapsedChapters.add(idx);
+                    group.classList.add('collapsed');
+                    lessonList.style.display = 'none';
+                    btn.setAttribute('aria-expanded', 'false');
+                    btn.querySelector('.chapter-toggle-icon').textContent = '▶';
+                }
             });
+        });
+
+        // Attach lesson click listeners
+        outlineList.querySelectorAll('.lesson-item-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const lessonId = btn.getAttribute('data-lesson-id');
+                onSelectLesson(lessonId);
+                container.classList.remove('open');
+            });
+        });
+
+        // Auto-scroll active lesson into view
+        requestAnimationFrame(() => {
+            const activeBtn = outlineList.querySelector('.lesson-item-btn.active');
+            if (activeBtn) {
+                activeBtn.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+            }
         });
     };
 
-    // Initialize list render
+    // Initial render
     renderFilteredItems();
 
-    // Attach search listener
+    // Search input listener
     if (searchInput) {
-        searchInput.addEventListener("input", (e) => {
+        searchInput.addEventListener('input', (e) => {
             renderFilteredItems(e.target.value);
         });
     }

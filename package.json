@@ -1,0 +1,14 @@
+{
+  "name": "aim-gamedev-platform",
+  "version": "1.0.0",
+  "description": "Local backend and frontend for Khaja's AIM Game Dev Mastery Platform",
+  "main": "server.py",
+  "scripts": {
+    "start": "python server.py"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  },
+  "private": true
+}

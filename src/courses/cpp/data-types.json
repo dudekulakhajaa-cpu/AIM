@@ -1,0 +1,27 @@
+{
+  "id": "data-types",
+  "course": "Modern C++",
+  "chapter": "Foundations",
+  "title": "Data Types",
+  "difficulty": "Beginner",
+  "duration": 20,
+  "description": "Explore C++ primitive data types, sizing in memory, and the difference between single and double-precision floats in game engines like Unreal Engine.",
+  "prerequisites": ["variables"],
+  "learningObjectives": [
+    "Identify different primitive types (int, float, double, bool, char)",
+    "Understand memory storage sizes for primitives on modern 64-bit hardware",
+    "Explain float vs double precision difference in modern UE5 engines (Large World Coordinates)"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Primitive Data Types and Sizing",
+      "content": "C++ is a strongly typed language, which means every variable must have a declared type. Primitive types represent the most basic building blocks of data storage:\n\n1. `int` (typically 4 bytes): Stores integers.\n2. `float` (typically 4 bytes): Stores single-precision floating-point numbers.\n3. `double` (typically 8 bytes): Stores double-precision floating-point numbers.\n4. `bool` (typically 1 byte): Stores true or false.\n5. `char` (typically 1 byte): Stores single character tokens.\n\nOn modern 64-bit operating systems, data sizing is crucial for performance and CPU cache alignment."
+    },
+    {
+      "type": "example",
+      "title": "Unreal Engine 5 Large World Coordinates (LWC)",
+      "content": "In Unreal Engine 5, coordinates were shifted from 32-bit float (`FVector`) to 64-bit double-precision vectors (`FVector3d` or alias `FVector`) to allow building maps that are millions of units wide without precision jitter:\n\n```cpp\n// UE4 representation (32-bit float)\nstruct FVector_UE4 {\n    float X, Y, Z;\n};\n\n// UE5 representation (64-bit double precision)\nstruct FVector_UE5 {\n    double X, Y, Z;\n};\n```"
+    }
+  ]
+}

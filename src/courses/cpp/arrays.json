@@ -1,0 +1,27 @@
+{
+  "id": "arrays",
+  "course": "Modern C++",
+  "chapter": "Memory & Pointers",
+  "title": "Arrays",
+  "difficulty": "Beginner",
+  "duration": 25,
+  "description": "Master contiguous memory collections in C++ using traditional fixed-size arrays and modern std::array wrappers.",
+  "prerequisites": ["variables"],
+  "learningObjectives": [
+    "Declare, initialize, and access elements in fixed-size arrays",
+    "Explain contiguous memory layout and how indexing offsets work",
+    "Contrast raw arrays with modern standard array wrappers (std::array)"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Contiguous Memory and Cache Performance",
+      "content": "Arrays store sequential elements of the same type in contiguous memory blocks. This layout is exceptionally friendly to the CPU cache: when you access index 0, the cache line pre-fetches index 1, 2, and 3, minimizing high-latency RAM fetches. Traditional raw arrays (`int arr[10]`) decay to raw pointers, losing size information. Modern C++ introduces `std::array<T, N>`, a zero-overhead wrapper containing size metadata and boundary checks."
+    },
+    {
+      "type": "example",
+      "title": "Raw Arrays vs std::array",
+      "content": "Comparing raw C-style arrays with modern safe arrays:\n\n```cpp\n#include <array>\n#include <iostream>\n\nvoid TestArrays() {\n    // Raw array decays to pointer, no compile-time bounds checks\n    int RawInventory[5] = { 101, 102, 103, 104, 105 };\n    \n    // std::array matches raw array performance but supports size checks\n    std::array<int, 5> ModernInventory = { 101, 102, 103, 104, 105 };\n\n    std::cout << "Inventory items: " << ModernInventory.size() << std::endl;\n\n    // Safe access with boundary checks\n    try {\n        int item = ModernInventory.at(10); // Throws out_of_range exception\n    } catch (const std::out_of_range& e) {\n        std::cerr << "Caught bounds violation: " << e.what() << std::endl;\n    }\n}\n```"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "polymorphism",
+  "course": "Modern C++",
+  "chapter": "Object-Oriented Programming",
+  "title": "Polymorphism",
+  "difficulty": "Intermediate",
+  "duration": 30,
+  "description": "Master dynamic dispatch, virtual tables (Vtables), override/final keywords, and virtual destructors.",
+  "prerequisites": ["inheritance"],
+  "learningObjectives": [
+    "Use virtual functions to enable dynamic (runtime) polymorphism",
+    "Explain the inner mechanics and cost of Virtual Table (Vtable) lookups",
+    "Identify and prevent memory leaks using virtual destructors"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Vtables and Dynamic Dispatch",
+      "content": "Polymorphism lets you treat derived objects through base class pointers. Dynamic polymorphism uses `virtual` functions resolved at runtime. \n\nWhen a class has virtual functions, the compiler inserts a hidden pointer (`vptr`) into the object layout pointing to a Virtual Table (`vtable`). Calling a virtual function requires dereferencing the `vptr`, locating the function pointer offset, and calling it. This overhead (vtable lookup and cache miss risk) is why high-frequency tick systems avoid deep polymorphic loops."
+    },
+    {
+      "type": "example",
+      "title": "Virtual Destructors and Vtable Layout",
+      "content": "Why virtual destructors are mandatory when deleting derived objects via base pointers:\n\n```cpp\n#include <iostream>\n\nclass UWeaponBase {\npublic:\n    UWeaponBase() {}\n    // Without virtual, deleting via UWeaponBase* will leak child components!\n    virtual ~UWeaponBase() {\n        std::cout << "Base weapon cleanup" << std::endl;\n    }\n    virtual void Fire() = 0; // Pure virtual function makes class abstract\n};\n\nclass ARifle : public UWeaponBase {\nprivate:\n    int* ammoClip; // Allocated heap resource\n\npublic:\n    ARifle() {\n        ammoClip = new int(30);\n    }\n    ~ARifle() override {\n        delete ammoClip; // Runs safely because destructor is virtual!\n        std::cout << "Rifle specific cleanup" << std::endl;\n    }\n    void Fire() override {\n        // Spawn projectile...\n    }\n};\n```"
+    }
+  ]
+}

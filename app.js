@@ -643,8 +643,31 @@ const DEFAULT_SEED_DATA = {
   ]
 };
 
-// Load progress seed or read from local storage
+// Load progress seed or read from local storage / cloud DB
 async function initData() {
+    // 1. Try to load from cloud DB first
+    try {
+        const response = await fetch("http://localhost:3000/api/progress");
+        if (response.ok) {
+            const dbData = await response.json();
+            if (dbData.masterProgress && Object.keys(dbData.masterProgress).length > 0) {
+                state = dbData.masterProgress;
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+                if (dbData.completedLessons) {
+                    localStorage.setItem("AIM_GAMEDEV_COMPLETED_LESSONS", JSON.stringify(dbData.completedLessons));
+                }
+                if (dbData.bookmarks) {
+                    localStorage.setItem("AIM_GAMEDEV_BOOKMARKS", JSON.stringify(dbData.bookmarks));
+                }
+                console.log("Synchronized and loaded student data from local DB server.");
+                return;
+            }
+        }
+    } catch (e) {
+        console.log("DB server offline or unreachable. Loading from localStorage cache.");
+    }
+
+    // 2. Local storage cache load fallback
     const localData = localStorage.getItem(STORAGE_KEY);
     if (localData) {
         try {
@@ -661,7 +684,7 @@ async function initData() {
         }
     }
     
-    // Fallback: Fetch progress.json seeded by script, or use inline default if fetch fails
+    // 3. Fallback: Fetch progress.json seeded by script, or use inline default if fetch fails
     try {
         const response = await fetch("progress.json");
         if (response.ok) {
@@ -682,6 +705,31 @@ function saveState() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     updateTopProgressBar();
     renderHeatmap();
+    
+    // Trigger background sync to local database
+    pushStateToDatabase();
+}
+
+async function pushStateToDatabase() {
+    try {
+        const completedRaw = localStorage.getItem("AIM_GAMEDEV_COMPLETED_LESSONS");
+        const bookmarksRaw = localStorage.getItem("AIM_GAMEDEV_BOOKMARKS");
+        const completed = completedRaw ? JSON.parse(completedRaw) : [];
+        const bookmarks = bookmarksRaw ? JSON.parse(bookmarksRaw) : [];
+
+        await fetch("http://localhost:3000/api/progress", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                completedLessons: completed,
+                bookmarks: bookmarks,
+                masterProgress: state,
+                updatedAt: new Date().toISOString()
+            })
+        });
+    } catch (e) {
+        // Fail silently if server is offline
+    }
 }
 
 // Navigation Controllers
@@ -1220,9 +1268,31 @@ function renderCurriculum() {
                                     
                                     const LESSON_MAP = {
                                         "sem0_m2_u1": { course: "cpp", lesson: "variables" },
+                                        "sem0_m2_u2": { course: "cpp", lesson: "data-types" },
+                                        "sem0_m2_u3": { course: "cpp", lesson: "operators" },
+                                        "sem0_m2_u4": { course: "cpp", lesson: "conditions" },
+                                        "sem0_m2_u5": { course: "cpp", lesson: "loops" },
+                                        "sem0_m2_u6": { course: "cpp", lesson: "functions" },
+                                        "sem0_m2_u7": { course: "cpp", lesson: "arrays" },
                                         "sem0_m2_u8": { course: "cpp", lesson: "pointers" },
                                         "sem0_m2_u9": { course: "cpp", lesson: "references" },
-                                        "sem2_m5": { course: "math", lesson: "vectors" }
+                                        "sem0_m2_u10": { course: "cpp", lesson: "classes" },
+                                        "sem0_m2_u11": { course: "cpp", lesson: "objects" },
+                                        "sem0_m2_u12": { course: "cpp", lesson: "constructors" },
+                                        "sem0_m2_u13": { course: "cpp", lesson: "inheritance" },
+                                        "sem0_m2_u14": { course: "cpp", lesson: "polymorphism" },
+                                        "sem0_m2_u15": { course: "cpp", lesson: "templates" },
+                                        "sem0_m2_u16": { course: "cpp", lesson: "stl" },
+                                        "sem0_m2_u17": { course: "cpp", lesson: "smart-pointers" },
+                                        "sem0_m2_u18": { course: "cpp", lesson: "move-semantics" },
+                                        "sem2_m1": { course: "math", lesson: "algebra" },
+                                        "sem2_m2": { course: "math", lesson: "trigonometry" },
+                                        "sem2_m3": { course: "math", lesson: "geometry" },
+                                        "sem2_m4": { course: "math", lesson: "linear-algebra" },
+                                        "sem2_m5": { course: "math", lesson: "vectors" },
+                                        "sem2_m6": { course: "math", lesson: "matrices" },
+                                        "sem2_m7": { course: "math", lesson: "quaternions" },
+                                        "sem2_m8": { course: "math", lesson: "physics" }
                                     };
                                     
                                     const lessonInfo = LESSON_MAP[item.id];

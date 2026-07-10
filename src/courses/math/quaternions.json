@@ -1,0 +1,27 @@
+{
+  "id": "quaternions",
+  "course": "Game Mathematics",
+  "chapter": "Linear Algebra",
+  "title": "Quaternions",
+  "difficulty": "Advanced",
+  "duration": 35,
+  "description": "Master Quaternions, Euler angles, gimbal lock limitations, and SLERP interpolation for smooth rotations.",
+  "prerequisites": ["matrices"],
+  "learningObjectives": [
+    "Identify gimbal lock problems in Euler angle rotation setups",
+    "Define Quaternions as four-dimensional coordinates (x, y, z, w)",
+    "Use Spherical Linear Interpolation (SLERP) for smooth camera rotations"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Euler Angles vs Quaternions",
+      "content": "Euler angles represent rotations via Pitch, Yaw, and Roll. While intuitive, rotating around sequential axes can cause two axes to align, locking them together and losing a degree of freedom (Gimbal Lock). \n\nQuaternions solve this by representing rotations in 4D space as `(x, y, z, w)` where `(x, y, z)` is the rotation axis scaled by `sin(θ/2)` and `w` is `cos(θ/2)`. Quaternions never suffer from gimbal lock and enable Spherical Linear Interpolation (SLERP) to blend between rotations smoothly along the shortest arc."
+    },
+    {
+      "type": "example",
+      "title": "Smooth Camera Blends via SLERP",
+      "content": "Using Quaternions to interpolate camera orientations without speed anomalies:\n\n```cpp\nstruct FQuat {\n    float X, Y, Z, W;\n    \n    // Spherical Linear Interpolation\n    static FQuat Slerp(const FQuat& A, const FQuat& B, float Alpha) {\n        // Computes angle between orientations and interpolates along the sphere\n        FQuat Result;\n        // Slerp trig calculations...\n        return Result;\n    }\n};\n\nFQuat InterpolateCamera(FQuat StartRotation, FQuat TargetRotation, float Alpha) {\n    return FQuat::Slerp(StartRotation, TargetRotation, Alpha);\n}\n```"
+    }
+  ]
+}

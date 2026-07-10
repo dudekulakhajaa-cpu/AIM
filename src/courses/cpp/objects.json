@@ -1,0 +1,27 @@
+{
+  "id": "objects",
+  "course": "Modern C++",
+  "chapter": "Object-Oriented Programming",
+  "title": "Objects",
+  "difficulty": "Beginner",
+  "duration": 25,
+  "description": "Understand instantiating objects on the Stack vs the Heap, lifetimes, and object layouts in memory.",
+  "prerequisites": ["classes"],
+  "learningObjectives": [
+    "Instantiate objects on the stack and understand automatic lifetimes",
+    "Allocate objects dynamically on the heap and prevent memory leaks",
+    "Explain the memory offset representation of object properties"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Object Allocations: Stack vs Heap",
+      "content": "An object is an instance of a class loaded into active memory. Where it lives is critical for game performance:\n\n1. **Stack Allocation**: Fast, automatic lifetime (deallocated when scope ends), localized cache layout. Ideal for short-lived transforms, traces, and calculations.\n2. **Heap Allocation**: Slower, manual lifetime (requires `new` / `delete`), dynamically sized. Required for massive persisting objects like characters and level nodes. Heap memory must be managed carefully to avoid leaks."
+    },
+    {
+      "type": "example",
+      "title": "Object Allocations in Action",
+      "content": "A comparison of stack allocation vs heap allocation in game scopes:\n\n```cpp\nclass FTransform {\npublic:\n    float X = 0.0f, Y = 0.0f, Z = 0.0f;\n};\n\nclass AActor {\npublic:\n    FTransform ActorTransform;\n};\n\nvoid SpawnExample() {\n    // Stack Allocation: Local transform destroyed automatically when function ends\n    FTransform LocalTransform;\n    LocalTransform.X = 10.0f;\n\n    // Heap Allocation: Persistent actor remains in memory until manually deleted\n    AActor* SpawnedActor = new AActor();\n    SpawnedActor->ActorTransform = LocalTransform;\n\n    // Cleanup heap to prevent memory leak\n    delete SpawnedActor;\n}\n```"
+    }
+  ]
+}

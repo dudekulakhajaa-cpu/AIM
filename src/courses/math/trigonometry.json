@@ -1,0 +1,27 @@
+{
+  "id": "trigonometry",
+  "course": "Game Mathematics",
+  "chapter": "Basic Mathematics",
+  "title": "Trigonometry",
+  "difficulty": "Beginner",
+  "duration": 20,
+  "description": "Explore sine, cosine, tangent, the unit circle, and conversion functions to resolve rotation vectors.",
+  "prerequisites": [],
+  "learningObjectives": [
+    "Calculate angles using inverse trigonometric functions (atan2)",
+    "Resolve angles into directional 2D vector coordinates using sin/cos",
+    "Explain unit circle boundaries for rotation checks"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Sine, Cosine, and Direction Vectors",
+      "content": "Trigonometry allows you to translate between angles and directions. In 2D game structures, a character facing an angle θ has a forward direction vector of `(cos(θ), sin(θ))`. \n\nTo calculate the angle from a player to a mouse target, the function `atan2(y, x)` is used instead of standard `atan` because it automatically handles the signs of both x and y coordinates to determine the correct quadrant from -π to +π."
+    },
+    {
+      "type": "example",
+      "title": "Calculating Target Angle using atan2",
+      "content": "Finding the rotation needed for a turret to track a target actor:\n\n```cpp\n#include <cmath>\n\nstruct FVector2D {\n    float X, Y;\n};\n\nfloat GetAngleToTarget(FVector2D TurretPos, FVector2D TargetPos) {\n    float DeltaX = TargetPos.X - TurretPos.X;\n    float DeltaY = TargetPos.Y - TurretPos.Y;\n    \n    // atan2 handles signs and avoids division by zero errors\n    float AngleRadians = std::atan2(DeltaY, DeltaX);\n    \n    // Convert to degrees for editor use\n    return AngleRadians * (180.0f / 3.14159265f);\n}\n```"
+    }
+  ]
+}

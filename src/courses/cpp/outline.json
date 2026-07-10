@@ -5,14 +5,39 @@
     {
       "chapterName": "Foundations",
       "lessons": [
-        { "id": "variables", "title": "Variables", "file": "variables.json" }
+        { "id": "variables", "title": "Variables", "file": "variables.json" },
+        { "id": "data-types", "title": "Data Types", "file": "data-types.json" },
+        { "id": "operators", "title": "Operators", "file": "operators.json" },
+        { "id": "conditions", "title": "Conditions", "file": "conditions.json" },
+        { "id": "loops", "title": "Loops", "file": "loops.json" },
+        { "id": "functions", "title": "Functions", "file": "functions.json" }
       ]
     },
     {
       "chapterName": "Memory & Pointers",
       "lessons": [
+        { "id": "arrays", "title": "Arrays", "file": "arrays.json" },
         { "id": "pointers", "title": "Pointers", "file": "pointers.json" },
-        { "id": "references", "title": "References", "file": "references.json" }
+        { "id": "references", "title": "References", "file": "references.json" },
+        { "id": "smart-pointers", "title": "Smart Pointers", "file": "smart-pointers.json" },
+        { "id": "move-semantics", "title": "Move Semantics", "file": "move-semantics.json" }
+      ]
+    },
+    {
+      "chapterName": "Object-Oriented Programming",
+      "lessons": [
+        { "id": "classes", "title": "Classes", "file": "classes.json" },
+        { "id": "objects", "title": "Objects", "file": "objects.json" },
+        { "id": "constructors", "title": "Constructors", "file": "constructors.json" },
+        { "id": "inheritance", "title": "Inheritance", "file": "inheritance.json" },
+        { "id": "polymorphism", "title": "Polymorphism", "file": "polymorphism.json" }
+      ]
+    },
+    {
+      "chapterName": "Generic Programming & STL",
+      "lessons": [
+        { "id": "templates", "title": "Templates", "file": "templates.json" },
+        { "id": "stl", "title": "Standard Template Library", "file": "stl.json" }
       ]
     }
   ]
