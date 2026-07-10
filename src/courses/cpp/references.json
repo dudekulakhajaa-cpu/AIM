@@ -1,0 +1,27 @@
+{
+  "id": "cpp-references",
+  "course": "C++",
+  "chapter": "Memory & Pointers",
+  "title": "References",
+  "difficulty": "Intermediate",
+  "duration": 25,
+  "description": "Understand aliases, passing by reference, and standard memory performance optimization techniques.",
+  "prerequisites": ["cpp-pointers"],
+  "learningObjectives": [
+    "Differentiate between references and pointers",
+    "Use references for parameter passing to prevent copies",
+    "Explain const reference safety"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "What is a Reference?",
+      "content": "A reference is an alias — a different name for an existing variable. Unlike pointers, references cannot be null, must be initialized when created, and cannot be reseated to point to another variable."
+    },
+    {
+      "type": "example",
+      "title": "Passing by Reference",
+      "content": "Passing objects by reference is standard in Unreal Engine and AAA game development to avoid expensive memory copying operations:\n\n```cpp\nvoid DamageActor(AActor& target, float amount) {\n    target.Health -= amount;\n}\n```"
+    }
+  ]
+}

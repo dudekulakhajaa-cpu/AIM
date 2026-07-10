@@ -1,0 +1,27 @@
+{
+  "id": "cpp-pointers",
+  "course": "C++",
+  "chapter": "Memory & Pointers",
+  "title": "Pointers",
+  "difficulty": "Intermediate",
+  "duration": 35,
+  "description": "Master memory addresses, pointer syntax, dereferencing, and common memory management practices in AAA games.",
+  "prerequisites": ["cpp-variables"],
+  "learningObjectives": [
+    "Explain what a memory address is",
+    "Declare, assign, and dereference pointers",
+    "Avoid common memory pitfalls like nullptr dereferencing"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "Introduction to Memory Addresses & Pointers",
+      "content": "Pointers are variables that store memory addresses of other variables instead of direct values. In game programming, pointers are crucial for passing huge game objects without copying them, dynamic allocation, and writing direct performance-oriented systems."
+    },
+    {
+      "type": "example",
+      "title": "Declaring and Dereferencing Pointers",
+      "content": "Using the address-of operator `&` and the dereference operator `*`:\n\n```cpp\nint level = 42;\nint* pLevel = &level; // Stores address of level\n\n// Dereference to get value\nint currentLevel = *pLevel; // Gets 42\n```"
+    }
+  ]
+}

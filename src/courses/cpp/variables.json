@@ -1,0 +1,27 @@
+{
+  "id": "cpp-variables",
+  "course": "C++",
+  "chapter": "Foundations",
+  "title": "Variables",
+  "difficulty": "Beginner",
+  "duration": 15,
+  "description": "Learn the basics of variable declaration, initialization, and types in C++.",
+  "prerequisites": [],
+  "learningObjectives": [
+    "Understand the structure of C++ variables",
+    "Identify memory sizes for primitive data types",
+    "Explain declaration vs initialization"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "What is a Variable?",
+      "content": "A variable is a named storage location in computer memory that your program can manipulate. In C++, every variable has a specific type, which determines the size and layout of the variable's memory, the range of values that can be stored, and the set of operations that can be applied to it."
+    },
+    {
+      "type": "example",
+      "title": "Variable Declaration and Initialization",
+      "content": "Here is how you declare and initialize basic primitive types in C++:\n\n```cpp\nint health = 100;\nfloat speed = 5.5f;\nbool isDead = false;\nchar grade = 'A';\n```"
+    }
+  ]
+}

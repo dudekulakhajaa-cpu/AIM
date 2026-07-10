@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIM — Interactive Lesson Engine</title>
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="src/lesson/lesson.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="scroll-progress-container">
+        <div class="scroll-progress-fill" id="scroll-progress-fill"></div>
+    </div>
+
+    <div class="lesson-app-container">
+        <!-- Sidebar Drawer Navigation -->
+        <aside class="lesson-sidebar" id="lesson-sidebar-panel">
+            <!-- Sidebar content dynamically rendered by sidebar.js -->
+        </aside>
+
+        <!-- Main Wrapper -->
+        <div class="lesson-main-wrapper">
+            <!-- Mobile Header Bar -->
+            <div class="mobile-nav-bar">
+                <button class="hamburger-btn" id="mobile-hamburger-btn">☰</button>
+                <div class="sidebar-logo" style="margin-right: auto; margin-left: 16px;">AIM <span>GAME DEV</span></div>
+            </div>
+
+            <!-- Content Area -->
+            <main class="lesson-content-container" id="main-content-layout">
+                <!-- Breadcrumbs -->
+                <nav class="breadcrumbs" id="lesson-breadcrumbs"></nav>
+
+                <!-- Loading / Error States Layout -->
+                <div id="engine-status-overlay" class="hidden"></div>
+
+                <!-- Interactive Lesson Elements -->
+                <div id="lesson-workspace">
+                    <!-- Header Card -->
+                    <header class="lesson-header-card" id="lesson-header-section"></header>
+
+                    <!-- Learning Objectives -->
+                    <section class="objectives-card" id="lesson-objectives-section"></section>
+
+                    <!-- Content Sections (Theory, Examples, Playgrounds) -->
+                    <section class="lesson-sections-wrapper" id="lesson-content-sections"></section>
+
+                    <!-- Navigation Footer (Previous/Next) -->
+                    <nav class="lesson-navigation-footer" id="navigation-footer"></nav>
+
+                    <!-- Footer (Completion Verification) -->
+                    <footer class="lesson-footer-section" id="lesson-footer-section"></footer>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Main Module Orchestration Script -->
+    <script type="module">
+        import { initRouter, navigateToLesson } from './src/lesson/lesson-router.js';
+        import { loadLesson, getProgressState, saveProgressState } from './src/lesson/lesson-loader.js';
+        import { renderLessonPage } from './src/lesson/lesson-renderer.js';
+        import { setupLessonNavigation, initScrollProgress } from './src/lesson/lesson-navigation.js';
+
+        // DOM elements cache
+        const elements = {
+            sidebar: document.getElementById("lesson-sidebar-panel"),
+            breadcrumbs: document.getElementById("lesson-breadcrumbs"),
+            header: document.getElementById("lesson-header-section"),
+            objectives: document.getElementById("lesson-objectives-section"),
+            content: document.getElementById("lesson-content-sections"),
+            footer: document.getElementById("lesson-footer-section"),
+            workspace: document.getElementById("lesson-workspace"),
+            statusOverlay: document.getElementById("engine-status-overlay"),
+            hamburger: document.getElementById("mobile-hamburger-btn")
+        };
+
+        // Initialize mobile hamburger layout toggle
+        if (elements.hamburger) {
+            elements.hamburger.addEventListener("click", () => {
+                elements.sidebar.classList.toggle("open");
+            });
+        }
+
+        // Router callback to load a route dynamically
+        const handleRouteChanged = async (courseId, lessonId, is404 = false) => {
+            showLoadingState();
+
+            if (is404) {
+                showErrorState("404 Lesson Not Found", "The requested lesson path does not exist. Return to the dashboard or select another lesson.");
+                return;
+            }
+
+            try {
+                // 1. Fetch lesson details
+                const data = await loadLesson(courseId, lessonId);
+
+                // 2. Fetch progress and bookmark state
+                const progressState = getProgressState();
+
+                // 3. Define interaction handlers
+                const handlers = {
+                    onSelectLesson: (id) => navigateToLesson(courseId, id),
+                    onToggleBookmark: (id) => {
+                        const index = progressState.bookmarkIds.indexOf(id);
+                        if (index === -1) {
+                            progressState.bookmarkIds.push(id);
+                        } else {
+                            progressState.bookmarkIds.splice(index, 1);
+                        }
+                        saveProgressState(progressState.completedIds, progressState.bookmarkIds);
+                        // Re-render
+                        handleRouteChanged(courseId, lessonId);
+                    },
+                    onToggleComplete: (id) => {
+                        const index = progressState.completedIds.indexOf(id);
+                        if (index === -1) {
+                            progressState.completedIds.push(id);
+                        } else {
+                            progressState.completedIds.splice(index, 1);
+                        }
+                        saveProgressState(progressState.completedIds, progressState.bookmarkIds);
+                        // Re-render
+                        handleRouteChanged(courseId, lessonId);
+                    },
+                    onShare: (id) => {
+                        const url = `${window.location.origin}${window.location.pathname}#/lesson/${courseId}/${id}`;
+                        navigator.clipboard.writeText(url);
+                        alert("Lesson share link copied to clipboard!");
+                    },
+                    onNavigateHome: () => {
+                        window.location.href = "index.html"; // Go back to core tracker dashboard
+                    }
+                };
+
+                // 4. Render layout components
+                renderLessonPage(elements, data, progressState, handlers);
+
+                // 5. Setup dynamic Previous/Next footer links
+                setupLessonNavigation(data.outline, lessonId, navigateToLesson);
+
+                // 6. Reset scroll and update reading progress bar
+                window.scrollTo(0, 0);
+                initScrollProgress();
+
+                showContentState();
+            } catch (err) {
+                showErrorState("Engine Connection Lost", "Failed to retrieve lesson data. Make sure the JSON file exists and matches schema requirements.");
+            }
+        };
+
+        // State handlers
+        function showLoadingState() {
+            elements.workspace.classList.add("hidden");
+            elements.statusOverlay.classList.remove("hidden");
+            elements.statusOverlay.innerHTML = `
+                <div class="engine-state-overlay">
+                    <div class="engine-state-title">Retrieving Memory Buffer...</div>
+                    <div class="engine-state-desc">Loading lesson content schemas dynamically from data core.</div>
+                </div>
+            `;
+        }
+
+        function showErrorState(title, description) {
+            elements.workspace.classList.add("hidden");
+            elements.statusOverlay.classList.remove("hidden");
+            elements.statusOverlay.innerHTML = `
+                <div class="engine-state-overlay">
+                    <div class="engine-state-title" style="color: var(--color-error);">${title}</div>
+                    <div class="engine-state-desc">${description}</div>
+                    <a href="index.html" class="btn-primary" style="margin-top: 16px;">Return to Control Room</a>
+                </div>
+            `;
+        }
+
+        function showContentState() {
+            elements.statusOverlay.classList.add("hidden");
+            elements.workspace.classList.remove("hidden");
+        }
+
+        // Initialize Router
+        initRouter(handleRouteChanged);
+    </script>
+</body>
+</html>

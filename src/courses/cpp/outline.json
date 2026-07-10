@@ -1,0 +1,19 @@
+{
+  "courseId": "cpp",
+  "courseName": "Modern C++",
+  "chapters": [
+    {
+      "chapterName": "Foundations",
+      "lessons": [
+        { "id": "cpp-variables", "title": "Variables", "file": "variables.json" }
+      ]
+    },
+    {
+      "chapterName": "Memory & Pointers",
+      "lessons": [
+        { "id": "cpp-pointers", "title": "Pointers", "file": "pointers.json" },
+        { "id": "cpp-references", "title": "References", "file": "references.json" }
+      ]
+    }
+  ]
+}

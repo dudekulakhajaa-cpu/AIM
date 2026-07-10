@@ -1,0 +1,27 @@
+{
+  "id": "math-vectors",
+  "course": "Game Mathematics",
+  "chapter": "Linear Algebra",
+  "title": "Vectors",
+  "difficulty": "Beginner",
+  "duration": 20,
+  "description": "Understand 2D and 3D vectors, normalization, dot products, and cross products in gameplay coding.",
+  "prerequisites": [],
+  "learningObjectives": [
+    "Visualize vectors as directions and magnitudes",
+    "Calculate dot product and interpret angle checks",
+    "Calculate cross product to resolve perpendicular vectors"
+  ],
+  "sections": [
+    {
+      "type": "theory",
+      "title": "What is a Vector?",
+      "content": "A vector represents a quantity that has both magnitude (length) and direction. In 3D engine mathematics, vectors represent offsets, velocities, positions, and normals."
+    },
+    {
+      "type": "example",
+      "title": "Normalized Direction Check",
+      "content": "To calculate checking directions in code:\n\n```cpp\nFVector PlayerForward = GetActorForwardVector();\nFVector TargetDirection = (TargetActor->GetActorLocation() - GetActorLocation()).GetSafeNormal();\nfloat Alignment = FVector::DotProduct(PlayerForward, TargetDirection);\n```"
+    }
+  ]
+}

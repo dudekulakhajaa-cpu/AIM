@@ -1,0 +1,12 @@
+{
+  "courseId": "math",
+  "courseName": "Game Mathematics",
+  "chapters": [
+    {
+      "chapterName": "Linear Algebra",
+      "lessons": [
+        { "id": "math-vectors", "title": "Vectors", "file": "vectors.json" }
+      ]
+    }
+  ]
+}
