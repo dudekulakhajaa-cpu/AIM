@@ -18,7 +18,7 @@ export function initRouter(onRouteChanged) {
             onRouteChanged(courseId, lessonId);
         } else if (hash === '#/' || hash === '') {
             // Default route (Modern C++ Variables lesson)
-            onRouteChanged('cpp', 'cpp-variables');
+            onRouteChanged('cpp', 'variables');
         } else {
             // Unrecognized route, render 404
             onRouteChanged(null, null, true);

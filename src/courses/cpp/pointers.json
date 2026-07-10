@@ -1,12 +1,12 @@
 {
-  "id": "cpp-pointers",
+  "id": "pointers",
   "course": "C++",
   "chapter": "Memory & Pointers",
   "title": "Pointers",
   "difficulty": "Intermediate",
   "duration": 35,
   "description": "Master memory addresses, pointer syntax, dereferencing, and common memory management practices in AAA games.",
-  "prerequisites": ["cpp-variables"],
+  "prerequisites": ["variables"],
   "learningObjectives": [
     "Explain what a memory address is",
     "Declare, assign, and dereference pointers",

@@ -1,12 +1,12 @@
 {
-  "id": "cpp-references",
+  "id": "references",
   "course": "C++",
   "chapter": "Memory & Pointers",
   "title": "References",
   "difficulty": "Intermediate",
   "duration": 25,
   "description": "Understand aliases, passing by reference, and standard memory performance optimization techniques.",
-  "prerequisites": ["cpp-pointers"],
+  "prerequisites": ["pointers"],
   "learningObjectives": [
     "Differentiate between references and pointers",
     "Use references for parameter passing to prevent copies",
